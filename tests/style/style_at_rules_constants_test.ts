@@ -1,4 +1,5 @@
-import { OgoneLexer, ContextTypes, SupportedStyleSheetAtRuleConstantTypes } from '../../OgoneLexer.ts';
+import { Exium } from '../../mod.ts';
+import { ContextTypes } from '../../src/enums/context-types.ts';
 import { assertEquals, assert } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 const url = new URL(import.meta.url);
@@ -15,13 +16,13 @@ const url = new URL(import.meta.url);
 Deno.test('ogone-lexer stylesheet supports @const statement, and it can retrieve the name of the const and its type', () => {
   const constName = 'myColor'
   const content = ` @const ${constName}<hex>= #001000;`;
-  const lexer = new OgoneLexer((reason, cursor, context) => {
+  const lexer = new Exium((reason, cursor, context) => {
     throw new Error(`${reason} ${context.position.line}:${context.position.column}`);
   });
-  const contexts = lexer.parse(content,  { type: 'stylesheet' });
+  const contexts = lexer.readSync(content,  { type: 'stylesheet' });
   if (contexts && contexts.length) {
-    const err = new Error(`OgoneLexer - Failed to retrieve ${ContextTypes.StyleSheetAtRuleConst} context`);
-    const errName = new Error(`OgoneLexer - Failed to retrieve ${ContextTypes.StyleSheetAtRuleConstName} context`);
+    const err = new Error(`Exium - Failed to retrieve ${ContextTypes.StyleSheetAtRuleConst} context`);
+    const errName = new Error(`Exium - Failed to retrieve ${ContextTypes.StyleSheetAtRuleConstName} context`);
     const constant = contexts.find((context) => context.type === ContextTypes.StyleSheetAtRuleConst);
     if (!constant) {
       throw err;
@@ -32,7 +33,7 @@ Deno.test('ogone-lexer stylesheet supports @const statement, and it can retrieve
     }
     assertEquals(constantName.source, constName);
   } else {
-    throw new Error(`OgoneLexer - Failed to retrieve ${ContextTypes.StyleSheetAtRuleConst} context`);
+    throw new Error(`Exium - Failed to retrieve ${ContextTypes.StyleSheetAtRuleConst} context`);
   }
 });
 
@@ -44,13 +45,13 @@ Deno.test('ogone-lexer stylesheet supports @const statement, and it can retrieve
       @const ${constName}<hex>= #001000;
     </style>
   </template>`;
-  const lexer = new OgoneLexer((reason, cursor, context) => {
+  const lexer = new Exium((reason, cursor, context) => {
     throw new Error(`${reason} ${context.position.line}:${context.position.column}`);
   });
-  const contexts = lexer.parse(content,  { type: 'component' });
+  const contexts = lexer.readSync(content,  { type: 'component' });
   if (contexts && contexts.length) {
-    const err = new Error(`OgoneLexer - Failed to retrieve ${ContextTypes.StyleSheetAtRuleConst} context`);
-    const errName = new Error(`OgoneLexer - Failed to retrieve ${ContextTypes.StyleSheetAtRuleConstName} context`);
+    const err = new Error(`Exium - Failed to retrieve ${ContextTypes.StyleSheetAtRuleConst} context`);
+    const errName = new Error(`Exium - Failed to retrieve ${ContextTypes.StyleSheetAtRuleConstName} context`);
     const constant = contexts.find((context) => context.type === ContextTypes.StyleSheetAtRuleConst);
     if (!constant) {
       throw err;
@@ -61,23 +62,23 @@ Deno.test('ogone-lexer stylesheet supports @const statement, and it can retrieve
     }
     assertEquals(constantName.source, constName);
   } else {
-    throw new Error(`OgoneLexer - Failed to retrieve ${ContextTypes.StyleSheetAtRuleConst} context`);
+    throw new Error(`Exium - Failed to retrieve ${ContextTypes.StyleSheetAtRuleConst} context`);
   }
 });
 
 Deno.test('ogone-lexer stylesheet supports @export statement', () => {
   const content = `@export const myVar<hex> = #000000;`;
-  const lexer = new OgoneLexer((reason, cursor, context) => {
+  const lexer = new Exium((reason, cursor, context) => {
     throw new Error(`${reason} ${context.position.line}:${context.position.column}`);
   });
-  const contexts = lexer.parse(content,  { type: 'stylesheet' });
+  const contexts = lexer.readSync(content,  { type: 'stylesheet' });
   if (contexts && contexts.length) {
     const constant = contexts.find((context) => context.type === ContextTypes.StyleSheetAtRuleConst);
     if (!constant) {
-      throw new Error(`OgoneLexer - Failed to retrieve ${ContextTypes.StyleSheetAtRuleConst} context`);
+      throw new Error(`Exium - Failed to retrieve ${ContextTypes.StyleSheetAtRuleConst} context`);
     }
   } else {
-    throw new Error(`OgoneLexer - Failed to retrieve ${ContextTypes.StyleSheetAtRuleConst} context`);
+    throw new Error(`Exium - Failed to retrieve ${ContextTypes.StyleSheetAtRuleConst} context`);
   }
 });
 // TODO implement types tests

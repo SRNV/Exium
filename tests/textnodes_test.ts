@@ -1,14 +1,15 @@
-import { OgoneLexer, ContextTypes } from '../OgoneLexer.ts';
+import { Exium } from './../mod.ts';
+import { ContextTypes } from '../src/enums/context-types.ts';
 import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 const url = new URL(import.meta.url);
 
 Deno.test('ogone-lexer supports textnodes', () => {
   const content = "import a from 'v';<div>here a textnode</div><!--not a textnode --> here another one";
-  const lexer = new OgoneLexer((reason, cursor, context) => {
+  const lexer = new Exium((reason, cursor, context) => {
     throw new Error(`${reason} ${context.position.line}:${context.position.column}`);
   });
-  const contexts = lexer.parse(content,  { type: 'component' });
+  const contexts = lexer.readSync(content,  { type: 'component' });
   if (contexts && contexts.length) {
     const textnodes = contexts.filter((context) => context.type === ContextTypes.TextNode);
     const [text1, text2] = textnodes;
@@ -18,17 +19,17 @@ Deno.test('ogone-lexer supports textnodes', () => {
     assertEquals(text2.position, { start: 67, end: 83, line: 0, column: 67 });
     assertEquals(textnodes.length, 2);
   } else {
-    throw new Error(`OgoneLexer - Failed to retrieve ${ContextTypes.TextNode} context`);
+    throw new Error(`Exium - Failed to retrieve ${ContextTypes.TextNode} context`);
   }
 });
 
 Deno.test('ogone-lexer supports textnodes with template', () => {
   const source = 'here a textnode ${template} '
   const content = `import a from 'v';<div>${source}</div>`;
-  const lexer = new OgoneLexer((reason, cursor, context) => {
+  const lexer = new Exium((reason, cursor, context) => {
     throw new Error(`${reason} ${context.position.line}:${context.position.column}`);
   });
-  const contexts = lexer.parse(content,  { type: 'component' });
+  const contexts = lexer.readSync(content,  { type: 'component' });
   if (contexts && contexts.length) {
     const textnodes = contexts.filter((context) => context.type === ContextTypes.TextNode);
     const [text1] = textnodes;
@@ -42,7 +43,7 @@ Deno.test('ogone-lexer supports textnodes with template', () => {
     assertEquals(text1.position, { start: 23, end: 51, line: 0, column: 23 });
     assertEquals(textnodes.length, 1);
   } else {
-    throw new Error(`OgoneLexer - Failed to retrieve ${ContextTypes.TextNode} context`);
+    throw new Error(`Exium - Failed to retrieve ${ContextTypes.TextNode} context`);
   }
 });
 
@@ -50,29 +51,29 @@ Deno.test('ogone-lexer should use onError function when an unsupported textnode 
   // malformed import statement
   const content = "impot a from 'v';";
   let result = false;
-  new OgoneLexer((reason, cursor, context) => {
+  new Exium((reason, cursor, context) => {
     result = context.type === ContextTypes.Unexpected
       && context.source === content;
     assertEquals(context.position, { start: 0, line: 0, column: 0, end: 1 });
   })
-  .parse(content, { type: 'component' });
+  .readSync(content, { type: 'component' });
   if (!result) {
-    throw new Error(`OgoneLexer - Failed to retrieve ${ContextTypes.TextNode} context`);
+    throw new Error(`Exium - Failed to retrieve ${ContextTypes.TextNode} context`);
   }
 });
 
 Deno.test('ogone-lexer supports textnodes using < but not starting a new node', () => {
   const source = 'is a correct textnode <<<<';
   const content = `<div> ${source}</div>`;
-  const lexer = new OgoneLexer((reason, cursor, context) => {
+  const lexer = new Exium((reason, cursor, context) => {
     throw new Error(`${reason} ${context.position.line}:${context.position.column}`);
   });
-  const contexts = lexer.parse(content,  { type: 'component' });
+  const contexts = lexer.readSync(content,  { type: 'component' });
   if (contexts && contexts.length) {
     const textnodes = contexts.filter((context) => context.type === ContextTypes.TextNode);
     const [text1] = textnodes;
     assertEquals(text1.source, source);
   } else {
-    throw new Error(`OgoneLexer - Failed to retrieve ${ContextTypes.TextNode} context`);
+    throw new Error(`Exium - Failed to retrieve ${ContextTypes.TextNode} context`);
   }
 });

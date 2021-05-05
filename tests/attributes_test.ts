@@ -1,15 +1,16 @@
-import { OgoneLexer, ContextTypes } from '../OgoneLexer.ts';
+import { Exium } from './../mod.ts';
+import { ContextTypes } from '../src/enums/context-types.ts';
 import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 const url = new URL(import.meta.url);
 
 Deno.test('ogone-lexer can parse attribute unquoted', () => {
-  const lexer = new OgoneLexer((reason, cursor, context) => {
+  const lexer = new Exium((reason, cursor, context) => {
     throw new Error(`${reason} ${context.position.line}:${context.position.column}`);
   });
   const source = 'a=value';
   const content = `<div ${source}></div>`;
-  const contexts = lexer.parse(content,  { type: 'component' });
+  const contexts = lexer.readSync(content,  { type: 'component' });
   if (contexts && contexts.length) {
     try {
       const attribute = contexts.find((context) => context.type === ContextTypes.Attribute);
@@ -33,24 +34,23 @@ Deno.test('ogone-lexer can parse attribute unquoted', () => {
           assertEquals(attributeName.position, attributeNamePosition);
           assertEquals(attributeUnquoted.position, unquotedPosition);
       } else {
-        throw new Error('OgoneLexer - test failed');
+        throw new Error('Exium - test failed');
       }
     } catch (err) {
       throw err;
     }
   } else {
-    throw new Error('OgoneLexer - test failed');
+    throw new Error('Exium - test failed');
   }
 });
 
-
 Deno.test('ogone-lexer can parse boolean attributes and a space after', () => {
-  const lexer = new OgoneLexer((reason, cursor, context) => {
+  const lexer = new Exium((reason, cursor, context) => {
     throw new Error(`${reason} ${context.position.line}:${context.position.column}`);
   });
   const source = 'hidden'
   const content = `<div ${source} ></div>`;
-  const contexts = lexer.parse(content,  { type: 'component' });
+  const contexts = lexer.readSync(content,  { type: 'component' });
   if (contexts && contexts.length) {
     try {
       const attribute = contexts.find((context) => context.type === ContextTypes.AttributeBoolean);
@@ -67,23 +67,23 @@ Deno.test('ogone-lexer can parse boolean attributes and a space after', () => {
       } else {
         console.warn(contexts);
         console.error('attribute', attribute);
-        throw new Error('OgoneLexer - test failed');
+        throw new Error('Exium - test failed');
       }
     } catch (err) {
       throw err;
     }
   } else {
-    throw new Error('OgoneLexer - test failed');
+    throw new Error('Exium - test failed');
   }
 });
 
 Deno.test('ogone-lexer can parse multiple boolean attributes', () => {
-  const lexer = new OgoneLexer((reason, cursor, context) => {
+  const lexer = new Exium((reason, cursor, context) => {
     throw new Error(`${reason} ${context.position.line}:${context.position.column}`);
   });
   const sources = ['hidden', 'named', 'href', 'src-p'];
   const content = `<div ${sources.join('\n\t')} ></div>`;
-  const contexts = lexer.parse(content,  { type: 'component' });
+  const contexts = lexer.readSync(content,  { type: 'component' });
   if (contexts && contexts.length) {
     try {
       const targets = [
@@ -112,23 +112,23 @@ Deno.test('ogone-lexer can parse multiple boolean attributes', () => {
       } else {
         console.warn(contexts);
         console.error('attributes', attributes);
-        throw new Error('OgoneLexer - test failed');
+        throw new Error('Exium - test failed');
       }
     } catch (err) {
       throw err;
     }
   } else {
-    throw new Error('OgoneLexer - test failed');
+    throw new Error('Exium - test failed');
   }
 });
 
 Deno.test('ogone-lexer can parse boolean attributes and without space after', () => {
-  const lexer = new OgoneLexer((reason, cursor, context) => {
+  const lexer = new Exium((reason, cursor, context) => {
     throw new Error(`${reason} ${context.position.line}:${context.position.column}`);
   });
   const source = 'hidden'
   const content = `<div ${source}></div>`;
-  const contexts = lexer.parse(content,  { type: 'component' });
+  const contexts = lexer.readSync(content,  { type: 'component' });
   if (contexts && contexts.length) {
     try {
       const attribute = contexts.find((context) => context.type === ContextTypes.AttributeBoolean);
@@ -145,12 +145,12 @@ Deno.test('ogone-lexer can parse boolean attributes and without space after', ()
       } else {
         console.warn(contexts);
         console.error('attribute', attribute);
-        throw new Error('OgoneLexer - test failed');
+        throw new Error('Exium - test failed');
       }
     } catch (err) {
       throw err;
     }
   } else {
-    throw new Error('OgoneLexer - test failed');
+    throw new Error('Exium - test failed');
   }
 });

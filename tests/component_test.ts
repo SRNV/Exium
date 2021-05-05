@@ -1,11 +1,11 @@
-import { OgoneLexer } from '../OgoneLexer.ts';
+import { Exium } from './../mod.ts';
 import { assertEquals, assert } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 import { component1 } from './utils/componentFile.ts';
 
 const url = new URL(import.meta.url);
 // TODO
 Deno.test('ogone-lexer can parse a basic component', () => {
-  const lexer = new OgoneLexer((reason, cursor, context) => {
+  const lexer = new Exium((reason, cursor, context) => {
     throw new Error(`${reason} ${context.position.line}:${context.position.column}`);
   });
   const content = `
@@ -19,7 +19,7 @@ import component A from './b.o3';
     public basic: string = 'this is a basic component';
 </proto>
   `;
-  const contexts = lexer.parse(content,  { type: 'component' });
+  const contexts = lexer.readSync(content,  { type: 'component' });
   if (contexts && contexts.length) {
     try {
       // console.warn(contexts);
@@ -27,17 +27,17 @@ import component A from './b.o3';
       throw err;
     }
   } else {
-    throw new Error('OgoneLexer - Failed to retrieve Node Context');
+    throw new Error('Exium - Failed to retrieve Node Context');
   }
 });
 
 Deno.test('ogone-lexer large component is parsed < 100ms', () => {
   const perf = performance.now();
-  const lexer = new OgoneLexer((reason, cursor, context) => {
+  const lexer = new Exium((reason, cursor, context) => {
     throw new Error(`${reason} ${context.position.line}:${context.position.column}`);
   });
   const content = component1;
-  const contexts = lexer.parse(content,  { type: 'component' });
+  const contexts = lexer.readSync(content,  { type: 'component' });
   const parseTime = performance.now() - perf;
   if (contexts && contexts.length) {
     try {
@@ -46,6 +46,6 @@ Deno.test('ogone-lexer large component is parsed < 100ms', () => {
       throw err;
     }
   } else {
-    throw new Error('OgoneLexer - Failed to retrieve Node Context');
+    throw new Error('Exium - Failed to retrieve Node Context');
   }
 });

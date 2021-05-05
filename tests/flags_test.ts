@@ -1,17 +1,19 @@
-import { OgoneLexer, ContextTypes, SupportedFlags } from '../OgoneLexer.ts';
+import { Exium } from './../mod.ts';
+import { ContextTypes } from '../src/enums/context-types.ts';
+import { SupportedFlags } from '../src/supports.ts';
 import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 const url = new URL(import.meta.url);
 
 Deno.test('ogone-lexer can retrieve node flags', () => {
-  const lexer = new OgoneLexer((reason, cursor, context) => {
+  const lexer = new Exium((reason, cursor, context) => {
     throw new Error(`${reason} ${context.position.line}:${context.position.column}`);
   });
   const content = `<proto
     ${SupportedFlags.join('\n    ')}
     not-a-flag
     ></proto>`;
-  const contexts = lexer.parse(content,  { type: 'component' });
+  const contexts = lexer.readSync(content,  { type: 'component' });
   if (contexts && contexts.length) {
     try {
       const { length } = SupportedFlags;
@@ -21,17 +23,17 @@ Deno.test('ogone-lexer can retrieve node flags', () => {
       throw err;
     }
   } else {
-    throw new Error('OgoneLexer - Failed to retrieve Flag Context');
+    throw new Error('Exium - Failed to retrieve Flag Context');
   }
 });
 
 Deno.test('ogone-lexer flag name is accessible through related', () => {
-  const lexer = new OgoneLexer((reason, cursor, context) => {
+  const lexer = new Exium((reason, cursor, context) => {
     throw new Error(`${reason} ${context.position.line}:${context.position.column}`);
   });
   const source = 'then:flag:name';
   const content = `<proto --${source}></proto>`;
-  const contexts = lexer.parse(content,  { type: 'component' });
+  const contexts = lexer.readSync(content,  { type: 'component' });
   if (contexts && contexts.length) {
     try {
       const flag = contexts.find((context) => context.type === ContextTypes.Flag);
@@ -45,16 +47,16 @@ Deno.test('ogone-lexer flag name is accessible through related', () => {
       throw err;
     }
   } else {
-    throw new Error('OgoneLexer - Failed to retrieve Flag Context');
+    throw new Error('Exium - Failed to retrieve Flag Context');
   }
 });
 
 Deno.test('ogone-lexer can retrieve flags value', () => {
-  const lexer = new OgoneLexer((reason, cursor, context) => {
+  const lexer = new Exium((reason, cursor, context) => {
     throw new Error(`${reason} ${context.position.line}:${context.position.column}`);
   });
   const content = `<proto --if={true}></proto>`;
-  const contexts = lexer.parse(content,  { type: 'component' });
+  const contexts = lexer.readSync(content,  { type: 'component' });
   if (contexts && contexts.length) {
     try {
       const flag = contexts.find((context) => context.type === ContextTypes.Flag);
@@ -87,16 +89,16 @@ Deno.test('ogone-lexer can retrieve flags value', () => {
       throw err;
     }
   } else {
-    throw new Error('OgoneLexer - Failed to retrieve Flag Context');
+    throw new Error('Exium - Failed to retrieve Flag Context');
   }
 });
 
 Deno.test('ogone-lexer can retrieve spread value', () => {
-  const lexer = new OgoneLexer((reason, cursor, context) => {
+  const lexer = new Exium((reason, cursor, context) => {
     throw new Error(`${reason} ${context.position.line}:${context.position.column}`);
   });
   const content = `<proto { ...this.spread }></proto>`;
-  const contexts = lexer.parse(content,  { type: 'component' });
+  const contexts = lexer.readSync(content,  { type: 'component' });
   if (contexts && contexts.length) {
     try {
       const flag = contexts.find((context) => context.type === ContextTypes.FlagSpread);
@@ -108,16 +110,16 @@ Deno.test('ogone-lexer can retrieve spread value', () => {
       throw err;
     }
   } else {
-    throw new Error('OgoneLexer - Failed to retrieve Flag Context');
+    throw new Error('Exium - Failed to retrieve Flag Context');
   }
 });
 
 Deno.test('ogone-lexer can retrieve spread value on a auto-closing tag', () => {
-  const lexer = new OgoneLexer((reason, cursor, context) => {
+  const lexer = new Exium((reason, cursor, context) => {
     throw new Error(`${reason} ${context.position.line}:${context.position.column}`);
   });
   const content = `<proto { ...this.spread }/>`;
-  const contexts = lexer.parse(content,  { type: 'component' });
+  const contexts = lexer.readSync(content,  { type: 'component' });
   if (contexts && contexts.length) {
     try {
       const flag = contexts.find((context) => context.type === ContextTypes.FlagSpread);
@@ -129,16 +131,16 @@ Deno.test('ogone-lexer can retrieve spread value on a auto-closing tag', () => {
       throw err;
     }
   } else {
-    throw new Error('OgoneLexer - Failed to retrieve Flag Context');
+    throw new Error('Exium - Failed to retrieve Flag Context');
   }
 });
 
 Deno.test('ogone-lexer can retrieve spread value without spaces', () => {
-  const lexer = new OgoneLexer((reason, cursor, context) => {
+  const lexer = new Exium((reason, cursor, context) => {
     throw new Error(`${reason} ${context.position.line}:${context.position.column}`);
   });
   const content = `<proto {...this.spread}/>`;
-  const contexts = lexer.parse(content,  { type: 'component' });
+  const contexts = lexer.readSync(content,  { type: 'component' });
   if (contexts && contexts.length) {
     try {
       const flag = contexts.find((context) => context.type === ContextTypes.FlagSpread);
@@ -150,6 +152,6 @@ Deno.test('ogone-lexer can retrieve spread value without spaces', () => {
       throw err;
     }
   } else {
-    throw new Error('OgoneLexer - Failed to retrieve Flag Context');
+    throw new Error('Exium - Failed to retrieve Flag Context');
   }
 });
