@@ -1,4 +1,4 @@
-import { ContextTypes } from '../../src/enums/context-types.ts';
+import { ContextTypes } from "../../src/enums/context-types.ts";
 /**
  * ExiumContext constructor for all retrieved contexts.
  *
@@ -45,5 +45,5 @@ export class ExiumContext {
       line: number;
       column: number;
     },
-  ) { }
+  ) {}
 }

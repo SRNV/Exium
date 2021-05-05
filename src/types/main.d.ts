@@ -1,11 +1,11 @@
 export interface ContextReaderOptions {
-  contexts?: ContextReader[],
-  unexpected?: ContextReader[],
-  checkOnly?: boolean,
+  contexts?: ContextReader[];
+  unexpected?: ContextReader[];
+  checkOnly?: boolean;
   /**
    * pass custom data to context readers
    */
-  data?: { [k: string]: unknown },
+  data?: { [k: string]: unknown };
 }
 /**
  * functions used to retrieve context
@@ -33,9 +33,10 @@ export interface OgooneLexerParseOptions {
   /**
    * the type of the document
    */
-  type: 'component'
-  | 'lexer'
-  | 'custom'
-  | 'stylesheet'
-  | 'protocol';
+  type:
+    | "component"
+    | "lexer"
+    | "custom"
+    | "stylesheet"
+    | "protocol";
 }

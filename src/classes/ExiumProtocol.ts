@@ -1,13 +1,13 @@
-import { ExiumHTMLElements } from './ExiumHTMLElements.ts';
+import { ExiumHTMLElements } from "./ExiumHTMLElements.ts";
 import {
   ContextReader,
+  ContextReaderOptions,
   CursorDescriber,
   OgooneLexerParseOptions,
-  ContextReaderOptions,
-} from '../types/main.d.ts';
-import { ExiumContext } from './ExiumContext.ts';
-import { ContextTypes } from '../enums/context-types.ts';
-import { Reason } from '../enums/error-reason.ts';
+} from "../types/main.d.ts";
+import { ExiumContext } from "./ExiumContext.ts";
+import { ContextTypes } from "../enums/context-types.ts";
+import { Reason } from "../enums/error-reason.ts";
 
 /**
  * all ContextReaders to read protocols elements inside components
@@ -19,15 +19,19 @@ export class ExiumProtocol extends ExiumHTMLElements {
   /**
    * reads the textnode that should match (protocol)> ... </(protocol)
    */
-   protocol_CTX(opts?: ContextReaderOptions): boolean {
+  protocol_CTX(opts?: ContextReaderOptions): boolean {
     try {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      const lastIsAStyleNode = this.currentContexts.find((context) => context.type === ContextTypes.Node
-        && context.related.find((node) => node.type === ContextTypes.NodeName
-          && node.source === 'proto')
-        && !context.related.find((node) => node.type === ContextTypes.NodeClosing));
+      const lastIsAStyleNode = this.currentContexts.find((context) =>
+        context.type === ContextTypes.Node &&
+        context.related.find((node) =>
+          node.type === ContextTypes.NodeName &&
+          node.source === "proto"
+        ) &&
+        !context.related.find((node) => node.type === ContextTypes.NodeClosing)
+      );
       const isValid = !!lastIsAStyleNode;
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
@@ -42,7 +46,7 @@ export class ExiumProtocol extends ExiumHTMLElements {
         this.shift(1);
         this.isValidChar(opts?.unexpected);
         this.saveContextsTo(allSubContexts, children);
-        if (this.isStartingNode() && this.nextPart.startsWith('</proto')) {
+        if (this.isStartingNode() && this.nextPart.startsWith("</proto")) {
           break;
         }
       }

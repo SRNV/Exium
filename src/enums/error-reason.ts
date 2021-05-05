@@ -29,4 +29,4 @@ export enum Reason {
   StyleSheetAtRuleCharsetNotFinish = 2894,
   StyleSheetAtRuleCurlyBracesAreMissing = 2960,
   StyleSheetTypeAssignmentNotFinish = 3004,
-};
+}

@@ -1,14 +1,14 @@
-import { ExiumProtocol } from './ExiumProtocol.ts';
+import { ExiumProtocol } from "./ExiumProtocol.ts";
 import {
   ContextReader,
+  ContextReaderOptions,
   CursorDescriber,
   OgooneLexerParseOptions,
-  ContextReaderOptions,
-} from '../types/main.d.ts';
-import { ExiumContext } from './ExiumContext.ts';
-import { ContextTypes } from '../enums/context-types.ts';
-import { Reason } from '../enums/error-reason.ts';
-import { SupportedStyleSheetCharset } from '../supports.ts';
+} from "../types/main.d.ts";
+import { ExiumContext } from "./ExiumContext.ts";
+import { ContextTypes } from "../enums/context-types.ts";
+import { Reason } from "../enums/error-reason.ts";
+import { SupportedStyleSheetCharset } from "../supports.ts";
 
 /**
  * all ContextReaders to read stylesheets
@@ -22,10 +22,14 @@ export class ExiumStyleSheet extends ExiumProtocol {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      const lastIsAStyleNode = this.currentContexts.find((context) => context.type === ContextTypes.Node
-        && context.related.find((node) => node.type === ContextTypes.NodeName
-          && node.source === 'style')
-        && !context.related.find((node) => node.type === ContextTypes.NodeClosing));
+      const lastIsAStyleNode = this.currentContexts.find((context) =>
+        context.type === ContextTypes.Node &&
+        context.related.find((node) =>
+          node.type === ContextTypes.NodeName &&
+          node.source === "style"
+        ) &&
+        !context.related.find((node) => node.type === ContextTypes.NodeClosing)
+      );
       const isValid = !!lastIsAStyleNode || this.isParsingStylesheet;
       if (!isValid) return false;
       if (opts?.checkOnly) return !this.isEndOfStylesheet();
@@ -87,9 +91,11 @@ export class ExiumStyleSheet extends ExiumProtocol {
         source[x + 4], // s
         source[x + 5], // e
         source[x + 6], // t
-      ].join('');
-      const isValid = Boolean(prev === '@'
-        && sequence === 'charset');
+      ].join("");
+      const isValid = Boolean(
+        prev === "@" &&
+          sequence === "charset",
+      );
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
       let result = true;
@@ -107,31 +113,41 @@ export class ExiumStyleSheet extends ExiumProtocol {
         this.shift(1);
         this.isValidChar(opts?.unexpected);
         this.saveContextsTo(allSubContexts, children);
-        if (this.char === ';') {
+        if (this.char === ";") {
           break;
         }
       }
       // check if the at rule is ending correctly
       const isClosedBySemicolon = this.semicolon_CTX();
-      isClosed = Boolean(isClosedBySemicolon && children.length && children.find((context) => [
-        ContextTypes.StringSingleQuote,
-        ContextTypes.StringDoubleQuote
-      ].includes(context.type)));
+      isClosed = Boolean(
+        isClosedBySemicolon && children.length && children.find((context) =>
+          [
+            ContextTypes.StringSingleQuote,
+            ContextTypes.StringDoubleQuote,
+          ].includes(context.type)
+        ),
+      );
       // create and finish the current context
       const token = source.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.StyleSheetAtRuleCharset, token, {
-        start: x,
-        end: this.cursor.x,
-        line,
-        column,
-      });
+      const context = new ExiumContext(
+        ContextTypes.StyleSheetAtRuleCharset,
+        token,
+        {
+          start: x,
+          end: this.cursor.x,
+          line,
+          column,
+        },
+      );
       context.children.push(...children);
       this.currentContexts.push(context);
       // now check if everything is good with the charset
-      const str = children.find((context) => [
-        ContextTypes.StringSingleQuote,
-        ContextTypes.StringDoubleQuote
-      ].includes(context.type));
+      const str = children.find((context) =>
+        [
+          ContextTypes.StringSingleQuote,
+          ContextTypes.StringDoubleQuote,
+        ].includes(context.type)
+      );
       if (str) {
         let isValidCharset = false;
         const strCharset = str.source.slice(1, -1);
@@ -141,13 +157,25 @@ export class ExiumStyleSheet extends ExiumProtocol {
           }
         });
         if (!isValidCharset) {
-          this.onError(Reason.StyleSheetAtRuleCharsetInvalid, this.cursor, context)
+          this.onError(
+            Reason.StyleSheetAtRuleCharsetInvalid,
+            this.cursor,
+            context,
+          );
         }
       } else {
-        this.onError(Reason.StyleSheetAtRuleCharsetStringIsMissing, this.cursor, context);
+        this.onError(
+          Reason.StyleSheetAtRuleCharsetStringIsMissing,
+          this.cursor,
+          context,
+        );
       }
       if (!isClosed) {
-        this.onError(Reason.StyleSheetAtRuleCharsetNotFinish, this.cursor, context);
+        this.onError(
+          Reason.StyleSheetAtRuleCharsetNotFinish,
+          this.cursor,
+          context,
+        );
       }
       return result;
     } catch (err) {
@@ -171,9 +199,11 @@ export class ExiumStyleSheet extends ExiumProtocol {
         source[x + 4], // r
         source[x + 5], // t
         source[x + 6], // space
-      ].join('');
-      const isValid = Boolean(prev === '@'
-        && sequence === 'export ');
+      ].join("");
+      const isValid = Boolean(
+        prev === "@" &&
+          sequence === "export ",
+      );
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
       let result = true;
@@ -184,7 +214,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
         this.stylesheet_const_at_rule_CTX,
       ];
       // shift until end of export
-      const shifted = this.shiftUntilEndOf('export');
+      const shifted = this.shiftUntilEndOf("export");
       if (!shifted) return false;
       // retrieve the atrule name
       while (!this.isEOF) {
@@ -192,21 +222,25 @@ export class ExiumStyleSheet extends ExiumProtocol {
         this.isValidChar(opts?.unexpected);
         this.saveStrictContextsTo(allSubContexts, children, {
           data: {
-            isExportStatement: true
-          }
+            isExportStatement: true,
+          },
         });
-        if (this.char === ';' || this.prev === ';') {
+        if (this.char === ";" || this.prev === ";") {
           break;
         }
       }
       // create and finish the current context
       const token = source.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.StyleSheetAtRuleExport, token, {
-        start: x,
-        end: this.cursor.x,
-        line,
-        column,
-      });
+      const context = new ExiumContext(
+        ContextTypes.StyleSheetAtRuleExport,
+        token,
+        {
+          start: x,
+          end: this.cursor.x,
+          line,
+          column,
+        },
+      );
       context.children.push(...children);
       this.currentContexts.push(context);
       return result;
@@ -233,9 +267,11 @@ export class ExiumStyleSheet extends ExiumProtocol {
         source[x + 3], // s
         source[x + 4], // t
         source[x + 5], // space
-      ].join('');
-      const isValid = Boolean((prev === '@' || opts?.data?.isExportStatement)
-        && sequence === 'const ');
+      ].join("");
+      const isValid = Boolean(
+        (prev === "@" || opts?.data?.isExportStatement) &&
+          sequence === "const ",
+      );
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
       let result = true;
@@ -254,7 +290,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
         this.stylesheet_const_at_rule_equal_CTX,
       ];
       //  shift cursor until the end of the const
-      const shifted = this.shiftUntilEndOf('const');
+      const shifted = this.shiftUntilEndOf("const");
       if (!shifted) return false;
       // retrieve the atrule name
       while (!this.isEOF) {
@@ -266,24 +302,32 @@ export class ExiumStyleSheet extends ExiumProtocol {
             data: {
               // force type assignment
               force_type_assignment_context: true,
-            }
+            },
           });
-          isNamed = Boolean(related.find((context) => context.type === ContextTypes.StyleSheetAtRuleConstName));
+          isNamed = Boolean(
+            related.find((context) =>
+              context.type === ContextTypes.StyleSheetAtRuleConstName
+            ),
+          );
         } else {
           this.saveContextsTo(allSubContexts, children);
         }
-        if (this.char === ';') {
+        if (this.char === ";") {
           break;
         }
       }
       // create and finish the current context
       const token = source.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.StyleSheetAtRuleConst, token, {
-        start: x,
-        end: this.cursor.x,
-        line,
-        column,
-      });
+      const context = new ExiumContext(
+        ContextTypes.StyleSheetAtRuleConst,
+        token,
+        {
+          start: x,
+          end: this.cursor.x,
+          line,
+          column,
+        },
+      );
       context.children.push(...children);
       context.related.push(...related);
       this.currentContexts.push(context);
@@ -311,12 +355,16 @@ export class ExiumStyleSheet extends ExiumProtocol {
       }
       // create and finish the current context
       const token = source.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.StyleSheetAtRuleConstName, token, {
-        start: x,
-        end: this.cursor.x,
-        line,
-        column,
-      });
+      const context = new ExiumContext(
+        ContextTypes.StyleSheetAtRuleConstName,
+        token,
+        {
+          start: x,
+          end: this.cursor.x,
+          line,
+          column,
+        },
+      );
       this.currentContexts.push(context);
       return result;
     } catch (err) {
@@ -328,29 +376,33 @@ export class ExiumStyleSheet extends ExiumProtocol {
       let { char, next } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      const isValid = char === '=' && next !== '=';
+      const isValid = char === "=" && next !== "=";
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
       let result = true;
-      const children : ExiumContext[] = [];
+      const children: ExiumContext[] = [];
       const subs: ContextReader[] = [];
       // retrieve the atrule name
       while (!this.isEOF) {
         this.shift(1);
         this.isValidChar(opts?.unexpected);
         this.saveContextsTo(subs, children);
-        if (this.semicolon_CTX() || this.next === ';') {
+        if (this.semicolon_CTX() || this.next === ";") {
           break;
         }
       }
       // create and finish the current context
       const token = source.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.StyleSheetAtRuleConstEqual, token, {
-        start: x,
-        end: this.cursor.x,
-        line,
-        column,
-      });
+      const context = new ExiumContext(
+        ContextTypes.StyleSheetAtRuleConstEqual,
+        token,
+        {
+          start: x,
+          end: this.cursor.x,
+          line,
+          column,
+        },
+      );
       context.children.push(...children);
       this.currentContexts.push(context);
       return result;
@@ -363,8 +415,10 @@ export class ExiumStyleSheet extends ExiumProtocol {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      const isValid = Boolean(prev === '@'
-        && char !== ' ');
+      const isValid = Boolean(
+        prev === "@" &&
+          char !== " ",
+      );
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
       let result = true;
@@ -378,16 +432,22 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const allSubContexts: ContextReader[] = [];
       const related: ExiumContext[] = [];
       this.saveContextsTo(describers, related);
-      isTyped = !!related.find((context) => context.type === ContextTypes.StyleSheetTypeAssignment);
+      isTyped = !!related.find((context) =>
+        context.type === ContextTypes.StyleSheetTypeAssignment
+      );
       // retrieve the atrule name
-      const atRuleName = related.find((context) => context.type === ContextTypes.StyleSheetAtRuleName);
+      const atRuleName = related.find((context) =>
+        context.type === ContextTypes.StyleSheetAtRuleName
+      );
       while (!this.isEOF) {
         this.shift(1);
         this.isValidChar(opts?.unexpected);
         this.saveContextsTo(allSubContexts, children);
-        if (this.char === '{'
-          || this.char === ';'
-          || this.isEndOfStylesheet()) {
+        if (
+          this.char === "{" ||
+          this.char === ";" ||
+          this.isEndOfStylesheet()
+        ) {
           break;
         }
       }
@@ -416,7 +476,11 @@ export class ExiumStyleSheet extends ExiumProtocol {
       context.data.isTyped = isTyped;
       this.currentContexts.push(context);
       if (!isClosed) {
-        this.onError(Reason.StyleSheetAtRuleCurlyBracesAreMissing, this.cursor, context);
+        this.onError(
+          Reason.StyleSheetAtRuleCurlyBracesAreMissing,
+          this.cursor,
+          context,
+        );
       }
       return result;
     } catch (err) {
@@ -428,7 +492,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      const isValid = char === '<' && (prev === '@' || opts?.data?.force_type_assignment_context);
+      const isValid = char === "<" &&
+        (prev === "@" || opts?.data?.force_type_assignment_context);
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
       let result = true;
@@ -440,28 +505,38 @@ export class ExiumStyleSheet extends ExiumProtocol {
       ]);
       while (!this.isEOF) {
         this.shift(1);
-        this.isValidChar(opts?.unexpected || [
-          this.stylesheet_type_assignment_CTX,
-          this.stylesheet_default_at_rule_CTX,
-        ]);
+        this.isValidChar(
+          opts?.unexpected || [
+            this.stylesheet_type_assignment_CTX,
+            this.stylesheet_default_at_rule_CTX,
+          ],
+        );
         this.saveContextsTo(allSubContexts, children);
-        if (this.char === '>') {
+        if (this.char === ">") {
           this.shift(1);
           isClosed = true;
           break;
         }
       }
       const token = source.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.StyleSheetTypeAssignment, token, {
-        start: x,
-        end: this.cursor.x,
-        line,
-        column,
-      });
+      const context = new ExiumContext(
+        ContextTypes.StyleSheetTypeAssignment,
+        token,
+        {
+          start: x,
+          end: this.cursor.x,
+          line,
+          column,
+        },
+      );
       context.children.push(...children);
       this.currentContexts.push(context);
       if (!isClosed) {
-        this.onError(Reason.StyleSheetTypeAssignmentNotFinish, this.cursor, context);
+        this.onError(
+          Reason.StyleSheetTypeAssignmentNotFinish,
+          this.cursor,
+          context,
+        );
       }
       return result;
     } catch (err) {
@@ -473,7 +548,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      const isValid = ![' ', '@', '<'].includes(char);
+      const isValid = ![" ", "@", "<"].includes(char);
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
       let result = true;
@@ -483,17 +558,21 @@ export class ExiumStyleSheet extends ExiumProtocol {
         this.shift(1);
         this.isValidChar(opts?.unexpected);
         this.saveContextsTo(allSubContexts, children);
-        if (this.char === ' ') {
+        if (this.char === " ") {
           break;
         }
       }
       const token = source.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.StyleSheetAtRuleName, token, {
-        start: x,
-        end: this.cursor.x,
-        line,
-        column,
-      });
+      const context = new ExiumContext(
+        ContextTypes.StyleSheetAtRuleName,
+        token,
+        {
+          start: x,
+          end: this.cursor.x,
+          line,
+          column,
+        },
+      );
       context.children.push(...children);
       this.currentContexts.push(context);
       return result;
@@ -509,7 +588,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
       let { char, prev, next, lastContext, nextPart } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      const isValid = ![',', '@'].includes(char) && nextPart.match(/^([^;\{]+?)(\{)/mi);
+      const isValid = ![",", "@"].includes(char) &&
+        nextPart.match(/^([^;\{]+?)(\{)/mi);
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
       let result = true;
@@ -542,17 +622,21 @@ export class ExiumStyleSheet extends ExiumProtocol {
         this.shift(1);
         this.isValidChar(opts?.unexpected);
         this.saveStrictContextsTo(allSubContexts, children);
-        if (this.char === '{' || this.isEndOfStylesheet()) {
+        if (this.char === "{" || this.isEndOfStylesheet()) {
           break;
         }
       }
       const token = source.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.StyleSheetSelectorList, token, {
-        start: x,
-        end: this.cursor.x,
-        line,
-        column,
-      });
+      const context = new ExiumContext(
+        ContextTypes.StyleSheetSelectorList,
+        token,
+        {
+          start: x,
+          end: this.cursor.x,
+          line,
+          column,
+        },
+      );
       context.children.push(...children);
       this.currentContexts.push(context);
       return result;
@@ -565,7 +649,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      const isValid = !['#', '.', '[', ' ', '@', '{'].includes(char);
+      const isValid = !["#", ".", "[", " ", "@", "{"].includes(char);
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
       let result = true;
@@ -573,17 +657,24 @@ export class ExiumStyleSheet extends ExiumProtocol {
       while (!this.isEOF) {
         this.shift(1);
         this.isValidChar(opts?.unexpected);
-        if (['#', '.', '[', ',', ' ', '{'].includes(this.char) || this.isEndOfStylesheet()) {
+        if (
+          ["#", ".", "[", ",", " ", "{"].includes(this.char) ||
+          this.isEndOfStylesheet()
+        ) {
           break;
         }
       }
       const token = source.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.StyleSheetSelectorHTMLElement, token, {
-        start: x,
-        end: this.cursor.x,
-        line,
-        column,
-      });
+      const context = new ExiumContext(
+        ContextTypes.StyleSheetSelectorHTMLElement,
+        token,
+        {
+          start: x,
+          end: this.cursor.x,
+          line,
+          column,
+        },
+      );
       context.children.push(...children);
       this.currentContexts.push(context);
       return result;
@@ -596,7 +687,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      const isValid = char === '.';
+      const isValid = char === ".";
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
       let result = true;
@@ -604,17 +695,24 @@ export class ExiumStyleSheet extends ExiumProtocol {
       while (!this.isEOF) {
         this.shift(1);
         this.isValidChar(opts?.unexpected);
-        if (['#', '[', ',', ' ', '{'].includes(this.char) || this.isEndOfStylesheet()) {
+        if (
+          ["#", "[", ",", " ", "{"].includes(this.char) ||
+          this.isEndOfStylesheet()
+        ) {
           break;
         }
       }
       const token = source.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.StyleSheetSelectorClass, token, {
-        start: x,
-        end: this.cursor.x,
-        line,
-        column,
-      });
+      const context = new ExiumContext(
+        ContextTypes.StyleSheetSelectorClass,
+        token,
+        {
+          start: x,
+          end: this.cursor.x,
+          line,
+          column,
+        },
+      );
       context.children.push(...children);
       this.currentContexts.push(context);
       return result;
@@ -627,7 +725,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      const isValid = char === '#' && !this.isEndOfStylesheet();
+      const isValid = char === "#" && !this.isEndOfStylesheet();
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
       let result = true;
@@ -635,17 +733,23 @@ export class ExiumStyleSheet extends ExiumProtocol {
       while (!this.isEOF) {
         this.shift(1);
         this.isValidChar(opts?.unexpected);
-        if (['.', '[', ',', ' ',].includes(this.char) || this.isEndOfStylesheet()) {
+        if (
+          [".", "[", ",", " "].includes(this.char) || this.isEndOfStylesheet()
+        ) {
           break;
         }
       }
       const token = source.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.StyleSheetSelectorId, token, {
-        start: x,
-        end: this.cursor.x,
-        line,
-        column,
-      });
+      const context = new ExiumContext(
+        ContextTypes.StyleSheetSelectorId,
+        token,
+        {
+          start: x,
+          end: this.cursor.x,
+          line,
+          column,
+        },
+      );
       context.children.push(...children);
       this.currentContexts.push(context);
       return result;

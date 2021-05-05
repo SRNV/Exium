@@ -10,10 +10,10 @@
 import type {
   ContextReader,
   OgooneLexerParseOptions,
-} from './src/types/main.d.ts';
-import { Reason } from './src/enums/error-reason.ts';
-import { ExiumContext } from './src/classes/ExiumContext.ts';
-import { ExiumStyleSheet } from './src/classes/ExiumStyleSheet.ts';
+} from "./src/types/main.d.ts";
+import { Reason } from "./src/enums/error-reason.ts";
+import { ExiumContext } from "./src/classes/ExiumContext.ts";
+import { ExiumStyleSheet } from "./src/classes/ExiumStyleSheet.ts";
 
 /**
  * @README
@@ -59,7 +59,10 @@ export class Exium extends ExiumStyleSheet {
   constructor(...args: ConstructorParameters<typeof ExiumStyleSheet>) {
     super(...args);
   }
-  private scopedTopLevel: Record<OgooneLexerParseOptions['type'], ContextReader[]> = {
+  private scopedTopLevel: Record<
+    OgooneLexerParseOptions["type"],
+    ContextReader[]
+  > = {
     /**
      * use this scope to test the lexer
      */
@@ -134,7 +137,7 @@ export class Exium extends ExiumStyleSheet {
        * push the opts.contexts or an empty array
        */
       const toplevel = this.scopedTopLevel[opts.type];
-      if (opts.type === 'custom') {
+      if (opts.type === "custom") {
         toplevel.push(...(opts.contexts || []));
       }
       while (!this.isEOF) {

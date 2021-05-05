@@ -1,13 +1,13 @@
-import { ExiumBase } from './ExiumBase.ts';
+import { ExiumBase } from "./ExiumBase.ts";
 import {
   ContextReader,
+  ContextReaderOptions,
   CursorDescriber,
   OgooneLexerParseOptions,
-  ContextReaderOptions,
-} from '../types/main.d.ts';
-import { ExiumContext } from './ExiumContext.ts';
-import { ContextTypes } from '../enums/context-types.ts';
-import { Reason } from '../enums/error-reason.ts';
+} from "../types/main.d.ts";
+import { ExiumContext } from "./ExiumContext.ts";
+import { ContextTypes } from "../enums/context-types.ts";
+import { Reason } from "../enums/error-reason.ts";
 
 /**
  * all ContextReaders to read HTMLElements.
@@ -19,33 +19,40 @@ export class ExiumHTMLElements extends ExiumBase {
   /**
    * reads the textnodes that should match (style)> ... </(style)
    */
-   protected isEndOfStylesheet(): boolean {
-    return this.isStartingNode() && this.nextPart.startsWith('</style');
+  protected isEndOfStylesheet(): boolean {
+    return this.isStartingNode() && this.nextPart.startsWith("</style");
   }
   /**
    * returns if the current character is starting a new element
    */
-   isStartingNode(): boolean {
+  isStartingNode(): boolean {
     return [
-      '<',
-    ].includes(this.char)
-      && (this.node_CTX(this.checkOnlyOptions)
-        || this.html_comment_CTX(this.checkOnlyOptions));
+      "<",
+    ].includes(this.char) &&
+      (this.node_CTX(this.checkOnlyOptions) ||
+        this.html_comment_CTX(this.checkOnlyOptions));
   }
   /**
    * reads the textnodes that should match (node)> ... <(node)
    */
-   textnode_CTX(opts?: ContextReaderOptions): boolean {
+  textnode_CTX(opts?: ContextReaderOptions): boolean {
     try {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      const lastIsANode = Boolean(lastContext && [ContextTypes.Node, ContextTypes.NodeClosing, ContextTypes.HTMLComment].includes(lastContext.type));
-      const isValid = prev && ['>'].includes(prev) && lastIsANode ||
-        char !== '<'
-        && !this.import_statements_CTX(this.checkOnlyOptions)
-        && !this.node_CTX(this.checkOnlyOptions)
-        && !this.comment_CTX(this.checkOnlyOptions);
+      const lastIsANode = Boolean(
+        lastContext &&
+          [
+            ContextTypes.Node,
+            ContextTypes.NodeClosing,
+            ContextTypes.HTMLComment,
+          ].includes(lastContext.type),
+      );
+      const isValid = prev && [">"].includes(prev) && lastIsANode ||
+        char !== "<" &&
+          !this.import_statements_CTX(this.checkOnlyOptions) &&
+          !this.node_CTX(this.checkOnlyOptions) &&
+          !this.comment_CTX(this.checkOnlyOptions);
       if (!isValid || !this.nodeContextStarted) return false;
       if (opts?.checkOnly) return true;
       let result = true;
@@ -87,10 +94,13 @@ export class ExiumHTMLElements extends ExiumBase {
       let { char, prev, next, nextPart } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      if (char !== "<"
-        || char === "<" && [' ', '<', '!'].includes(next!)
-        || next && /([^a-zA-Z0-9\[\/])/i.test(next)
-      ) return false;
+      if (
+        char !== "<" ||
+        char === "<" && [" ", "<", "!"].includes(next!) ||
+        next && /([^a-zA-Z0-9\[\/])/i.test(next)
+      ) {
+        return false;
+      }
       if (opts?.checkOnly) return true;
       let result = true;
       let isClosed = false;
@@ -99,7 +109,7 @@ export class ExiumHTMLElements extends ExiumBase {
       let isProto = false;
       let isTemplate = false;
       let isStyle = false;
-      let isNodeClosing = this.nextPart.startsWith('</');
+      let isNodeClosing = this.nextPart.startsWith("</");
       const subcontextEvaluatedOnce: ContextReader[] = [
         this.node_name_CTX,
       ];
@@ -130,7 +140,7 @@ export class ExiumHTMLElements extends ExiumBase {
          * there's nothing else than spaces, line breaks, or >
          */
         if (isNodeClosing && isNamed) {
-          if (!([' ', '>', '\n'].includes(this.char))) {
+          if (!([" ", ">", "\n"].includes(this.char))) {
             const token = source.slice(x, this.cursor.x);
             const context = new ExiumContext(ContextTypes.Unexpected, token, {
               start: x,
@@ -142,11 +152,13 @@ export class ExiumHTMLElements extends ExiumBase {
           }
         }
         this.shift(1);
-        this.isValidChar(opts?.unexpected || [
-          // shouldn't start a new node
-          this.node_CTX,
-          this.html_comment_CTX,
-        ]);
+        this.isValidChar(
+          opts?.unexpected || [
+            // shouldn't start a new node
+            this.node_CTX,
+            this.html_comment_CTX,
+          ],
+        );
         if (!isNamed) {
           subcontextEvaluatedOnce.forEach((reader) => {
             const recognized = reader.apply(this, []);
@@ -154,9 +166,9 @@ export class ExiumHTMLElements extends ExiumBase {
               let context = this.lastContext;
               related.push(context);
               isNamed = context.type === ContextTypes.NodeName;
-              isProto = isNamed && context.source === 'proto';
-              isTemplate = isNamed && context.source === 'template';
-              isStyle = isNamed && context.source === 'style';
+              isProto = isNamed && context.source === "proto";
+              isTemplate = isNamed && context.source === "template";
+              isStyle = isNamed && context.source === "style";
             }
           });
         }
@@ -167,17 +179,21 @@ export class ExiumHTMLElements extends ExiumBase {
         } else if (this.char === ">") {
           this.shift(1);
           isClosed = true;
-          isAutoClosing = this.previousPart.endsWith('/>');
+          isAutoClosing = this.previousPart.endsWith("/>");
           break;
         }
       }
       const token = source.slice(x, this.cursor.x);
-      const context = new ExiumContext(isNodeClosing ? ContextTypes.NodeClosing : ContextTypes.Node, token, {
-        start: x,
-        end: this.cursor.x,
-        line,
-        column,
-      });
+      const context = new ExiumContext(
+        isNodeClosing ? ContextTypes.NodeClosing : ContextTypes.Node,
+        token,
+        {
+          start: x,
+          end: this.cursor.x,
+          line,
+          column,
+        },
+      );
       context.children.push(...children);
       context.related.push(...related);
       Object.assign(context.data, {
@@ -185,30 +201,42 @@ export class ExiumHTMLElements extends ExiumBase {
         isProto,
         isStyle,
         isAutoClosing,
-        isNodeClosing
+        isNodeClosing,
       });
       this.currentContexts.push(context);
       // start resolving open and closing tags
       if (!isAutoClosing) {
-        if (isClosed
-          && !isNodeClosing) {
+        if (
+          isClosed &&
+          !isNodeClosing
+        ) {
           this.openTags.push(context);
-        } else if (isClosed
-          && isNodeClosing) {
+        } else if (
+          isClosed &&
+          isNodeClosing
+        ) {
           const openTag = this.openTags
             .slice()
             .reverse()
             .find((nodeContext) => {
-              const name = nodeContext.related.find((related) => related.type === ContextTypes.NodeName);
-              const targetName = context.related.find((related) => related.type === ContextTypes.NodeName)
-              return name
-              && targetName
-              && !nodeContext.data.closed
-              && name.type === ContextTypes.NodeName
-              && name.source === targetName.source
+              const name = nodeContext.related.find((related) =>
+                related.type === ContextTypes.NodeName
+              );
+              const targetName = context.related.find((related) =>
+                related.type === ContextTypes.NodeName
+              );
+              return name &&
+                targetName &&
+                !nodeContext.data.closed &&
+                name.type === ContextTypes.NodeName &&
+                name.source === targetName.source;
             });
           if (!openTag) {
-            this.onError(Reason.HTMLClosingTagWithoutOpening, this.cursor, context);
+            this.onError(
+              Reason.HTMLClosingTagWithoutOpening,
+              this.cursor,
+              context,
+            );
           } else {
             const index = this.openTags.indexOf(openTag);
             const deleted = this.openTags.splice(index, 1);
@@ -234,20 +262,22 @@ export class ExiumHTMLElements extends ExiumBase {
       let { char } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      if ([' ', '[', '!', '-', '\n', '/'].includes(char)) return false;
+      if ([" ", "[", "!", "-", "\n", "/"].includes(char)) return false;
       if (opts?.checkOnly) return true;
       let result = true;
       const children: ExiumContext[] = [];
       while (!this.isEOF) {
         this.shift(1);
         this.isValidChar(opts?.unexpected);
-        if ([
-          ' ',
-          '/',
-          '<',
-          '\n',
-          '>'
-        ].includes(this.char)) {
+        if (
+          [
+            " ",
+            "/",
+            "<",
+            "\n",
+            ">",
+          ].includes(this.char)
+        ) {
           break;
         }
       }
@@ -274,18 +304,27 @@ export class ExiumHTMLElements extends ExiumBase {
       const { x, line, column } = this.cursor;
       let { source } = this;
       const sequence = [char, next, source[x + 2], source[x + 3]];
-      if (char !== '<'
-        || sequence.join('') !== '<!--') return false;
+      if (
+        char !== "<" ||
+        sequence.join("") !== "<!--"
+      ) {
+        return false;
+      }
       if (opts?.checkOnly) return true;
       let result = true;
       let isClosed = false;
       const children: ExiumContext[] = [];
       while (!this.isEOF) {
         this.shift(1);
-        this.isValidChar(opts?.unexpected || [
-          this.html_comment_CTX,
-        ]);
-        if (this.char === ">" && this.prev === '-' && source[this.cursor.x - 2] === '-') {
+        this.isValidChar(
+          opts?.unexpected || [
+            this.html_comment_CTX,
+          ],
+        );
+        if (
+          this.char === ">" && this.prev === "-" &&
+          source[this.cursor.x - 2] === "-"
+        ) {
           this.shift(1);
           isClosed = true;
           break;
@@ -345,12 +384,18 @@ export class ExiumHTMLElements extends ExiumBase {
           delete arr[i];
         }
       });
-      isClosed = Boolean(related.find((context) => [
-        ContextTypes.StringDoubleQuote,
-        ContextTypes.StringSingleQuote,
-      ].includes(context.type))
-        && related.find((context) => [
-          ContextTypes.SemiColon].includes(context.type))
+      isClosed = Boolean(
+        related.find((context) =>
+          [
+            ContextTypes.StringDoubleQuote,
+            ContextTypes.StringSingleQuote,
+          ].includes(context.type)
+        ) &&
+          related.find((context) =>
+            [
+              ContextTypes.SemiColon,
+            ].includes(context.type)
+          ),
       );
       const token = source.slice(x, this.cursor.x);
       const context = new ExiumContext(ContextTypes.ImportAmbient, token, {
@@ -386,14 +431,18 @@ export class ExiumHTMLElements extends ExiumBase {
         source[x + 4] +
         source[x + 5] +
         source[x + 6];
-      if (char !== 'i'
-        || sequence !== 'import ') return false;
+      if (
+        char !== "i" ||
+        sequence !== "import "
+      ) {
+        return false;
+      }
       if (opts?.checkOnly) return true;
       let result = true;
       let isClosed = false;
       const related: ExiumContext[] = [];
       const otherImportStatements: ContextReader[] = [
-        this.import_ambient_CTX
+        this.import_ambient_CTX,
       ];
       /**
        * expected next contexts
@@ -409,13 +458,13 @@ export class ExiumHTMLElements extends ExiumBase {
       while (!this.isEOF) {
         this.shift(1);
         this.isValidChar(opts?.unexpected);
-        const sequenceEnd = this.char
-          + this.next
-          + source[this.cursor.x + 2]
-          + source[this.cursor.x + 3];
-        if (sequenceEnd === 'from') {
-          this.cursor.x += + 4;
-          this.cursor.column += + 4;
+        const sequenceEnd = this.char +
+          this.next +
+          source[this.cursor.x + 2] +
+          source[this.cursor.x + 3];
+        if (sequenceEnd === "from") {
+          this.cursor.x += +4;
+          this.cursor.column += +4;
           break;
         }
       }
@@ -426,11 +475,18 @@ export class ExiumHTMLElements extends ExiumBase {
           delete arr[i];
         }
       });
-      isClosed = Boolean(related.find((context) => [
-        ContextTypes.StringSingleQuote,
-        ContextTypes.StringDoubleQuote,].includes(context.type))
-        && related.find((context) => [
-          ContextTypes.SemiColon,].includes(context.type))
+      isClosed = Boolean(
+        related.find((context) =>
+          [
+            ContextTypes.StringSingleQuote,
+            ContextTypes.StringDoubleQuote,
+          ].includes(context.type)
+        ) &&
+          related.find((context) =>
+            [
+              ContextTypes.SemiColon,
+            ].includes(context.type)
+          ),
       );
       const token = source.slice(x, this.cursor.x);
       const context = new ExiumContext(ContextTypes.ImportStatement, token, {
@@ -457,7 +513,7 @@ export class ExiumHTMLElements extends ExiumBase {
       let { char, prev, next } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      if (char !== '-' || next !== '-') return false;
+      if (char !== "-" || next !== "-") return false;
       if (opts?.checkOnly) return true;
       let result = true;
       let isClosed = false;
@@ -473,11 +529,12 @@ export class ExiumHTMLElements extends ExiumBase {
         this.isValidChar(opts?.unexpected);
         if (!isNamed) {
           isNamed = Boolean(
-            this.flag_name_CTX()
-            && related.push(this.lastContext));
+            this.flag_name_CTX() &&
+              related.push(this.lastContext),
+          );
         }
         this.saveContextsTo(allSubContexts, children);
-        if ([' ', '>', '\n'].includes(this.char)) {
+        if ([" ", ">", "\n"].includes(this.char)) {
           isClosed = true;
           break;
         }
@@ -505,19 +562,21 @@ export class ExiumHTMLElements extends ExiumBase {
       let { char, prev, next } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      if (char === '-') return false;
+      if (char === "-") return false;
       if (opts?.checkOnly) return true;
       let result = true;
       let isClosed = false;
       const children: ExiumContext[] = [];
       while (!this.isEOF) {
         this.shift(1);
-        this.isValidChar(opts?.unexpected || [
-          this.array_CTX,
-          this.braces_CTX,
-          this.curly_braces_CTX,
-        ]);
-        if ([' ', '>', '=', '\n'].includes(this.char)) {
+        this.isValidChar(
+          opts?.unexpected || [
+            this.array_CTX,
+            this.braces_CTX,
+            this.curly_braces_CTX,
+          ],
+        );
+        if ([" ", ">", "=", "\n"].includes(this.char)) {
           isClosed = true;
           break;
         }
@@ -545,7 +604,7 @@ export class ExiumHTMLElements extends ExiumBase {
       let { char, next } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      if (char !== '{' || !/^\{(\s*)(\.){3}/i.test(this.nextPart)) return false;
+      if (char !== "{" || !/^\{(\s*)(\.){3}/i.test(this.nextPart)) return false;
       if (opts?.checkOnly) return true;
       let result = true;
       let isClosed = false;
@@ -561,7 +620,7 @@ export class ExiumHTMLElements extends ExiumBase {
         this.shift(1);
         this.isValidChar(opts?.unexpected);
         this.saveContextsTo(readers, children);
-        if (['}',].includes(this.char)) {
+        if (["}"].includes(this.char)) {
           this.shift(1);
           isClosed = true;
           break;
@@ -592,10 +651,14 @@ export class ExiumHTMLElements extends ExiumBase {
       let { char, prev, next } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      if (prev
-        && prev !== ' '
-        || char
-        && !(/[a-zA-Z0-9\$\_]/i.test(char))) return false;
+      if (
+        prev &&
+          prev !== " " ||
+        char &&
+          !(/[a-zA-Z0-9\$\_]/i.test(char))
+      ) {
+        return false;
+      }
       if (opts?.checkOnly) return true;
       let result = true;
       let isClosed = false;
@@ -611,14 +674,15 @@ export class ExiumHTMLElements extends ExiumBase {
       ];
       if (!isNamed) {
         isNamed = Boolean(
-          this.attribute_name_CTX()
-          && related.push(this.lastContext));
+          this.attribute_name_CTX() &&
+            related.push(this.lastContext),
+        );
       }
       while (!this.isEOF) {
         this.shift(1);
         this.isValidChar(opts?.unexpected);
         this.saveContextsTo(allSubContexts, children);
-        if ([' ', '>', '\n'].includes(this.char)) {
+        if ([" ", ">", "\n"].includes(this.char)) {
           isClosed = true;
           break;
         }
@@ -646,19 +710,23 @@ export class ExiumHTMLElements extends ExiumBase {
       let { char } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      if (char === '-' || !/^([^\s=\<\>\/]+?)(\s|\n|\>)/i.test(this.nextPart)) return false;
+      if (char === "-" || !/^([^\s=\<\>\/]+?)(\s|\n|\>)/i.test(this.nextPart)) {
+        return false;
+      }
       if (opts?.checkOnly) return true;
       let result = true;
       let isClosed = false;
       const children: ExiumContext[] = [];
       while (!this.isEOF) {
         this.shift(1);
-        this.isValidChar(opts?.unexpected || [
-          this.array_CTX,
-          this.braces_CTX,
-          this.curly_braces_CTX,
-        ]);
-        if ([' ', '/', '>', '<', '\n'].includes(this.next!)) {
+        this.isValidChar(
+          opts?.unexpected || [
+            this.array_CTX,
+            this.braces_CTX,
+            this.curly_braces_CTX,
+          ],
+        );
+        if ([" ", "/", ">", "<", "\n"].includes(this.next!)) {
           this.shift(1);
           isClosed = true;
           break;
@@ -674,7 +742,11 @@ export class ExiumHTMLElements extends ExiumBase {
       context.children.push(...children);
       this.currentContexts.push(context);
       if (!isClosed) {
-        this.onError(Reason.HTMLBooleanAttributeNotClosed, this.cursor, context);
+        this.onError(
+          Reason.HTMLBooleanAttributeNotClosed,
+          this.cursor,
+          context,
+        );
       }
       return result;
     } catch (err) {
@@ -686,19 +758,21 @@ export class ExiumHTMLElements extends ExiumBase {
       let { char } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      if (char === '-') return false;
+      if (char === "-") return false;
       if (opts?.checkOnly) return true;
       let result = true;
       let isClosed = false;
       const children: ExiumContext[] = [];
       while (!this.isEOF) {
         this.shift(1);
-        this.isValidChar(opts?.unexpected || [
-          this.array_CTX,
-          this.braces_CTX,
-          this.curly_braces_CTX,
-        ]);
-        if ([' ', '/', '>', '=', '\n'].includes(this.char)) {
+        this.isValidChar(
+          opts?.unexpected || [
+            this.array_CTX,
+            this.braces_CTX,
+            this.curly_braces_CTX,
+          ],
+        );
+        if ([" ", "/", ">", "=", "\n"].includes(this.char)) {
           isClosed = true;
           break;
         }
@@ -725,34 +799,44 @@ export class ExiumHTMLElements extends ExiumBase {
       let { char, prev } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      if (prev !== '=') return false;
+      if (prev !== "=") return false;
       if (opts?.checkOnly) return true;
       let result = true;
       let isClosed = false;
       const children: ExiumContext[] = [];
       while (!this.isEOF) {
         this.shift(1);
-        this.isValidChar(opts?.unexpected || [
-          this.array_CTX,
-          this.braces_CTX,
-          this.curly_braces_CTX,
-        ]);
-        if ([' ', '>', '\n'].includes(this.char)) {
+        this.isValidChar(
+          opts?.unexpected || [
+            this.array_CTX,
+            this.braces_CTX,
+            this.curly_braces_CTX,
+          ],
+        );
+        if ([" ", ">", "\n"].includes(this.char)) {
           isClosed = true;
           break;
         }
       }
       const token = source.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.AttributeValueUnquoted, token, {
-        start: x,
-        end: this.cursor.x,
-        line,
-        column,
-      });
+      const context = new ExiumContext(
+        ContextTypes.AttributeValueUnquoted,
+        token,
+        {
+          start: x,
+          end: this.cursor.x,
+          line,
+          column,
+        },
+      );
       context.children.push(...children);
       this.currentContexts.push(context);
       if (!isClosed) {
-        this.onError(Reason.HTMLAttributeValueUnquotedNotClosed, this.cursor, context);
+        this.onError(
+          Reason.HTMLAttributeValueUnquotedNotClosed,
+          this.cursor,
+          context,
+        );
       }
       return result;
     } catch (err) {
