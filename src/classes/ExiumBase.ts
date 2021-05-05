@@ -10,7 +10,8 @@ import { Reason } from '../enums/error-reason.ts';
 
 /**
  * final class of Exium
- * all basic methods to used into Exium classes
+ * all basic methods or properties
+ * to use into Exium classes
  */
 export class ExiumBase {
   protected readonly checkOnlyOptions: ContextReaderOptions = { checkOnly: true };
