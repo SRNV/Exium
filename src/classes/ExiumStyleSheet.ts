@@ -588,7 +588,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       let { char, prev, next, lastContext, nextPart } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      const isValid = ![",", "@"].includes(char) &&
+      const isValid = ![",", "@", " "].includes(char) &&
         nextPart.match(/^([^;\{]+?)(\{)/mi);
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
@@ -649,7 +649,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      const isValid = !["#", ".", "[", " ", "@", "{"].includes(char);
+      const isValid = !["#", ".", "[", " ", "@", "{", "\n"].includes(char);
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
       let result = true;

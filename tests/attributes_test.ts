@@ -79,7 +79,6 @@ Deno.test("ogone-lexer can parse boolean attributes and a space after", () => {
         assertEquals(target.position, attribute.position);
         assertEquals(attribute.source, source);
       } else {
-        console.warn(contexts);
         console.error("attribute", attribute);
         throw new Error("Exium - test failed");
       }
@@ -134,7 +133,6 @@ Deno.test("ogone-lexer can parse multiple boolean attributes", () => {
           assertEquals(attribute.position, targets[i].position);
         });
       } else {
-        console.warn(contexts);
         console.error("attributes", attributes);
         throw new Error("Exium - test failed");
       }
@@ -171,7 +169,6 @@ Deno.test("ogone-lexer can parse boolean attributes and without space after", ()
         assertEquals(target.position, attribute.position);
         assertEquals(attribute.source, source);
       } else {
-        console.warn(contexts);
         console.error("attribute", attribute);
         throw new Error("Exium - test failed");
       }

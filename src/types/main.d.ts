@@ -39,4 +39,9 @@ export interface OgooneLexerParseOptions {
     | "custom"
     | "stylesheet"
     | "protocol";
+  /**
+   * will print the character
+   * and the context that is currently used
+   */
+  debugg?: boolean;
 }

@@ -16,7 +16,6 @@ Deno.test("ogone-lexer can retrieve nested css", () => {
     </style>
   </template>`;
   const lexer = new Exium((reason, cursor, context) => {
-    console.warn(context);
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );

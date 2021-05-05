@@ -16,7 +16,6 @@ Deno.test("ogone-lexer can retrieve selectors", () => {
   }
   `;
   const lexer = new Exium((reason, cursor, context) => {
-    console.warn(context);
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -24,7 +23,6 @@ Deno.test("ogone-lexer can retrieve selectors", () => {
   const contexts = lexer.readSync(content, { type: "stylesheet" });
   if (contexts && contexts.length) {
     // TODO
-    console.warn(contexts);
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetAtRuleCharset} context`,
@@ -45,7 +43,6 @@ Deno.test("ogone-lexer can retrieve classes", () => {
   });
   const contexts = lexer.readSync(content, { type: "stylesheet" });
   if (contexts && contexts.length) {
-    // console.warn(contexts);
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetAtRuleCharset} context`,
