@@ -61,20 +61,23 @@ export class ExiumBase {
    */
   protected get char(): string {
     return this.source[this.cursor.x];
-  }/**
+  } /**
   * the next character
   */
+
   protected get next(): string | undefined {
     return this.source[this.cursor.x + 1];
-  }/**
+  } /**
   * the previous character
   */
+
   protected get prev(): string | undefined {
     return this.source[this.cursor.x - 1];
-  }/**
+  } /**
    * the following part
    * from the cursor index until the end of the document
    */
+
   protected get nextPart(): string {
     return this.source.slice(this.cursor.x);
   }
@@ -94,7 +97,7 @@ export class ExiumBase {
     const { nextPart } = this;
     const result = nextPart.startsWith(text);
     if (shiftToTheEnd && result) {
-      this.shiftUntilEndOf(text)
+      this.shiftUntilEndOf(text);
     }
     return result;
   }
@@ -129,7 +132,7 @@ export class ExiumBase {
   protected parseOptions: OgooneLexerParseOptions | null = null;
   protected debugg(...args: any[]): void {
     if (this.parseOptions?.debugg) {
-      console.log(...args)
+      console.log(...args);
     }
   }
   /**

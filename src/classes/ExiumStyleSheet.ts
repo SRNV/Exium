@@ -18,7 +18,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
     super(...args);
   }
   stylesheet_CTX(opts?: ContextReaderOptions): boolean {
-    this.debugg('  stylesheet_CTX(opts?: ContextReaderOptions): boolean {')
+    this.debugg("  stylesheet_CTX(opts?: ContextReaderOptions): boolean {");
     try {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
@@ -79,7 +79,9 @@ export class ExiumStyleSheet extends ExiumProtocol {
    * @charset should be followed by a string (double or single);
    */
   stylesheet_charset_at_rule_CTX(opts?: ContextReaderOptions): boolean {
-    this.debugg('  stylesheet_charset_at_rule_CTX(opts?: ContextReaderOptions): boolean {')
+    this.debugg(
+      "  stylesheet_charset_at_rule_CTX(opts?: ContextReaderOptions): boolean {",
+    );
     try {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
@@ -188,7 +190,9 @@ export class ExiumStyleSheet extends ExiumProtocol {
    * should retrieve all the exportable token
    */
   stylesheet_export_at_rule_CTX(opts?: ContextReaderOptions): boolean {
-    this.debugg('  stylesheet_export_at_rule_CTX(opts?: ContextReaderOptions): boolean {')
+    this.debugg(
+      "  stylesheet_export_at_rule_CTX(opts?: ContextReaderOptions): boolean {",
+    );
     try {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
@@ -258,7 +262,9 @@ export class ExiumStyleSheet extends ExiumProtocol {
    * where name type and value are required
    */
   stylesheet_const_at_rule_CTX(opts?: ContextReaderOptions): boolean {
-    this.debugg('  stylesheet_const_at_rule_CTX(opts?: ContextReaderOptions): boolean {')
+    this.debugg(
+      "  stylesheet_const_at_rule_CTX(opts?: ContextReaderOptions): boolean {",
+    );
     try {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
@@ -340,7 +346,9 @@ export class ExiumStyleSheet extends ExiumProtocol {
     }
   }
   stylesheet_const_at_rule_name_CTX(opts?: ContextReaderOptions): boolean {
-    this.debugg('  stylesheet_const_at_rule_name_CTX(opts?: ContextReaderOptions): boolean {')
+    this.debugg(
+      "  stylesheet_const_at_rule_name_CTX(opts?: ContextReaderOptions): boolean {",
+    );
     try {
       let { nextPart } = this;
       const { x, line, column } = this.cursor;
@@ -376,7 +384,9 @@ export class ExiumStyleSheet extends ExiumProtocol {
     }
   }
   stylesheet_const_at_rule_equal_CTX(opts?: ContextReaderOptions): boolean {
-    this.debugg('  stylesheet_const_at_rule_equal_CTX(opts?: ContextReaderOptions): boolean {')
+    this.debugg(
+      "  stylesheet_const_at_rule_equal_CTX(opts?: ContextReaderOptions): boolean {",
+    );
     try {
       let { char, next } = this;
       const { x, line, column } = this.cursor;
@@ -416,7 +426,9 @@ export class ExiumStyleSheet extends ExiumProtocol {
     }
   }
   stylesheet_default_at_rule_CTX(opts?: ContextReaderOptions): boolean {
-    this.debugg('  stylesheet_default_at_rule_CTX(opts?: ContextReaderOptions): boolean {')
+    this.debugg(
+      "  stylesheet_default_at_rule_CTX(opts?: ContextReaderOptions): boolean {",
+    );
     try {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
@@ -490,7 +502,9 @@ export class ExiumStyleSheet extends ExiumProtocol {
     }
   }
   stylesheet_type_assignment_CTX(opts?: ContextReaderOptions): boolean {
-    this.debugg('  stylesheet_type_assignment_CTX(opts?: ContextReaderOptions): boolean {')
+    this.debugg(
+      "  stylesheet_type_assignment_CTX(opts?: ContextReaderOptions): boolean {",
+    );
     try {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
@@ -547,7 +561,9 @@ export class ExiumStyleSheet extends ExiumProtocol {
     }
   }
   stylesheet_at_rule_name_CTX(opts?: ContextReaderOptions): boolean {
-    this.debugg('  stylesheet_at_rule_name_CTX(opts?: ContextReaderOptions): boolean {')
+    this.debugg(
+      "  stylesheet_at_rule_name_CTX(opts?: ContextReaderOptions): boolean {",
+    );
     try {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
@@ -588,7 +604,9 @@ export class ExiumStyleSheet extends ExiumProtocol {
    * The CSS selector list (,) selects all the matching nodes.
    */
   stylesheet_selector_list_CTX(opts?: ContextReaderOptions): boolean | null {
-    this.debugg('  stylesheet_selector_list_CTX(opts?: ContextReaderOptions): boolean {')
+    this.debugg(
+      "  stylesheet_selector_list_CTX(opts?: ContextReaderOptions): boolean {",
+    );
     try {
       let { char, prev, next, lastContext, nextPart } = this;
       const { x, line, column } = this.cursor;
@@ -641,7 +659,9 @@ export class ExiumStyleSheet extends ExiumProtocol {
     }
   }
   stylesheet_selector_element_CTX(opts?: ContextReaderOptions): boolean {
-    this.debugg('  stylesheet_selector_element_CTX(opts?: ContextReaderOptions): boolean {')
+    this.debugg(
+      "  stylesheet_selector_element_CTX(opts?: ContextReaderOptions): boolean {",
+    );
     try {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
@@ -680,7 +700,9 @@ export class ExiumStyleSheet extends ExiumProtocol {
     }
   }
   stylesheet_selector_class_CTX(opts?: ContextReaderOptions): boolean {
-    this.debugg('  stylesheet_selector_class_CTX(opts?: ContextReaderOptions): boolean {')
+    this.debugg(
+      "  stylesheet_selector_class_CTX(opts?: ContextReaderOptions): boolean {",
+    );
     try {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
@@ -719,7 +741,9 @@ export class ExiumStyleSheet extends ExiumProtocol {
     }
   }
   stylesheet_selector_id_CTX(opts?: ContextReaderOptions): boolean {
-    this.debugg('  stylesheet_selector_id_CTX(opts?: ContextReaderOptions): boolean {')
+    this.debugg(
+      "  stylesheet_selector_id_CTX(opts?: ContextReaderOptions): boolean {",
+    );
     try {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
@@ -733,7 +757,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
         this.shift(1);
         this.isValidChar(opts?.unexpected);
         if (
-          [".", "[", ",", " ", "\n"].includes(this.char) || this.isEndOfStylesheet
+          [".", "[", ",", " ", "\n"].includes(this.char) ||
+          this.isEndOfStylesheet
         ) {
           break;
         }
@@ -759,11 +784,15 @@ export class ExiumStyleSheet extends ExiumProtocol {
   stylesheet_end_CTX(opts?: ContextReaderOptions): boolean | null {
     const { prev, char, next, nextPart, source } = this;
     const { x, line, column } = this.cursor;
-    this.debugg('  stylesheet_end_CTX(opts?: ContextReaderOptions): boolean {',
-      1, prev,
-      2, char,
-      3, next,
-    )
+    this.debugg(
+      "  stylesheet_end_CTX(opts?: ContextReaderOptions): boolean {",
+      1,
+      prev,
+      2,
+      char,
+      3,
+      next,
+    );
     const reg = /^([\s\n]*?)(\<\/style)/i;
     const isValid = reg.test(nextPart);
     if (!isValid) return false;

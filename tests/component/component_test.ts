@@ -1,10 +1,10 @@
-import { ContextTypes } from '../src/enums/context-types.ts';
-import { Exium } from "./../mod.ts";
+import { ContextTypes } from "../../src/enums/context-types.ts";
+import { Exium } from "./../../mod.ts";
 import {
   assert,
   assertEquals,
 } from "https://deno.land/std@0.95.0/testing/asserts.ts";
-import { component1 } from "./utils/componentFile.ts";
+import { component1 } from "./../utils/componentFile.ts";
 
 const url = new URL(import.meta.url);
 // TODO
@@ -34,40 +34,67 @@ import component A from './b.o3';
   const contexts = lexer.readSync(content, { type: "component" });
   if (contexts && contexts.length) {
     try {
-      const importStatement = contexts.find((context) => context.type === ContextTypes.ImportStatement);
+      const importStatement = contexts.find((context) =>
+        context.type === ContextTypes.ImportStatement
+      );
       if (!importStatement) {
-        throw new Error('Failed to retrieve import statement');
+        throw new Error("Failed to retrieve import statement");
       }
-      const template = contexts.find((context) => context.type === ContextTypes.Node
-        && context.related.find((related) => related.source === 'template')
-        && !context.data.isNodeClosing);
+      const template = contexts.find((context) =>
+        context.type === ContextTypes.Node &&
+        context.related.find((related) => related.source === "template") &&
+        !context.data.isNodeClosing
+      );
       if (!template) {
-        throw new Error('Failed to retrieve the template element');
+        throw new Error("Failed to retrieve the template element");
       }
-      const style = contexts.find((context) => context.type === ContextTypes.Node
-        && context.related.find((related) => related.source === 'style')
-        && !context.data.isNodeClosing);
+      const style = contexts.find((context) =>
+        context.type === ContextTypes.Node &&
+        context.related.find((related) => related.source === "style") &&
+        !context.data.isNodeClosing
+      );
       if (!style) {
-        throw new Error('Failed to retrieve the style element');
+        throw new Error("Failed to retrieve the style element");
       }
-      const stylesheet = contexts.find((context) => context.type === ContextTypes.StyleSheet);
+      const stylesheet = contexts.find((context) =>
+        context.type === ContextTypes.StyleSheet
+      );
       if (!stylesheet) {
-        throw new Error('Failed to retrieve the stylesheet');
+        throw new Error("Failed to retrieve the stylesheet");
       }
-      const proto = contexts.find((context) => context.type === ContextTypes.Node
-        && context.related.find((related) => related.source === 'proto')
-        && !context.data.isNodeClosing);
+      const proto = contexts.find((context) =>
+        context.type === ContextTypes.Node &&
+        context.related.find((related) => related.source === "proto") &&
+        !context.data.isNodeClosing
+      );
       if (!proto) {
-        throw new Error('Failed to retrieve the proto element');
+        throw new Error("Failed to retrieve the proto element");
       }
-      const protocolCTX = contexts.find((context) => context.type === ContextTypes.Protocol);
+      const protocolCTX = contexts.find((context) =>
+        context.type === ContextTypes.Protocol
+      );
       if (!protocolCTX) {
-        throw new Error('Failed to retrieve the protocol context');
+        throw new Error("Failed to retrieve the protocol context");
       }
-      assertEquals(proto.position, { start: 125, end: 132, line: 9, column: 0 });
-      assertEquals(template.position, { start: 36, end: 46, line: 3, column: 0 });
+      assertEquals(proto.position, {
+        start: 125,
+        end: 132,
+        line: 9,
+        column: 0,
+      });
+      assertEquals(template.position, {
+        start: 36,
+        end: 46,
+        line: 3,
+        column: 0,
+      });
       assertEquals(style.position, { start: 49, end: 56, line: 4, column: 2 });
-      assertEquals(protocolCTX.position, { start: 135, end: 200, line: 10, column: 2 });
+      assertEquals(protocolCTX.position, {
+        start: 135,
+        end: 200,
+        line: 10,
+        column: 2,
+      });
       assertEquals(protocolCTX.source.trim(), protocol.trim());
       assertEquals(stylesheet.source.trim(), styleSource.trim());
     } catch (err) {
