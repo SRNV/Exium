@@ -7,7 +7,7 @@ import {
 
 const url = new URL(import.meta.url);
 
-Deno.test("ogone-lexer can retrieve selectors", () => {
+Deno.test("exium can retrieve selectors", () => {
   const content = `
   div ,
   ul,
@@ -30,7 +30,7 @@ Deno.test("ogone-lexer can retrieve selectors", () => {
   }
 });
 
-Deno.test("ogone-lexer can retrieve classes", () => {
+Deno.test("exium can retrieve classes", () => {
   const content = `
   .container {
     color: blue;

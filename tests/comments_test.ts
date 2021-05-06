@@ -4,7 +4,7 @@ import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 const url = new URL(import.meta.url);
 
-Deno.test("ogone-lexer supports comments", () => {
+Deno.test("exium supports comments", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -24,7 +24,7 @@ Deno.test("ogone-lexer supports comments", () => {
   }
 });
 
-Deno.test("ogone-lexer supports multiple comments", () => {
+Deno.test("exium supports multiple comments", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -50,7 +50,7 @@ Deno.test("ogone-lexer supports multiple comments", () => {
   }
 });
 
-Deno.test("ogone-lexer supports comment blocks", () => {
+Deno.test("exium supports comment blocks", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -67,7 +67,7 @@ Deno.test("ogone-lexer supports comment blocks", () => {
   }
 });
 
-Deno.test("ogone-lexer supports comment blocks with multi lines", () => {
+Deno.test("exium supports comment blocks with multi lines", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -99,7 +99,7 @@ Deno.test("ogone-lexer supports comment blocks with multi lines", () => {
     throw new Error("Exium - Failed to retrieve MultipleComments context");
   }
 });
-Deno.test("ogone-lexer should use the onError function when a html comment isnt finished", () => {
+Deno.test("exium should use the onError function when a html comment isnt finished", () => {
   let result = false;
   const lexer = new Exium((reason, cursor, context) => {
     result = true;
@@ -111,7 +111,7 @@ Deno.test("ogone-lexer should use the onError function when a html comment isnt 
   }
 });
 
-Deno.test("ogone-lexer not a comment", () => {
+Deno.test("exium not a comment", () => {
   let result = false;
   const lexer = new Exium((reason, cursor, context) => {
     result = true;
@@ -123,7 +123,7 @@ Deno.test("ogone-lexer not a comment", () => {
   }
 });
 
-Deno.test("ogone-lexer not a comment 2", () => {
+Deno.test("exium not a comment 2", () => {
   let result = false;
   const lexer = new Exium((reason, cursor, context) => {
     result = true;
@@ -135,7 +135,7 @@ Deno.test("ogone-lexer not a comment 2", () => {
   }
 });
 
-Deno.test("ogone-lexer supports html comments", () => {
+Deno.test("exium supports html comments", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -153,7 +153,7 @@ Deno.test("ogone-lexer supports html comments", () => {
   }
 });
 
-Deno.test("ogone-lexer - only one html comment", () => {
+Deno.test("exium - only one html comment", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -170,7 +170,7 @@ Deno.test("ogone-lexer - only one html comment", () => {
     throw new Error("Exium - Failed to retrieve Space context");
   }
 });
-Deno.test("ogone-lexer supports compact html comments", () => {
+Deno.test("exium supports compact html comments", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -187,7 +187,7 @@ Deno.test("ogone-lexer supports compact html comments", () => {
     throw new Error("Exium - Failed to retrieve Space context");
   }
 });
-Deno.test("ogone-lexer supports multiple comments", () => {
+Deno.test("exium supports multiple comments", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,

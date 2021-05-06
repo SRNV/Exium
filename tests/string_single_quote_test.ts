@@ -3,7 +3,7 @@ import { ContextTypes } from "../src/enums/context-types.ts";
 import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 const url = new URL(import.meta.url);
 
-Deno.test("ogone-lexer supports double quotes", () => {
+Deno.test("exium supports double quotes", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -26,7 +26,7 @@ Deno.test("ogone-lexer supports double quotes", () => {
   }
 });
 
-Deno.test("ogone-lexer should not use escaped quotes to close quotes", () => {
+Deno.test("exium should not use escaped quotes to close quotes", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -50,7 +50,7 @@ Deno.test("ogone-lexer should not use escaped quotes to close quotes", () => {
   }
 });
 
-Deno.test("ogone-lexer should use the onError function when theres a line break into a StringDoubleQuote", () => {
+Deno.test("exium should use the onError function when theres a line break into a StringDoubleQuote", () => {
   let result = false;
   const lexer = new Exium((reason, cursor, context) => {
     // true because there's a line break between the quotes
@@ -67,7 +67,7 @@ Deno.test("ogone-lexer should use the onError function when theres a line break 
     );
   }
 });
-Deno.test("ogone-lexer should use the onError function, when the StringDoubleQuote is not finished", () => {
+Deno.test("exium should use the onError function, when the StringDoubleQuote is not finished", () => {
   let result = false;
   const lexer = new Exium((reason, cursor, context) => {
     // true because the quote isn't closed

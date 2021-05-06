@@ -11,7 +11,7 @@ const url = new URL(import.meta.url);
  * provide a way for teams to limit features on styles
  */
 /*
-Deno.test('ogone-lexer stylesheet supports specs statement', () => {
+Deno.test('exium stylesheet supports specs statement', () => {
   const content = `
   @specify {
     colors {

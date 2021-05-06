@@ -16,7 +16,7 @@ const url = new URL(import.meta.url);
  * @export const
  * we should be able to expose primitive types
  */
-Deno.test("ogone-lexer stylesheet supports @const statement, and it can retrieve the name of the const and its type", () => {
+Deno.test("exium stylesheet supports @const statement, and it can retrieve the name of the const and its type", () => {
   const constName = "myColor";
   const content = ` @const ${constName}<hex>= #001000;`;
   const lexer = new Exium((reason, cursor, context) => {
@@ -52,7 +52,7 @@ Deno.test("ogone-lexer stylesheet supports @const statement, and it can retrieve
   }
 });
 
-Deno.test("ogone-lexer stylesheet supports @const statement, and it can retrieve the name of the const and its type 2 (in component)", () => {
+Deno.test("exium stylesheet supports @const statement, and it can retrieve the name of the const and its type 2 (in component)", () => {
   const constName = "myColor";
   const content = `
   <template>
@@ -93,7 +93,7 @@ Deno.test("ogone-lexer stylesheet supports @const statement, and it can retrieve
   }
 });
 
-Deno.test("ogone-lexer stylesheet supports @export statement", () => {
+Deno.test("exium stylesheet supports @export statement", () => {
   const content = `@export const myVar<hex> = #000000;`;
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(

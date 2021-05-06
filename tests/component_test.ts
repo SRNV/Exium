@@ -7,7 +7,7 @@ import { component1 } from "./utils/componentFile.ts";
 
 const url = new URL(import.meta.url);
 // TODO
-Deno.test("ogone-lexer can parse a basic component", () => {
+Deno.test("exium can parse a basic component", () => {
   const style = `
 @charset 'utf-8';
 `;
@@ -43,7 +43,7 @@ import component A from './b.o3';
   }
 });
 
-Deno.test("ogone-lexer large component is parsed < 100ms", () => {
+Deno.test("exium large component is parsed < 100ms", () => {
   const perf = performance.now();
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(

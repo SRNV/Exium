@@ -7,7 +7,7 @@ import {
 
 const url = new URL(import.meta.url);
 
-Deno.test("ogone-lexer can parse @charset", () => {
+Deno.test("exium can parse @charset", () => {
   const content = `@charset 'utf-8';`;
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
