@@ -32,7 +32,8 @@ Deno.test("exium can retrieve selectors", () => {
 
 Deno.test("exium can retrieve classes", () => {
   const content = `
-  .container {
+  .COMPLEX,.v{}
+  .container.b .c {
     color: blue;
   }
   `;
@@ -43,9 +44,59 @@ Deno.test("exium can retrieve classes", () => {
   });
   const contexts = lexer.readSync(content, { type: "stylesheet" });
   if (contexts && contexts.length) {
+    const containerClass = contexts.find((context) => context.type === ContextTypes.StyleSheetSelectorClass
+      && context.source === 'container');
+    if (!containerClass) {
+      throw new Error('Failed to retrieve the class .container');
+    }
+    const classComplex = contexts.find((context) => context.type === ContextTypes.StyleSheetSelectorClass
+      && context.source === 'COMPLEX');
+    const v = contexts.find((context) => context.type === ContextTypes.StyleSheetSelectorClass
+      && context.source === 'v');
+    const c = contexts.find((context) => context.type === ContextTypes.StyleSheetSelectorClass
+      && context.source === 'c');
+    assert(!!classComplex);
+    assert(!!c);
+    assert(!!v);
   } else {
     throw new Error(
-      `Exium - Failed to retrieve ${ContextTypes.StyleSheetAtRuleCharset} context`,
+      `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorClass} context`,
+    );
+  }
+});
+
+Deno.test("exium can retrieve ids", () => {
+  const content = `
+  .container#anId {
+    color: blue;
+  }
+  #myOtherID,#test {
+    color: red;
+  }
+  #op,
+  #stillGood,
+  #test {}
+  `;
+  const lexer = new Exium((reason, cursor, context) => {
+    throw new Error(
+      `${reason} ${context.position.line}:${context.position.column}`,
+    );
+  });
+  const contexts = lexer.readSync(content, { type: "stylesheet" });
+  if (contexts && contexts.length) {
+    const id = contexts.find((context) => context.type === ContextTypes.StyleSheetSelectorId
+      && context.source === 'anId');
+    if (!id) {
+      throw new Error('Failed to retrieve the id anId');
+    }
+    const otherID = contexts.find((context) => context.type === ContextTypes.StyleSheetSelectorId
+    && context.source === 'myOtherID');
+  if (!otherID) {
+    throw new Error('Failed to retrieve the id myOtherID');
+  }
+  } else {
+    throw new Error(
+      `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorId} context`,
     );
   }
 });

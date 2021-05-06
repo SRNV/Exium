@@ -52,6 +52,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
         // TODO implement property list
         this.curly_braces_CTX,
       ];
+      this.saveContextsTo(allSubContexts, children);
       while (!this.isEOF) {
         this.shift(1);
         this.isValidChar(opts?.unexpected);
@@ -618,8 +619,9 @@ export class ExiumStyleSheet extends ExiumProtocol {
       let result = true;
       const supportedSelectors: ContextReader[] = [
         this.stylesheet_end_CTX,
-        this.stylesheet_selector_element_CTX,
+        this.stylesheet_selector_id_CTX,
         this.stylesheet_selector_class_CTX,
+        this.stylesheet_selector_element_CTX,
       ];
       const children: ExiumContext[] = [];
       const allSubContexts: ContextReader[] = (opts?.contexts || [
@@ -707,7 +709,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      const isValid = char === ".";
+      const isValid = (char === "." || prev === ".");
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
       let result = true;
@@ -716,7 +718,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
         this.shift(1);
         this.isValidChar(opts?.unexpected);
         if (
-          ["#", "[", ",", " ", "{"].includes(this.char) ||
+          ["#", "[", ",", " ", "{", "."].includes(this.char) ||
           this.isEndOfStylesheet
         ) {
           break;
@@ -748,7 +750,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      const isValid = char === "#" && !this.isEndOfStylesheet;
+      const isValid = (char === "#" || prev === "#");
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
       let result = true;
@@ -757,7 +759,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
         this.shift(1);
         this.isValidChar(opts?.unexpected);
         if (
-          [".", "[", ",", " ", "\n"].includes(this.char) ||
+          [".", "[", ",", " ", "\n", "#"].includes(this.char) ||
           this.isEndOfStylesheet
         ) {
           break;
