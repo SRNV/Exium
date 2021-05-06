@@ -619,20 +619,27 @@ export class ExiumStyleSheet extends ExiumProtocol {
       let result = true;
       const supportedSelectors: ContextReader[] = [
         this.stylesheet_end_CTX,
+        this.stylesheet_selector_attribute_CTX,
         this.stylesheet_selector_id_CTX,
         this.stylesheet_selector_class_CTX,
+        // should be the last one because it accepts everything
         this.stylesheet_selector_element_CTX,
+      ];
+      const comaCTX: ContextReader[] = [
+        this.multiple_spaces_CTX,
+        this.space_CTX,
+        this.line_break_CTX,
+        this.coma_CTX,
+        this.multiple_spaces_CTX,
+        this.space_CTX,
+        this.line_break_CTX,
       ];
       const children: ExiumContext[] = [];
       const allSubContexts: ContextReader[] = (opts?.contexts || [
         this.multiple_spaces_CTX,
         this.space_CTX,
         ...supportedSelectors,
-        this.multiple_spaces_CTX,
-        this.space_CTX,
-        this.line_break_CTX,
-        this.coma_CTX,
-        this.line_break_CTX,
+        ...comaCTX,
       ]);
       while (!this.isEOF) {
         this.shift(1);
@@ -668,7 +675,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
       let { source } = this;
-      const isValid = !["#", ".", "[", " ", "@", "{", "\n"].includes(char);
+      const isValid = !["#", ".", "[", " ", "@", "{", "\n", ","].includes(char);
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
       let result = true;
@@ -778,6 +785,58 @@ export class ExiumStyleSheet extends ExiumProtocol {
       );
       context.children.push(...children);
       this.currentContexts.push(context);
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+  stylesheet_selector_attribute_CTX(opts?: ContextReaderOptions): boolean {
+    this.debugg(
+      "  stylesheet_selector_attribute_CTX(opts?: ContextReaderOptions): boolean {",
+    );
+    try {
+      let { char, prev, next, lastContext } = this;
+      const { x, line, column } = this.cursor;
+      let { source } = this;
+      const isValid = (char === "[" || prev === "[" && char !== ']');
+      if (!isValid) return false;
+      if (opts?.checkOnly) return true;
+      let result = true;
+      let isClosed = false;
+      const children: ExiumContext[] = [];
+      while (!this.isEOF) {
+        this.shift(1);
+        this.isValidChar(opts?.unexpected);
+        if ([']'].includes(this.char)) {
+          isClosed = true;
+          break;
+        }
+        if (
+          [".", "]", ",", " ", "\n", "#"].includes(this.char) ||
+          this.isEndOfStylesheet
+        ) {
+          break;
+        }
+      }
+      const token = source.slice(x, this.cursor.x);
+      const context = new ExiumContext(
+        ContextTypes.StyleSheetSelectorAttribute,
+        token,
+        {
+          start: x,
+          end: this.cursor.x,
+          line,
+          column,
+        },
+      );
+      context.children.push(...children);
+      this.currentContexts.push(context);
+      if (!isClosed) {
+        this.onError(Reason.StyleSheetAttributeNotClosed, this.cursor, context)
+      } else {
+        // dont need the closing character
+        this.shift(1);
+      }
       return result;
     } catch (err) {
       throw err;

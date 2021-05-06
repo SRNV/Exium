@@ -100,3 +100,49 @@ Deno.test("exium can retrieve ids", () => {
     );
   }
 });
+
+Deno.test("exium can retrieve attribute", () => {
+  const content = `
+  [attribute] {
+    color: blue;
+  }
+  `;
+  const lexer = new Exium((reason, cursor, context) => {
+    throw new Error(
+      `${reason} ${context.position.line}:${context.position.column}`,
+    );
+  });
+  const contexts = lexer.readSync(content, { type: "stylesheet" });
+  if (contexts && contexts.length) {
+    const attr = contexts.find((context) => context.type === ContextTypes.StyleSheetSelectorAttribute
+    && context.source === 'attribute');
+  if (!attr) {
+    throw new Error('Failed to retrieve the attr attribute');
+  }
+  } else {
+    throw new Error(
+      `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorId} context`,
+    );
+  }
+});
+
+Deno.test("exium can retrieve multiple attributes", () => {
+  const content = `
+  [a][b][c], [d], [e], [f] {
+    color: blue;
+  }
+  `;
+  const lexer = new Exium((reason, cursor, context) => {
+    throw new Error(
+      `${reason} ${context.position.line}:${context.position.column}`,
+    );
+  });
+  const contexts = lexer.readSync(content, { type: "stylesheet" });
+  if (contexts && contexts.length) {
+    console.warn(contexts);
+  } else {
+    throw new Error(
+      `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorId} context`,
+    );
+  }
+});
