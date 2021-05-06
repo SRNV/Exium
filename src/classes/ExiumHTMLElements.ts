@@ -21,10 +21,10 @@ export class ExiumHTMLElements extends ExiumBase {
    */
   protected get isEndOfStylesheet(): boolean {
     const { nextPart } = this;
-    return this.isStartingNode()
-      && nextPart.startsWith("</style")
-      || this.isEOF
-      || /\s*(\<\/style)/i.test(nextPart);
+    return this.isStartingNode() &&
+        nextPart.startsWith("</style") ||
+      this.isEOF ||
+      /\s*(\<\/style)/i.test(nextPart);
   }
   /**
    * returns if the current character is starting a new element
@@ -68,12 +68,12 @@ export class ExiumHTMLElements extends ExiumBase {
         this.string_template_quote_eval_CTX,
       ];
       while (!this.isEOF) {
-        this.shift(1);
         this.isValidChar(opts?.unexpected);
         this.saveContextsTo(allSubContexts, children);
         if (this.isStartingNode()) {
           break;
         }
+        this.shift(1);
       }
       const token = source.slice(x, this.cursor.x);
       const context = new ExiumContext(ContextTypes.TextNode, token, {
