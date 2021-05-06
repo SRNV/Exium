@@ -26,6 +26,9 @@ Deno.test("exium can parse textnodes with template eval ctx inside a component's
       if (!templateEvalCTX) {
         throw new Error('Failed to retrieve the textnode');
       }
+      assert(textnodeCTX.children.includes(templateEvalCTX));
+      assertEquals(templateEvalCTX.source, textnode);
+      assertEquals(templateEvalCTX.position, { start: 15, end: 28, line: 0, column: 15 })
     } catch (err) {
       throw err;
     }
