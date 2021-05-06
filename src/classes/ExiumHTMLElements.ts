@@ -19,8 +19,12 @@ export class ExiumHTMLElements extends ExiumBase {
   /**
    * reads the textnodes that should match (style)> ... </(style)
    */
-  protected isEndOfStylesheet(): boolean {
-    return this.isStartingNode() && this.nextPart.startsWith("</style");
+  protected get isEndOfStylesheet(): boolean {
+    const { nextPart } = this;
+    return this.isStartingNode()
+      && nextPart.startsWith("</style")
+      || this.isEOF
+      || /\s*(\<\/style)/i.test(nextPart);
   }
   /**
    * returns if the current character is starting a new element

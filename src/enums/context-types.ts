@@ -52,6 +52,7 @@ export enum ContextTypes {
    * all contexts involved into stylesheet
    */
   StyleSheet = "StyleSheet",
+  StyleSheetEnd = "StyleSheetEnd",
   StyleSheetRule = "StyleSheetRule",
   StyleSheetAtRule = "StyleSheetAtRule",
   StyleSheetAtRuleName = "StyleSheetAtRuleName",

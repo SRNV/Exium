@@ -4,7 +4,7 @@ import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 const url = new URL(import.meta.url);
 
-Deno.test("ogone-lexer supports textnodes", () => {
+Deno.test("exium supports textnodes", () => {
   const content =
     "import a from 'v';<div>here a textnode</div><!--not a textnode --> here another one";
   const lexer = new Exium((reason, cursor, context) => {
@@ -30,7 +30,7 @@ Deno.test("ogone-lexer supports textnodes", () => {
   }
 });
 
-Deno.test("ogone-lexer supports textnodes with template", () => {
+Deno.test("exium supports textnodes with template", () => {
   const source = "here a textnode ${template} ";
   const content = `import a from 'v';<div>${source}</div>`;
   const lexer = new Exium((reason, cursor, context) => {
@@ -67,7 +67,7 @@ Deno.test("ogone-lexer supports textnodes with template", () => {
   }
 });
 
-Deno.test("ogone-lexer should use onError function when an unsupported textnode is parsed", () => {
+Deno.test("exium should use onError function when an unsupported textnode is parsed", () => {
   // malformed import statement
   const content = "impot a from 'v';";
   let result = false;
@@ -84,7 +84,7 @@ Deno.test("ogone-lexer should use onError function when an unsupported textnode 
   }
 });
 
-Deno.test("ogone-lexer supports textnodes using < but not starting a new node", () => {
+Deno.test("exium supports textnodes using < but not starting a new node", () => {
   const source = "is a correct textnode <<<<";
   const content = `<div> ${source}</div>`;
   const lexer = new Exium((reason, cursor, context) => {

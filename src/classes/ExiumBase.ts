@@ -86,6 +86,19 @@ export class ExiumBase {
     return this.source.slice(0, this.cursor.x);
   }
   /**
+   * @param text text that the next part of the source should start with
+   * @param shiftToTheEnd move the cursor to the end of the text, will only sift if the the next part is starting with the text
+   * @returns true if the next part of the source is starting with the first argument
+   */
+  protected isFollowedBy(text: string, shiftToTheEnd?: boolean): boolean {
+    const { nextPart } = this;
+    const result = nextPart.startsWith(text);
+    if (shiftToTheEnd && result) {
+      this.shiftUntilEndOf(text)
+    }
+    return result;
+  }
+  /**
    * should return the previously defined context
    */
   protected get unexpected(): ExiumContext {
@@ -114,11 +127,17 @@ export class ExiumBase {
     );
   }
   protected parseOptions: OgooneLexerParseOptions | null = null;
+  protected debugg(...args: any[]): void {
+    if (this.parseOptions?.debugg) {
+      console.log(...args)
+    }
+  }
   /**
    * returns if the lexer has finished to read
    */
   protected get isEOF(): boolean {
-    return Boolean(this.source.length === this.cursor.x);
+    const { char, next } = this;
+    return Boolean(!char || this.source.length === this.cursor.x);
   }
   constructor(
     protected onError: (
@@ -156,12 +175,20 @@ export class ExiumBase {
     to: ExiumContext[],
     opts?: ContextReaderOptions,
   ) {
-    fromContexts.forEach((reader) => {
+    let endingCTX = false;
+    for (let reader of fromContexts) {
       const recognized = reader.apply(this, [opts || {}]);
+      if (recognized === null) {
+        to.push(this.lastContext);
+        fromContexts.splice(0);
+        endingCTX = true;
+        break;
+      }
       if (recognized) {
         to.push(this.lastContext);
       }
-    });
+    }
+    if (endingCTX) return;
   }
   /**
    * same as saveContextsTo but if no context is found,
@@ -179,12 +206,20 @@ export class ExiumBase {
     opts?: ContextReaderOptions,
   ) {
     const { length } = to;
-    fromContexts.forEach((reader) => {
+    let endingCTX = false;
+    for (let reader of fromContexts) {
       const recognized = reader.apply(this, [opts || {}]);
+      if (recognized === null) {
+        to.push(this.lastContext);
+        fromContexts.splice(0);
+        endingCTX = true;
+        break;
+      }
       if (recognized) {
         to.push(this.lastContext);
       }
-    });
+    }
+    if (endingCTX) return;
     // no changes
     if (to.length === length && !this.isEOF) {
       this.onError(Reason.UnexpectedToken, this.cursor, this.unexpected);

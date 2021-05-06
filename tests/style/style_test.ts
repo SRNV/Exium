@@ -7,7 +7,7 @@ import {
 
 const url = new URL(import.meta.url);
 
-Deno.test("ogone-lexer can retrieve nested css", () => {
+Deno.test("exium can retrieve nested css", () => {
   const content = `
   <template>
     <style>
@@ -37,7 +37,7 @@ Deno.test("ogone-lexer can retrieve nested css", () => {
   }
 });
 
-Deno.test("ogone-lexer can parse at-rules", () => {
+Deno.test("exium can parse at-rules", () => {
   const content = ` @media screen and (min-width: 100px) {} `;
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(

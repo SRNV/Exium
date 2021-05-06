@@ -4,7 +4,7 @@ import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 const url = new URL(import.meta.url);
 
-Deno.test("ogone-lexer can parse attribute unquoted", () => {
+Deno.test("exium can parse attribute unquoted", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -54,7 +54,7 @@ Deno.test("ogone-lexer can parse attribute unquoted", () => {
   }
 });
 
-Deno.test("ogone-lexer can parse boolean attributes and a space after", () => {
+Deno.test("exium can parse boolean attributes and a space after", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -90,7 +90,7 @@ Deno.test("ogone-lexer can parse boolean attributes and a space after", () => {
   }
 });
 
-Deno.test("ogone-lexer can parse multiple boolean attributes", () => {
+Deno.test("exium can parse multiple boolean attributes", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -144,7 +144,7 @@ Deno.test("ogone-lexer can parse multiple boolean attributes", () => {
   }
 });
 
-Deno.test("ogone-lexer can parse boolean attributes and without space after", () => {
+Deno.test("exium can parse boolean attributes and without space after", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,

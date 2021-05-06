@@ -11,7 +11,7 @@ const url = new URL(import.meta.url);
  * assert that a list of properties are respected
  * by the end user
  */
-Deno.test("ogone-lexer stylesheet supports type rule assignment", () => {
+Deno.test("exium stylesheet supports type rule assignment", () => {
   const content = `
     @<myTrait>  div {
       color: red;

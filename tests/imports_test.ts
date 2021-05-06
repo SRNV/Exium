@@ -3,7 +3,7 @@ import { ContextTypes } from "../src/enums/context-types.ts";
 import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 const url = new URL(import.meta.url);
-Deno.test("ogone-lexer supports import ambient statement", () => {
+Deno.test("exium supports import ambient statement", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -17,7 +17,7 @@ Deno.test("ogone-lexer supports import ambient statement", () => {
   }
 });
 
-Deno.test("ogone-lexer supports all import statements", () => {
+Deno.test("exium supports all import statements", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,

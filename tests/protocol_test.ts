@@ -4,7 +4,7 @@ import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 const url = new URL(import.meta.url);
 
-Deno.test("ogone-lexer can retrieve nested css", () => {
+Deno.test("exium can retrieve nested css", () => {
   const content = `
   <proto>
     declare:

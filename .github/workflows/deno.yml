@@ -34,7 +34,7 @@ jobs:
           deno-version: "v1.x"
 
       - name: Run Tests
-        run: deno test -A --unstable
+        run: deno test
 
       - name: Format
         run: deno fmt

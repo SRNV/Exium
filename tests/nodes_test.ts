@@ -3,7 +3,7 @@ import { ContextTypes } from "../src/enums/context-types.ts";
 import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 const url = new URL(import.meta.url);
-Deno.test("ogone-lexer supports nodes", () => {
+Deno.test("exium supports nodes", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -22,7 +22,7 @@ Deno.test("ogone-lexer supports nodes", () => {
     throw new Error("Exium - Failed to retrieve Node Context");
   }
 });
-Deno.test("ogone-lexer can retrieve node names: template", () => {
+Deno.test("exium can retrieve node names: template", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -41,7 +41,7 @@ Deno.test("ogone-lexer can retrieve node names: template", () => {
     throw new Error("Exium - Failed to retrieve Node Context");
   }
 });
-Deno.test("ogone-lexer can retrieve node names: proto", () => {
+Deno.test("exium can retrieve node names: proto", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -60,7 +60,7 @@ Deno.test("ogone-lexer can retrieve node names: proto", () => {
     throw new Error("Exium - Failed to retrieve Node Context");
   }
 });
-Deno.test("ogone-lexer tagname is accessible through the related property", () => {
+Deno.test("exium tagname is accessible through the related property", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -85,7 +85,7 @@ Deno.test("ogone-lexer tagname is accessible through the related property", () =
   }
 });
 
-Deno.test("ogone-lexer should use the onError function when a node isnt finished", () => {
+Deno.test("exium should use the onError function when a node isnt finished", () => {
   let result = false;
   const lexer = new Exium((reason, cursor, context) => {
     result = true;
@@ -97,7 +97,7 @@ Deno.test("ogone-lexer should use the onError function when a node isnt finished
   }
 });
 
-Deno.test("ogone-lexer shouldnt consider this as a node", () => {
+Deno.test("exium shouldnt consider this as a node", () => {
   let result = false;
   const lexer = new Exium((reason, cursor, context) => {
     result = true;
@@ -109,7 +109,7 @@ Deno.test("ogone-lexer shouldnt consider this as a node", () => {
   }
 });
 
-Deno.test("ogone-lexer shouldnt consider this as a node 2", () => {
+Deno.test("exium shouldnt consider this as a node 2", () => {
   let result = false;
   const lexer = new Exium((reason, cursor, context) => {
     result = true;
@@ -121,7 +121,7 @@ Deno.test("ogone-lexer shouldnt consider this as a node 2", () => {
   }
 });
 
-Deno.test("ogone-lexer shouldnt consider this as a node 3", () => {
+Deno.test("exium shouldnt consider this as a node 3", () => {
   let result = false;
   const lexer = new Exium((reason, cursor, context) => {
     result = true;
@@ -133,7 +133,7 @@ Deno.test("ogone-lexer shouldnt consider this as a node 3", () => {
   }
 });
 
-Deno.test("ogone-lexer should use onError when anything is typed on a closing node", () => {
+Deno.test("exium should use onError when anything is typed on a closing node", () => {
   let result = false;
   const lexer = new Exium((reason, cursor, context) => {
     result = true;
@@ -145,7 +145,7 @@ Deno.test("ogone-lexer should use onError when anything is typed on a closing no
   }
 });
 
-Deno.test("ogone-lexer should fail when anything is typed on a closing node 2", () => {
+Deno.test("exium should fail when anything is typed on a closing node 2", () => {
   let result = false;
   const lexer = new Exium((reason, cursor, context) => {
     result = true;
@@ -157,7 +157,7 @@ Deno.test("ogone-lexer should fail when anything is typed on a closing node 2", 
   }
 });
 
-Deno.test("ogone-lexer should support line breaks into closing tag", () => {
+Deno.test("exium should support line breaks into closing tag", () => {
   let supported = true;
   const content = `<div></div
 
@@ -171,7 +171,7 @@ Deno.test("ogone-lexer should support line breaks into closing tag", () => {
   }
 });
 
-Deno.test("ogone-lexer should use onError function when a node is not closed", () => {
+Deno.test("exium should use onError function when a node is not closed", () => {
   let result = false;
   new Exium(() => {
     result = true;
@@ -181,7 +181,7 @@ Deno.test("ogone-lexer should use onError function when a node is not closed", (
   }
 });
 
-Deno.test("ogone-lexer supports auto closing tags", () => {
+Deno.test("exium supports auto closing tags", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -208,7 +208,7 @@ Deno.test("ogone-lexer supports auto closing tags", () => {
   }
 });
 
-Deno.test("ogone-lexer supports auto closing tags 2", () => {
+Deno.test("exium supports auto closing tags 2", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -235,7 +235,7 @@ Deno.test("ogone-lexer supports auto closing tags 2", () => {
   }
 });
 
-Deno.test("ogone-lexer supports auto closing tags 3", () => {
+Deno.test("exium supports auto closing tags 3", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -266,7 +266,7 @@ Deno.test("ogone-lexer supports auto closing tags 3", () => {
   }
 });
 
-Deno.test("ogone-lexer supports auto closing tags 4 (ending with an attribute)", () => {
+Deno.test("exium supports auto closing tags 4 (ending with an attribute)", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -292,7 +292,7 @@ Deno.test("ogone-lexer supports auto closing tags 4 (ending with an attribute)",
   }
 });
 
-Deno.test("ogone-lexer supports auto closing tags 4 (ending with a flag)", () => {
+Deno.test("exium supports auto closing tags 4 (ending with a flag)", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -318,7 +318,7 @@ Deno.test("ogone-lexer supports auto closing tags 4 (ending with a flag)", () =>
   }
 });
 
-Deno.test("ogone-lexer supports auto closing tags 4 (ending with a flag and a value)", () => {
+Deno.test("exium supports auto closing tags 4 (ending with a flag and a value)", () => {
   const lexer = new Exium((reason, cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
