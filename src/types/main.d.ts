@@ -13,8 +13,9 @@ export interface ContextReaderOptions {
  * - While the characters are handled and it's not EOF, shift the cursor position
  * - create the ExiumContext
  * - return true
+ * - should return null only to break the parent context read
  */
-export type ContextReader = (opts?: ContextReaderOptions) => boolean;
+export type ContextReader = (opts?: ContextReaderOptions) => (boolean | null);
 export interface CursorDescriber {
   column: number;
   line: number;
