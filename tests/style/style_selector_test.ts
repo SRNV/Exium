@@ -5,13 +5,15 @@ import {
   assertEquals,
 } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
-const url = new URL(import.meta.url);
-
 Deno.test("exium can retrieve selectors", () => {
+  const elements = [
+    'div',
+    'ul',
+    'li',
+    'p'
+  ]
   const content = `
-  div ,
-  ul,
-  li {
+  ${elements} {
     color: blue;
   }
   `;
@@ -22,7 +24,15 @@ Deno.test("exium can retrieve selectors", () => {
   });
   const contexts = lexer.readSync(content, { type: "stylesheet" });
   if (contexts && contexts.length) {
-    // TODO
+    const elementsCTX = contexts.filter((context) => context.type === ContextTypes.StyleSheetSelectorHTMLElement);
+    assertEquals(elements.length, elementsCTX.length);
+    elements.forEach((source) => {
+      const element = contexts.find((context) => context.type === ContextTypes.StyleSheetSelectorHTMLElement
+        && context.source == source);
+      if (!element) {
+        throw new Error(`failed to retrieve the element ${source}`);
+      }
+    });
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetAtRuleCharset} context`,
@@ -37,7 +47,6 @@ Deno.test("exium can retrieve classes", () => {
   }
   `;
   const lexer = new Exium((reason, cursor, context) => {
-    console.warn(context);
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
