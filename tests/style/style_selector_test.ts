@@ -226,6 +226,7 @@ Deno.test("exium can retrieve attribute with value 1", () => {
     if (!attributeValue) {
       throw new Error('Failed to retrieve the attribute value');
     }
+    assertEquals(attributeValue.source, 'value')
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorId} context`,
@@ -258,6 +259,7 @@ Deno.test("exium can retrieve attribute with value 2", () => {
     if (!attributeValue) {
       throw new Error('Failed to retrieve the attribute value');
     }
+    assertEquals(attributeValue.source, 'value')
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorId} context`,
@@ -290,6 +292,7 @@ Deno.test("exium can retrieve attribute with value 3", () => {
     if (!attributeValue) {
       throw new Error('Failed to retrieve the attribute value');
     }
+    assertEquals(attributeValue.source, 'value')
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorId} context`,
@@ -322,6 +325,7 @@ Deno.test("exium can retrieve attribute with value 4", () => {
     if (!attributeValue) {
       throw new Error('Failed to retrieve the attribute value');
     }
+    assertEquals(attributeValue.source, 'value')
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorId} context`,
@@ -354,6 +358,40 @@ Deno.test("exium can retrieve attribute with value 5", () => {
     if (!attributeValue) {
       throw new Error('Failed to retrieve the attribute value');
     }
+    assertEquals(attributeValue.source, 'value')
+  } else {
+    throw new Error(
+      `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorId} context`,
+    );
+  }
+});
+
+Deno.test("exium can retrieve attribute with value 6", () => {
+  const content = `
+  [attribute="value"] {
+    color: blue;
+  }
+  `;
+  const lexer = new Exium((reason, cursor, context) => {
+    throw new Error(
+      `${reason} ${context.position.line}:${context.position.column}`,
+    );
+  });
+  const contexts = lexer.readSync(content, { type: "stylesheet", });
+  if (contexts && contexts.length) {
+    const attribute = contexts.find((context) =>  context.type === ContextTypes.StyleSheetSelectorAttribute);
+    const attributeName = contexts.find((context) =>  context.type === ContextTypes.StyleSheetSelectorAttributeName);
+    const attributeValue = contexts.find((context) =>  context.type === ContextTypes.StyleSheetSelectorAttributeValue);
+    if (!attribute) {
+      throw new Error('Failed to retrieve the attribute');
+    }
+    if (!attributeName) {
+      throw new Error('Failed to retrieve the attribute name');
+    }
+    if (!attributeValue) {
+      throw new Error('Failed to retrieve the attribute value');
+    }
+    assertEquals(attributeValue.source, '"value"');
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorId} context`,
