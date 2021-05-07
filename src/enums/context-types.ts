@@ -72,6 +72,9 @@ export enum ContextTypes {
   StyleSheetSelectorClass = "StyleSheetSelectorClass",
   StyleSheetSelectorId = "StyleSheetSelectorId",
   StyleSheetSelectorAttribute = "StyleSheetSelectorAttribute",
+  StyleSheetSelectorAttributeEqual = "StyleSheetSelectorAttributeEqual",
+  StyleSheetSelectorAttributeName = "StyleSheetSelectorAttributeName",
+  StyleSheetSelectorAttributeValue = "StyleSheetSelectorAttributeValue",
   StyleSheetSelectorPseudoClass = "StyleSheetSelectorPseudoClass",
   StyleSheetSelectorPseudoElement = "StyleSheetSelectorPseudoElement",
 }

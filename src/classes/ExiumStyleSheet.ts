@@ -748,14 +748,25 @@ export class ExiumStyleSheet extends ExiumProtocol {
       if (opts?.checkOnly) return true;
       let result = true;
       let isClosed = false;
+      let isNamed = false;
       const children: ExiumContext[] = [];
+      const related: ExiumContext[] = [];
       const allSubContexts: ContextReader[] = (opts?.contexts || [
         this.line_break_CTX,
         this.multiple_spaces_CTX,
         this.space_CTX,
       ]);
+      const describers: ContextReader[] = [
+        this.stylesheet_selector_attribute_name_CTX,
+        this.stylesheet_selector_attribute_equal_CTX,
+        this.stylesheet_selector_attribute_value_CTX,
+      ];
       while (!this.isEOF) {
         this.debuggPosition('\nSELECTOR ATTRIBUTE');
+        if (!isNamed) {
+          this.saveContextsTo(describers, related);
+          isNamed = !!related.find((context) => context.type === ContextTypes.StyleSheetSelectorAttributeName);
+        } else {}
         this.saveContextsTo(allSubContexts, children);
         this.shift(1);
         if ([']'].includes(this.prev!)) {
@@ -776,10 +787,120 @@ export class ExiumStyleSheet extends ExiumProtocol {
         },
       );
       context.children.push(...children);
+      context.related.push(...related);
       this.currentContexts.push(context);
       if (!isClosed) {
         this.onError(Reason.StyleSheetAttributeNotClosed, this.cursor, context);
       }
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+  stylesheet_selector_attribute_name_CTX(opts?: ContextReaderOptions): boolean {
+    this.debuggPosition('\nSELECTOR ATTRIBUTE NAME START');
+    try {
+      let { char, prev } = this;
+      const { x, line, column } = this.cursor;
+      let { source } = this;
+      const unsupported = ['^', '$', '|', '=', '*', ' ', ']', '[', '\n'];
+      const isValid = !unsupported.includes(char);
+      if (!isValid) return false;
+      if (opts?.checkOnly) return true;
+      let result = true;
+      while (!this.isEOF) {
+        this.debuggPosition('\nSELECTOR ATTRIBUTE NAME');
+        if (unsupported.includes(this.char)) {
+          break;
+        }
+        this.shift(1);
+        this.isValidChar(opts?.unexpected);
+      }
+      const token = source.slice(x, this.cursor.x);
+      const context = new ExiumContext(
+        ContextTypes.StyleSheetSelectorAttributeName,
+        token,
+        {
+          start: x,
+          end: this.cursor.x,
+          line,
+          column,
+        },
+      );
+      this.currentContexts.push(context);
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+  stylesheet_selector_attribute_equal_CTX(opts?: ContextReaderOptions): boolean {
+    this.debuggPosition('\nSELECTOR ATTRIBUTE EQUAL START');
+    try {
+      let { char, prev, next } = this;
+      const { x, line, column } = this.cursor;
+      let { source } = this;
+      const unsupported = ['^', '$', '|', '*'];
+      const isValid = unsupported.includes(char) && next === '='
+        || char === '=';
+      if (!isValid) return false;
+      if (opts?.checkOnly) return true;
+      let result = true;
+      while (!this.isEOF) {
+        this.debuggPosition('\nSELECTOR ATTRIBUTE EQUAL');
+        if (this.char === '=') {
+          this.shift(1);
+          break;
+        }
+        this.shift(1);
+        this.isValidChar(opts?.unexpected);
+      }
+      const token = source.slice(x, this.cursor.x);
+      const context = new ExiumContext(
+        ContextTypes.StyleSheetSelectorAttributeEqual,
+        token,
+        {
+          start: x,
+          end: this.cursor.x,
+          line,
+          column,
+        },
+      );
+      this.currentContexts.push(context);
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+  stylesheet_selector_attribute_value_CTX(opts?: ContextReaderOptions): boolean {
+    this.debuggPosition('\nSELECTOR ATTRIBUTE EQUAL START');
+    try {
+      let { lastContext } = this;
+      const { x, line, column } = this.cursor;
+      let { source } = this;
+      const isValid = lastContext.type === ContextTypes.StyleSheetSelectorAttributeEqual;
+      if (!isValid) return false;
+      if (opts?.checkOnly) return true;
+      let result = true;
+      while (!this.isEOF) {
+        this.debuggPosition('\nSELECTOR ATTRIBUTE EQUAL');
+        if (this.char === ']') {
+          break;
+        }
+        this.shift(1);
+        this.isValidChar(opts?.unexpected);
+      }
+      const token = source.slice(x, this.cursor.x);
+      const context = new ExiumContext(
+        ContextTypes.StyleSheetSelectorAttributeValue,
+        token,
+        {
+          start: x,
+          end: this.cursor.x,
+          line,
+          column,
+        },
+      );
+      this.currentContexts.push(context);
       return result;
     } catch (err) {
       throw err;
