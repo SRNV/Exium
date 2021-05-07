@@ -61,6 +61,7 @@ Deno.test("exium stylesheet supports @const statement, and it can retrieve the n
     </style>
   </template>`;
   const lexer = new Exium((reason, cursor, context) => {
+    console.warn(context);
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
