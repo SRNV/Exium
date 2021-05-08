@@ -242,7 +242,7 @@ export class ExiumHTMLElements extends ExiumBase {
             );
           } else {
             const index = this.openTags.indexOf(openTag);
-            const deleted = this.openTags.splice(index, 1);
+            this.openTags.splice(index, 1);
             // save the closing tag
             openTag.related.push(context);
             openTag.data.closed = true;
