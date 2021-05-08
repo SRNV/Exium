@@ -13,6 +13,7 @@ export enum Reason {
   BracesOpen = 1773,
   CurlyBracesOpen = 1819,
   ArrayOpen = 1866,
+  ParentheseOpen = 1896,
   HTMLClosingTagWithoutOpening = 2116,
   HTMLTagNotFinish = 2128,
   HTMLCommentOpen = 2211,

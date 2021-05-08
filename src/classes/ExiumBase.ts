@@ -191,7 +191,7 @@ export class ExiumBase {
     let endingCTX = false;
     this.treePosition++;
     for (let reader of fromContexts) {
-      this.debugg(`${'\t'.repeat(this.treePosition)}%c[]`, 'color:yellow');
+      this.debugg(`${'\t'.repeat(this.treePosition)}%c[${this.char}]`, 'color:yellow');
       const recognized = reader.apply(this, [opts || {}]);
       if (recognized === null) {
         to.push(this.lastContext);
@@ -226,7 +226,7 @@ export class ExiumBase {
     let endingCTX = false;
     this.treePosition++;
     for (let reader of fromContexts) {
-      this.debugg(`${'\t'.repeat(this.treePosition)}%c[]`, 'color:yellow');
+      this.debugg(`${'\t'.repeat(this.treePosition)}%c[${this.char}]`, 'color:yellow');
       const recognized = reader.apply(this, [opts || {}]);
       if (recognized === null) {
         to.push(this.lastContext);
@@ -569,7 +569,7 @@ export class ExiumBase {
           }),
         );
       }
-    this.debuggPosition('\n\n\t\tMULTISPACE END');
+      this.debuggPosition('\n\n\t\tMULTISPACE END');
       return result;
     } catch (err) {
       throw err;
@@ -777,6 +777,53 @@ export class ExiumBase {
       this.currentContexts.push(context);
       if (!isClosed) {
         this.onError(Reason.ArrayOpen, this.cursor, context);
+      }
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+  /**
+   * should match with (...) and is recursive
+   */
+  parenthese_CTX(opts?: ContextReaderOptions): boolean {
+    try {
+      let { char } = this;
+      const { x, line, column } = this.cursor;
+      let { source } = this;
+      if (char !== "(") return false;
+      if (opts?.checkOnly) return true;
+      let result = true;
+      let isClosed = false;
+      const allSubContexts = (opts?.contexts || [
+        this.line_break_CTX,
+        this.multiple_spaces_CTX,
+        this.space_CTX,
+        this.array_CTX,
+        this.parenthese_CTX,
+      ]);
+      const children: ExiumContext[] = [];
+      while (!this.isEOF) {
+        this.shift(1);
+        this.isValidChar(opts?.unexpected);
+        this.saveContextsTo(allSubContexts, children);
+        if (this.char === ")") {
+          this.shift(1);
+          isClosed = true;
+          break;
+        }
+      }
+      const token = source.slice(x, this.cursor.x);
+      const context = new ExiumContext(ContextTypes.Parenthese, token, {
+        start: x,
+        end: this.cursor.x,
+        line,
+        column,
+      });
+      context.children.push(...children);
+      this.currentContexts.push(context);
+      if (!isClosed) {
+        this.onError(Reason.ParentheseOpen, this.cursor, context);
       }
       return result;
     } catch (err) {

@@ -17,6 +17,7 @@ export enum ContextTypes {
   Braces = "Braces",
   CurlyBraces = "CurlyBraces",
   Array = "Array",
+  Parenthese = "Parenthese",
   HTMLComment = "HTMLComment",
   ImportAmbient = "ImportAmbient",
   ImportStatement = "ImportStatement",
@@ -77,4 +78,8 @@ export enum ContextTypes {
   StyleSheetSelectorAttributeValue = "StyleSheetSelectorAttributeValue",
   StyleSheetSelectorPseudoClass = "StyleSheetSelectorPseudoClass",
   StyleSheetSelectorPseudoElement = "StyleSheetSelectorPseudoElement",
+  StyleSheetSelectorCombinatorChildSelector = "StyleSheetSelectorCombinatorChildSelector",
+  StyleSheetSelectorCombinatorAdjacentSibling = "StyleSheetSelectorCombinatorAdjacentSibling",
+  StyleSheetSelectorCombinatorGeneralSibling = "StyleSheetSelectorCombinatorGeneralSibling",
+  StyleSheetSelectorCombinatorAll = "StyleSheetSelectorCombinatorAll",
 }
