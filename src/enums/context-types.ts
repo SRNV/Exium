@@ -67,6 +67,8 @@ export enum ContextTypes {
   StyleSheetAtRuleExport = "StyleSheetAtRuleExport",
   StyleSheetType = "StyleSheetType",
   StyleSheetCurlyBraces = "StyleSheetCurlyBraces",
+  StyleSheetRuleSpread = "StyleSheetRuleSpread",
+  StyleSheetParentRef = "StyleSheetParentRef",
   StyleSheetSelector = "StyleSheetSelector",
   StyleSheetSelectorList = "StyleSheetSelectorList",
   StyleSheetSelectorHTMLElement = "StyleSheetSelectorHTMLElement",

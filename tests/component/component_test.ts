@@ -7,7 +7,7 @@ import {
 import { component1 } from "./../utils/componentFile.ts";
 
 const url = new URL(import.meta.url);
-// TODO
+
 Deno.test("exium can parse a basic component", () => {
   const styleSource = `
 @charset 'utf-8';

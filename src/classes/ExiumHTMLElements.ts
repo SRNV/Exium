@@ -176,7 +176,6 @@ export class ExiumHTMLElements extends ExiumBase {
             }
           });
         }
-        // TODO fix autoclosing tags
         this.saveContextsTo(allSubContexts, children);
         if (this.char === "<") {
           break;
