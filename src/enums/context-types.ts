@@ -80,8 +80,11 @@ export enum ContextTypes {
   StyleSheetSelectorAttributeValue = "StyleSheetSelectorAttributeValue",
   StyleSheetSelectorPseudoClass = "StyleSheetSelectorPseudoClass",
   StyleSheetSelectorPseudoElement = "StyleSheetSelectorPseudoElement",
-  StyleSheetSelectorCombinatorChildSelector = "StyleSheetSelectorCombinatorChildSelector",
-  StyleSheetSelectorCombinatorAdjacentSibling = "StyleSheetSelectorCombinatorAdjacentSibling",
-  StyleSheetSelectorCombinatorGeneralSibling = "StyleSheetSelectorCombinatorGeneralSibling",
+  StyleSheetSelectorCombinatorChildSelector =
+    "StyleSheetSelectorCombinatorChildSelector",
+  StyleSheetSelectorCombinatorAdjacentSibling =
+    "StyleSheetSelectorCombinatorAdjacentSibling",
+  StyleSheetSelectorCombinatorGeneralSibling =
+    "StyleSheetSelectorCombinatorGeneralSibling",
   StyleSheetSelectorCombinatorAll = "StyleSheetSelectorCombinatorAll",
 }

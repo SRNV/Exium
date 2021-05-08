@@ -1,6 +1,6 @@
 import { Exium } from "../../mod.ts";
 import { ContextTypes } from "../../src/enums/context-types.ts";
-import { SupportedStyleSheetPseudoClasses } from '../../src/supports.ts';
+import { SupportedStyleSheetPseudoClasses } from "../../src/supports.ts";
 import {
   assert,
   assertEquals,
@@ -35,32 +35,40 @@ Deno.test("exium support combinators", () => {
   const contexts = lexer.readSync(content, { type: "component" });
   if (contexts && contexts.length) {
     // *
-    const all = contexts.find((context) => context.type === ContextTypes.StyleSheetSelectorCombinatorAll);
+    const all = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetSelectorCombinatorAll
+    );
     if (!all) {
-      throw new Error('Failed to retrieve * combinator');
+      throw new Error("Failed to retrieve * combinator");
     }
-    assertEquals(all.source, '*');
+    assertEquals(all.source, "*");
 
     // >
-    const childSelector = contexts.find((context) => context.type === ContextTypes.StyleSheetSelectorCombinatorChildSelector);
+    const childSelector = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetSelectorCombinatorChildSelector
+    );
     if (!childSelector) {
-      throw new Error('Failed to retrieve > combinator');
+      throw new Error("Failed to retrieve > combinator");
     }
-    assertEquals(childSelector.source, '>');
+    assertEquals(childSelector.source, ">");
 
     // +
-    const adjacent = contexts.find((context) => context.type === ContextTypes.StyleSheetSelectorCombinatorAdjacentSibling);
+    const adjacent = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetSelectorCombinatorAdjacentSibling
+    );
     if (!adjacent) {
-      throw new Error('Failed to retrieve + combinator');
+      throw new Error("Failed to retrieve + combinator");
     }
-    assertEquals(adjacent.source, '+');
+    assertEquals(adjacent.source, "+");
 
     // ~
-    const general = contexts.find((context) => context.type === ContextTypes.StyleSheetSelectorCombinatorGeneralSibling);
+    const general = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetSelectorCombinatorGeneralSibling
+    );
     if (!general) {
-      throw new Error('Failed to retrieve + combinator');
+      throw new Error("Failed to retrieve + combinator");
     }
-    assertEquals(general.source, '~');
+    assertEquals(general.source, "~");
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorPseudoClass} context`,

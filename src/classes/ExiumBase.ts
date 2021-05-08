@@ -138,7 +138,7 @@ export class ExiumBase {
   }
   protected debuggPosition(name: string): void {
     if (this.parseOptions?.debugg) {
-      this.debugg(`${this.cursor.x} - %c${name.trim()}`, 'color:orange', {
+      this.debugg(`${this.cursor.x} - %c${name.trim()}`, "color:orange", {
         prev: this.prev,
         char: this.char,
         next: this.next,
@@ -158,7 +158,7 @@ export class ExiumBase {
       cursor: CursorDescriber,
       context: ExiumContext,
     ) => any,
-  ) { }
+  ) {}
   /**
    * should validate if the character is accepted inside the current context
    * if it's not the ogone lexer will use the error function passed into the constructor
@@ -191,7 +191,10 @@ export class ExiumBase {
     let endingCTX = false;
     this.treePosition++;
     for (let reader of fromContexts) {
-      this.debugg(`${'\t'.repeat(this.treePosition)}%c[${this.char}]`, 'color:yellow');
+      this.debugg(
+        `${"\t".repeat(this.treePosition)}%c[${this.char}]`,
+        "color:yellow",
+      );
       const recognized = reader.apply(this, [opts || {}]);
       if (recognized === null) {
         to.push(this.lastContext);
@@ -200,7 +203,10 @@ export class ExiumBase {
         break;
       }
       if (recognized) {
-        this.debugg(`\n\t\t\t%cusing reader: ${reader.name} was sucessful\n`, 'color:gray');
+        this.debugg(
+          `\n\t\t\t%cusing reader: ${reader.name} was sucessful\n`,
+          "color:gray",
+        );
         to.push(this.lastContext);
       }
     }
@@ -226,7 +232,10 @@ export class ExiumBase {
     let endingCTX = false;
     this.treePosition++;
     for (let reader of fromContexts) {
-      this.debugg(`${'\t'.repeat(this.treePosition)}%c[${this.char}]`, 'color:yellow');
+      this.debugg(
+        `${"\t".repeat(this.treePosition)}%c[${this.char}]`,
+        "color:yellow",
+      );
       const recognized = reader.apply(this, [opts || {}]);
       if (recognized === null) {
         to.push(this.lastContext);
@@ -235,7 +244,10 @@ export class ExiumBase {
         break;
       }
       if (recognized) {
-        this.debugg(`\n\t\t\t%cusing reader: ${reader.name} was sucessful\n`, 'color:gray');
+        this.debugg(
+          `\n\t\t\t%cusing reader: ${reader.name} was sucessful\n`,
+          "color:gray",
+        );
         to.push(this.lastContext);
       }
     }
@@ -547,7 +559,7 @@ export class ExiumBase {
    * @returns true if the current character and the next characters are spaces
    */
   multiple_spaces_CTX(opts?: ContextReaderOptions): boolean {
-    this.debuggPosition('\n\n\t\tMULTISPACE START');
+    this.debuggPosition("\n\n\t\tMULTISPACE START");
     try {
       const { char, next, source } = this;
       if (char !== " " || next !== " ") return false;
@@ -569,14 +581,14 @@ export class ExiumBase {
           }),
         );
       }
-      this.debuggPosition('\n\n\t\tMULTISPACE END');
+      this.debuggPosition("\n\n\t\tMULTISPACE END");
       return result;
     } catch (err) {
       throw err;
     }
   }
   space_CTX() {
-    this.debuggPosition('\n\n\t\tSPACE START');
+    this.debuggPosition("\n\n\t\tSPACE START");
     let result = this.char === " " && this.next !== this.char;
     if (result) {
       this.currentContexts.push(
@@ -589,11 +601,11 @@ export class ExiumBase {
       );
       this.shift(1);
     }
-    this.debuggPosition('\n\n\t\tSPACE START');
+    this.debuggPosition("\n\n\t\tSPACE START");
     return result;
   }
   semicolon_CTX() {
-    this.debuggPosition('\n\n\t\tSEMICOLON START');
+    this.debuggPosition("\n\n\t\tSEMICOLON START");
     let result = this.char === ";";
     if (result) {
       this.currentContexts.push(
@@ -606,11 +618,11 @@ export class ExiumBase {
       );
       this.shift(1);
     }
-    this.debuggPosition('\n\n\t\tSEMICOLON END');
+    this.debuggPosition("\n\n\t\tSEMICOLON END");
     return result;
   }
   coma_CTX() {
-    this.debuggPosition('\n\n\t\tCOMA START');
+    this.debuggPosition("\n\n\t\tCOMA START");
     let result = this.char === ",";
     if (result) {
       this.currentContexts.push(
@@ -623,11 +635,11 @@ export class ExiumBase {
       );
       this.shift(1);
     }
-    this.debuggPosition('\n\n\t\tCOMA END');
+    this.debuggPosition("\n\n\t\tCOMA END");
     return result;
   }
   line_break_CTX() {
-    this.debuggPosition('\n\n\t\tLINEBREAK START');
+    this.debuggPosition("\n\n\t\tLINEBREAK START");
     let result = this.char === "\n";
     if (result) {
       this.currentContexts.push(
@@ -642,7 +654,7 @@ export class ExiumBase {
       this.cursor.line++;
       this.cursor.x++;
     }
-    this.debuggPosition('\n\n\t\tLINEBREAK END');
+    this.debuggPosition("\n\n\t\tLINEBREAK END");
     return result;
   }
   /**

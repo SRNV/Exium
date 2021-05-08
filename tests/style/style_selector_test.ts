@@ -7,11 +7,11 @@ import {
 
 Deno.test("exium can retrieve selectors", () => {
   const elements = [
-    'div',
-    'ul',
-    'li',
-    'p'
-  ]
+    "div",
+    "ul",
+    "li",
+    "p",
+  ];
   const content = `
   ${elements} {
     color: blue;
@@ -24,11 +24,15 @@ Deno.test("exium can retrieve selectors", () => {
   });
   const contexts = lexer.readSync(content, { type: "stylesheet" });
   if (contexts && contexts.length) {
-    const elementsCTX = contexts.filter((context) => context.type === ContextTypes.StyleSheetSelectorHTMLElement);
+    const elementsCTX = contexts.filter((context) =>
+      context.type === ContextTypes.StyleSheetSelectorHTMLElement
+    );
     assertEquals(elements.length, elementsCTX.length);
     elements.forEach((source) => {
-      const element = contexts.find((context) => context.type === ContextTypes.StyleSheetSelectorHTMLElement
-        && context.source == source);
+      const element = contexts.find((context) =>
+        context.type === ContextTypes.StyleSheetSelectorHTMLElement &&
+        context.source == source
+      );
       if (!element) {
         throw new Error(`failed to retrieve the element ${source}`);
       }
@@ -157,7 +161,7 @@ Deno.test("exium can retrieve attribute", () => {
       `${reason} ${context.position.line}:${context.position.column}`,
     );
   });
-  const contexts = lexer.readSync(content, { type: "stylesheet",  });
+  const contexts = lexer.readSync(content, { type: "stylesheet" });
   if (contexts && contexts.length) {
     const attr = contexts.find((context) =>
       context.type === ContextTypes.StyleSheetSelectorAttribute &&
@@ -192,13 +196,17 @@ Deno.test("exium can retrieve multiple attributes", () => {
       `${reason} ${context.position.line}:${context.position.column}`,
     );
   });
-  const contexts = lexer.readSync(content, { type: "stylesheet", });
+  const contexts = lexer.readSync(content, { type: "stylesheet" });
   if (contexts && contexts.length) {
-    const contextsAttrs = contexts.filter((context) => context.type === ContextTypes.StyleSheetSelectorAttribute);
+    const contextsAttrs = contexts.filter((context) =>
+      context.type === ContextTypes.StyleSheetSelectorAttribute
+    );
     assertEquals(contextsAttrs.length, attrs.length);
     attrs.forEach((source) => {
-      const attr = contexts.find((context) => context.type === ContextTypes.StyleSheetSelectorAttribute
-        && context.source == source);
+      const attr = contexts.find((context) =>
+        context.type === ContextTypes.StyleSheetSelectorAttribute &&
+        context.source == source
+      );
       if (!attr) {
         throw new Error(`failed to retrieve the attribute ${source}`);
       }
@@ -221,21 +229,27 @@ Deno.test("exium can retrieve attribute with value 1", () => {
       `${reason} ${context.position.line}:${context.position.column}`,
     );
   });
-  const contexts = lexer.readSync(content, { type: "stylesheet", });
+  const contexts = lexer.readSync(content, { type: "stylesheet" });
   if (contexts && contexts.length) {
-    const attribute = contexts.find((context) =>  context.type === ContextTypes.StyleSheetSelectorAttribute);
-    const attributeName = contexts.find((context) =>  context.type === ContextTypes.StyleSheetSelectorAttributeName);
-    const attributeValue = contexts.find((context) =>  context.type === ContextTypes.StyleSheetSelectorAttributeValue);
+    const attribute = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetSelectorAttribute
+    );
+    const attributeName = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetSelectorAttributeName
+    );
+    const attributeValue = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetSelectorAttributeValue
+    );
     if (!attribute) {
-      throw new Error('Failed to retrieve the attribute');
+      throw new Error("Failed to retrieve the attribute");
     }
     if (!attributeName) {
-      throw new Error('Failed to retrieve the attribute name');
+      throw new Error("Failed to retrieve the attribute name");
     }
     if (!attributeValue) {
-      throw new Error('Failed to retrieve the attribute value');
+      throw new Error("Failed to retrieve the attribute value");
     }
-    assertEquals(attributeValue.source, 'value')
+    assertEquals(attributeValue.source, "value");
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorId} context`,
@@ -254,21 +268,27 @@ Deno.test("exium can retrieve attribute with value 2", () => {
       `${reason} ${context.position.line}:${context.position.column}`,
     );
   });
-  const contexts = lexer.readSync(content, { type: "stylesheet", });
+  const contexts = lexer.readSync(content, { type: "stylesheet" });
   if (contexts && contexts.length) {
-    const attribute = contexts.find((context) =>  context.type === ContextTypes.StyleSheetSelectorAttribute);
-    const attributeName = contexts.find((context) =>  context.type === ContextTypes.StyleSheetSelectorAttributeName);
-    const attributeValue = contexts.find((context) =>  context.type === ContextTypes.StyleSheetSelectorAttributeValue);
+    const attribute = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetSelectorAttribute
+    );
+    const attributeName = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetSelectorAttributeName
+    );
+    const attributeValue = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetSelectorAttributeValue
+    );
     if (!attribute) {
-      throw new Error('Failed to retrieve the attribute');
+      throw new Error("Failed to retrieve the attribute");
     }
     if (!attributeName) {
-      throw new Error('Failed to retrieve the attribute name');
+      throw new Error("Failed to retrieve the attribute name");
     }
     if (!attributeValue) {
-      throw new Error('Failed to retrieve the attribute value');
+      throw new Error("Failed to retrieve the attribute value");
     }
-    assertEquals(attributeValue.source, 'value')
+    assertEquals(attributeValue.source, "value");
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorId} context`,
@@ -287,21 +307,27 @@ Deno.test("exium can retrieve attribute with value 3", () => {
       `${reason} ${context.position.line}:${context.position.column}`,
     );
   });
-  const contexts = lexer.readSync(content, { type: "stylesheet", });
+  const contexts = lexer.readSync(content, { type: "stylesheet" });
   if (contexts && contexts.length) {
-    const attribute = contexts.find((context) =>  context.type === ContextTypes.StyleSheetSelectorAttribute);
-    const attributeName = contexts.find((context) =>  context.type === ContextTypes.StyleSheetSelectorAttributeName);
-    const attributeValue = contexts.find((context) =>  context.type === ContextTypes.StyleSheetSelectorAttributeValue);
+    const attribute = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetSelectorAttribute
+    );
+    const attributeName = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetSelectorAttributeName
+    );
+    const attributeValue = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetSelectorAttributeValue
+    );
     if (!attribute) {
-      throw new Error('Failed to retrieve the attribute');
+      throw new Error("Failed to retrieve the attribute");
     }
     if (!attributeName) {
-      throw new Error('Failed to retrieve the attribute name');
+      throw new Error("Failed to retrieve the attribute name");
     }
     if (!attributeValue) {
-      throw new Error('Failed to retrieve the attribute value');
+      throw new Error("Failed to retrieve the attribute value");
     }
-    assertEquals(attributeValue.source, 'value')
+    assertEquals(attributeValue.source, "value");
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorId} context`,
@@ -320,21 +346,27 @@ Deno.test("exium can retrieve attribute with value 4", () => {
       `${reason} ${context.position.line}:${context.position.column}`,
     );
   });
-  const contexts = lexer.readSync(content, { type: "stylesheet", });
+  const contexts = lexer.readSync(content, { type: "stylesheet" });
   if (contexts && contexts.length) {
-    const attribute = contexts.find((context) =>  context.type === ContextTypes.StyleSheetSelectorAttribute);
-    const attributeName = contexts.find((context) =>  context.type === ContextTypes.StyleSheetSelectorAttributeName);
-    const attributeValue = contexts.find((context) =>  context.type === ContextTypes.StyleSheetSelectorAttributeValue);
+    const attribute = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetSelectorAttribute
+    );
+    const attributeName = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetSelectorAttributeName
+    );
+    const attributeValue = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetSelectorAttributeValue
+    );
     if (!attribute) {
-      throw new Error('Failed to retrieve the attribute');
+      throw new Error("Failed to retrieve the attribute");
     }
     if (!attributeName) {
-      throw new Error('Failed to retrieve the attribute name');
+      throw new Error("Failed to retrieve the attribute name");
     }
     if (!attributeValue) {
-      throw new Error('Failed to retrieve the attribute value');
+      throw new Error("Failed to retrieve the attribute value");
     }
-    assertEquals(attributeValue.source, 'value')
+    assertEquals(attributeValue.source, "value");
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorId} context`,
@@ -353,21 +385,27 @@ Deno.test("exium can retrieve attribute with value 5", () => {
       `${reason} ${context.position.line}:${context.position.column}`,
     );
   });
-  const contexts = lexer.readSync(content, { type: "stylesheet", });
+  const contexts = lexer.readSync(content, { type: "stylesheet" });
   if (contexts && contexts.length) {
-    const attribute = contexts.find((context) =>  context.type === ContextTypes.StyleSheetSelectorAttribute);
-    const attributeName = contexts.find((context) =>  context.type === ContextTypes.StyleSheetSelectorAttributeName);
-    const attributeValue = contexts.find((context) =>  context.type === ContextTypes.StyleSheetSelectorAttributeValue);
+    const attribute = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetSelectorAttribute
+    );
+    const attributeName = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetSelectorAttributeName
+    );
+    const attributeValue = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetSelectorAttributeValue
+    );
     if (!attribute) {
-      throw new Error('Failed to retrieve the attribute');
+      throw new Error("Failed to retrieve the attribute");
     }
     if (!attributeName) {
-      throw new Error('Failed to retrieve the attribute name');
+      throw new Error("Failed to retrieve the attribute name");
     }
     if (!attributeValue) {
-      throw new Error('Failed to retrieve the attribute value');
+      throw new Error("Failed to retrieve the attribute value");
     }
-    assertEquals(attributeValue.source, 'value')
+    assertEquals(attributeValue.source, "value");
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorId} context`,
@@ -386,19 +424,25 @@ Deno.test("exium can retrieve attribute with value 6", () => {
       `${reason} ${context.position.line}:${context.position.column}`,
     );
   });
-  const contexts = lexer.readSync(content, { type: "stylesheet", });
+  const contexts = lexer.readSync(content, { type: "stylesheet" });
   if (contexts && contexts.length) {
-    const attribute = contexts.find((context) =>  context.type === ContextTypes.StyleSheetSelectorAttribute);
-    const attributeName = contexts.find((context) =>  context.type === ContextTypes.StyleSheetSelectorAttributeName);
-    const attributeValue = contexts.find((context) =>  context.type === ContextTypes.StyleSheetSelectorAttributeValue);
+    const attribute = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetSelectorAttribute
+    );
+    const attributeName = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetSelectorAttributeName
+    );
+    const attributeValue = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetSelectorAttributeValue
+    );
     if (!attribute) {
-      throw new Error('Failed to retrieve the attribute');
+      throw new Error("Failed to retrieve the attribute");
     }
     if (!attributeName) {
-      throw new Error('Failed to retrieve the attribute name');
+      throw new Error("Failed to retrieve the attribute name");
     }
     if (!attributeValue) {
-      throw new Error('Failed to retrieve the attribute value');
+      throw new Error("Failed to retrieve the attribute value");
     }
     assertEquals(attributeValue.source, '"value"');
   } else {
