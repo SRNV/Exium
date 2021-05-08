@@ -27,7 +27,7 @@ Deno.test("exium support combinators", () => {
     </style>
   </template>
   `;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );

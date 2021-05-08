@@ -16,7 +16,7 @@ Deno.test("exium can retrieve selectors with pseudo elements", () => {
     </style>
   </template>
   `;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -52,7 +52,7 @@ Deno.test("exium supports all standard pseudo classes", () => {
       </style>
     </template>
     `;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );

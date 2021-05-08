@@ -5,7 +5,7 @@ import {
   assertEquals,
 } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
-const url = new URL(import.meta.url);
+
 
 // TODO retrieve all types inside StyleSheetTypeAssignment
 /**
@@ -19,7 +19,7 @@ const url = new URL(import.meta.url);
 Deno.test("exium stylesheet supports @const statement, and it can retrieve the name of the const and its type", () => {
   const constName = "myColor";
   const content = ` @const ${constName}<hex>= #001000;`;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -60,7 +60,7 @@ Deno.test("exium stylesheet supports @const statement, and it can retrieve the n
       @const ${constName}<hex>= #001000;
     </style>
   </template>`;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     console.warn(context);
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -96,7 +96,7 @@ Deno.test("exium stylesheet supports @const statement, and it can retrieve the n
 
 Deno.test("exium stylesheet supports @export statement", () => {
   const content = `@export const myVar<hex> = #000000;`;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );

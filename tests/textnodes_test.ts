@@ -2,12 +2,12 @@ import { Exium } from "./../mod.ts";
 import { ContextTypes } from "../src/enums/context-types.ts";
 import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
-const url = new URL(import.meta.url);
+
 
 Deno.test("exium supports textnodes", () => {
   const content =
     "import a from 'v';<div>here a textnode</div><!--not a textnode --> here another one";
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -33,7 +33,7 @@ Deno.test("exium supports textnodes", () => {
 Deno.test("exium supports textnodes with template", () => {
   const source = "here a textnode ${template} ";
   const content = `import a from 'v';<div>${source}</div>`;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -71,7 +71,7 @@ Deno.test("exium should use onError function when an unsupported textnode is par
   // malformed import statement
   const content = "impot a from 'v';";
   let result = false;
-  new Exium((reason, cursor, context) => {
+  new Exium((_reason, _cursor, context) => {
     result = context.type === ContextTypes.Unexpected &&
       context.source === content;
     assertEquals(context.position, { start: 0, line: 0, column: 0, end: 1 });
@@ -87,7 +87,7 @@ Deno.test("exium should use onError function when an unsupported textnode is par
 Deno.test("exium supports textnodes using < but not starting a new node", () => {
   const source = "is a correct textnode <<<<";
   const content = `<div> ${source}</div>`;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );

@@ -6,7 +6,7 @@ import {
 } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 import { component1 } from "./../utils/componentFile.ts";
 
-const url = new URL(import.meta.url);
+
 
 Deno.test("exium can parse a basic component", () => {
   const styleSource = `
@@ -16,7 +16,7 @@ Deno.test("exium can parse a basic component", () => {
   declare:
     public basic: string = 'this is a basic component';
 `;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     console.warn(context);
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -107,7 +107,7 @@ import component A from './b.o3';
 
 Deno.test("exium large component is parsed < 100ms", () => {
   const perf = performance.now();
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );

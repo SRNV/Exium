@@ -5,7 +5,7 @@ import {
   assertEquals,
 } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
-const url = new URL(import.meta.url);
+
 /**
  * traits in css
  * assert that a list of properties are respected
@@ -16,7 +16,7 @@ Deno.test("exium stylesheet supports type rule assignment", () => {
     @<myTrait>  div {
       color: red;
     }`;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );

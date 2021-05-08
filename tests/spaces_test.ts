@@ -2,10 +2,10 @@ import { Exium } from "./../mod.ts";
 import { ContextTypes } from "../src/enums/context-types.ts";
 import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
-const url = new URL(import.meta.url);
+
 
 Deno.test("exium supports spaces", () => {
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -24,7 +24,7 @@ Deno.test("exium supports spaces", () => {
 });
 
 Deno.test("exium supports multiple spaces", () => {
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -43,7 +43,7 @@ Deno.test("exium supports multiple spaces", () => {
 });
 
 Deno.test("exium supports line break", () => {
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );

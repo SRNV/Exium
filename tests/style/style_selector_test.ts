@@ -17,7 +17,7 @@ Deno.test("exium can retrieve selectors", () => {
     color: blue;
   }
   `;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -50,7 +50,7 @@ Deno.test("exium can retrieve classes", () => {
     color: blue;
   }
   `;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -101,7 +101,7 @@ Deno.test("exium can retrieve ids", () => {
   #op,
   #stillGood {}
   `;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -156,7 +156,7 @@ Deno.test("exium can retrieve attribute", () => {
     color: blue;
   }
   `;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -191,7 +191,7 @@ Deno.test("exium can retrieve multiple attributes", () => {
     color: blue;
   }
   `;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -224,7 +224,7 @@ Deno.test("exium can retrieve attribute with value 1", () => {
     color: blue;
   }
   `;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -263,7 +263,7 @@ Deno.test("exium can retrieve attribute with value 2", () => {
     color: blue;
   }
   `;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -302,7 +302,7 @@ Deno.test("exium can retrieve attribute with value 3", () => {
     color: blue;
   }
   `;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -341,7 +341,7 @@ Deno.test("exium can retrieve attribute with value 4", () => {
     color: blue;
   }
   `;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -380,7 +380,7 @@ Deno.test("exium can retrieve attribute with value 5", () => {
     color: blue;
   }
   `;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -419,7 +419,7 @@ Deno.test("exium can retrieve attribute with value 6", () => {
     color: blue;
   }
   `;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );

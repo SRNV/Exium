@@ -293,12 +293,12 @@ export class ExiumBase {
    */
   comment_block_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char, prev, next } = this;
+      const { char, prev, next } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       if (char !== "/" || char === "/" && next !== "*") return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isClosed = false;
       const allSubContexts: ContextReader[] = [
         this.line_break_CTX,
@@ -336,12 +336,12 @@ export class ExiumBase {
    */
   comment_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char, prev, next } = this;
+      const { char, next } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       if (char !== "/" || char === "/" && next !== "/") return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       while (!this.isEOF) {
         this.shift(1);
         this.isValidChar(opts?.unexpected);
@@ -370,12 +370,12 @@ export class ExiumBase {
    */
   string_single_quote_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char, prev, next } = this;
-      let { source } = this;
+      const { char, prev } = this;
+      const { source } = this;
       const { x, column, line } = this.cursor;
       if (char !== "'" || char === "'" && prev === "\\") return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isClosed = false;
       while (!this.isEOF) {
         this.shift(1);
@@ -411,12 +411,12 @@ export class ExiumBase {
    */
   string_double_quote_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char, prev, next } = this;
-      let { source } = this;
+      const { char, prev } = this;
+      const { source } = this;
       const { x, column, line } = this.cursor;
       if (char !== '"' || char === '"' && prev === "\\") return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isClosed = false;
       while (!this.isEOF) {
         this.shift(1);
@@ -452,12 +452,12 @@ export class ExiumBase {
    */
   string_template_quote_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char, prev, next } = this;
+      const { char, prev } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       if (char !== "`" || char === "`" && prev === "\\") return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isClosed = false;
       const allSubContexts = [
         this.line_break_CTX,
@@ -500,9 +500,9 @@ export class ExiumBase {
    */
   string_template_quote_eval_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char, prev, next } = this;
+      const { char, prev, next } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       if (
         char !== "$" || char === "$" && prev === "\\" ||
         char === "$" && next !== "{"
@@ -510,7 +510,7 @@ export class ExiumBase {
         return false;
       }
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isClosed = false;
       const allSubContexts = [
         this.line_break_CTX,
@@ -589,7 +589,7 @@ export class ExiumBase {
   }
   space_CTX() {
     this.debuggPosition("\n\n\t\tSPACE START");
-    let result = this.char === " " && this.next !== this.char;
+    const result = this.char === " " && this.next !== this.char;
     if (result) {
       this.currentContexts.push(
         new ExiumContext(ContextTypes.Space, this.char, {
@@ -606,7 +606,7 @@ export class ExiumBase {
   }
   semicolon_CTX() {
     this.debuggPosition("\n\n\t\tSEMICOLON START");
-    let result = this.char === ";";
+    const result = this.char === ";";
     if (result) {
       this.currentContexts.push(
         new ExiumContext(ContextTypes.SemiColon, this.char, {
@@ -623,7 +623,7 @@ export class ExiumBase {
   }
   coma_CTX() {
     this.debuggPosition("\n\n\t\tCOMA START");
-    let result = this.char === ",";
+    const result = this.char === ",";
     if (result) {
       this.currentContexts.push(
         new ExiumContext(ContextTypes.Coma, this.char, {
@@ -640,7 +640,7 @@ export class ExiumBase {
   }
   line_break_CTX() {
     this.debuggPosition("\n\n\t\tLINEBREAK START");
-    let result = this.char === "\n";
+    const result = this.char === "\n";
     if (result) {
       this.currentContexts.push(
         new ExiumContext(ContextTypes.LineBreak, this.char, {
@@ -662,12 +662,12 @@ export class ExiumBase {
    */
   braces_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char } = this;
+      const { char } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       if (char !== "(") return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isClosed = false;
       const allSubContexts = [
         this.line_break_CTX,
@@ -708,12 +708,12 @@ export class ExiumBase {
    */
   curly_braces_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char } = this;
+      const { char } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       if (char !== "{") return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isClosed = false;
       const allSubContexts = opts?.contexts || [
         this.line_break_CTX,
@@ -754,12 +754,12 @@ export class ExiumBase {
    */
   array_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char } = this;
+      const { char } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       if (char !== "[") return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isClosed = false;
       const allSubContexts = [
         this.line_break_CTX,
@@ -800,12 +800,12 @@ export class ExiumBase {
    */
   parenthese_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char } = this;
+      const { char } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       if (char !== "(") return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isClosed = false;
       const allSubContexts = (opts?.contexts || [
         this.line_break_CTX,

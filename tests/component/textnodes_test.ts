@@ -5,10 +5,10 @@ import {
   assertEquals,
 } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
-const url = new URL(import.meta.url);
+
 Deno.test("exium can parse textnodes with template eval ctx inside a component's template", () => {
   const textnode = "$\{this.basic}";
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     console.warn(context);
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,

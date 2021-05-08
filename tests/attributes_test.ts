@@ -2,10 +2,10 @@ import { Exium } from "./../mod.ts";
 import { ContextTypes } from "../src/enums/context-types.ts";
 import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
-const url = new URL(import.meta.url);
+
 
 Deno.test("exium can parse attribute unquoted", () => {
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -55,7 +55,7 @@ Deno.test("exium can parse attribute unquoted", () => {
 });
 
 Deno.test("exium can parse boolean attributes and a space after", () => {
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -91,7 +91,7 @@ Deno.test("exium can parse boolean attributes and a space after", () => {
 });
 
 Deno.test("exium can parse multiple boolean attributes", () => {
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -145,7 +145,7 @@ Deno.test("exium can parse multiple boolean attributes", () => {
 });
 
 Deno.test("exium can parse boolean attributes and without space after", () => {
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );

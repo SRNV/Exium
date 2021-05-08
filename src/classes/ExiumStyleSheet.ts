@@ -2,8 +2,6 @@ import { ExiumProtocol } from "./ExiumProtocol.ts";
 import {
   ContextReader,
   ContextReaderOptions,
-  CursorDescriber,
-  OgooneLexerParseOptions,
 } from "../types/main.d.ts";
 import { ExiumContext } from "./ExiumContext.ts";
 import { ContextTypes } from "../enums/context-types.ts";
@@ -20,9 +18,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
   stylesheet_CTX(opts?: ContextReaderOptions): boolean {
     this.debuggPosition("STYLESHEET START");
     try {
-      let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       const lastIsAStyleNode = this.currentContexts.find((context) =>
         context.type === ContextTypes.Node &&
         context.related.find((node) =>
@@ -34,7 +31,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const isValid = !!lastIsAStyleNode || this.isParsingStylesheet;
       if (!isValid) return false;
       if (opts?.checkOnly) return !this.isEndOfStylesheet;
-      let result = true;
+      const result = true;
       const children: ExiumContext[] = [];
       const allSubContexts: ContextReader[] = [
         this.stylesheet_end_CTX,
@@ -84,13 +81,12 @@ export class ExiumStyleSheet extends ExiumProtocol {
   stylesheet_charset_at_rule_CTX(opts?: ContextReaderOptions): boolean {
     this.debuggPosition("stylesheet_charset_at_rule_CTX");
     try {
-      let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       const isValid = Boolean(this.isFollowedBy("@charset", true));
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isClosed = false;
       const children: ExiumContext[] = [];
       const allSubContexts: ContextReader[] = [
@@ -182,13 +178,12 @@ export class ExiumStyleSheet extends ExiumProtocol {
    */
   stylesheet_export_at_rule_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       const isValid = Boolean(this.isFollowedBy("@export", true));
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       const children: ExiumContext[] = [];
       const allSubContexts: ContextReader[] = [
         this.multiple_spaces_CTX,
@@ -237,15 +232,14 @@ export class ExiumStyleSheet extends ExiumProtocol {
   stylesheet_const_at_rule_CTX(opts?: ContextReaderOptions): boolean {
     this.debuggPosition("stylesheet_const_at_rule_CTX");
     try {
-      let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       const isValid = Boolean(
         this.isFollowedBy("@const", true) || opts?.data?.isExportStatement,
       );
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isNamed = false;
       const children: ExiumContext[] = [];
       const related: ExiumContext[] = [];
@@ -312,13 +306,13 @@ export class ExiumStyleSheet extends ExiumProtocol {
   stylesheet_const_at_rule_name_CTX(opts?: ContextReaderOptions): boolean {
     this.debuggPosition("\nCONST NAME");
     try {
-      let { nextPart } = this;
+      const { nextPart } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       const isValid = /^[a-zA-Z]/i.test(nextPart);
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       // retrieve the atrule name
       while (!this.isEOF) {
         this.shift(1);
@@ -347,13 +341,13 @@ export class ExiumStyleSheet extends ExiumProtocol {
   }
   stylesheet_const_at_rule_equal_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char, next } = this;
+      const { char, next } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       const isValid = char === "=" && next !== "=";
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       const children: ExiumContext[] = [];
       const subs: ContextReader[] = [];
       // retrieve the atrule name
@@ -387,13 +381,13 @@ export class ExiumStyleSheet extends ExiumProtocol {
   stylesheet_default_at_rule_CTX(opts?: ContextReaderOptions): boolean {
     this.debuggPosition("\nDEFAULT AT RULE");
     try {
-      let { char, prev, next, lastContext } = this;
+      const { char } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       const isValid = Boolean(char === "@");
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isTyped = false;
       let isClosed = false;
       const children: ExiumContext[] = [];
@@ -458,14 +452,14 @@ export class ExiumStyleSheet extends ExiumProtocol {
   stylesheet_type_assignment_CTX(opts?: ContextReaderOptions): boolean {
     this.debuggPosition("\nCONST TYPE");
     try {
-      let { char, prev, next, lastContext } = this;
+      const { char, next } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       const isValid = (char === "@" && next === "<") ||
         (opts?.data?.force_type_assignment_contextrce);
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isClosed = false;
       const children: ExiumContext[] = [];
       const allSubContexts: ContextReader[] = (opts?.contexts || [
@@ -514,13 +508,13 @@ export class ExiumStyleSheet extends ExiumProtocol {
   }
   stylesheet_at_rule_name_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char, prev, next, lastContext } = this;
+      const { char } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       const isValid = ![" ", "<"].includes(char);
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       const children: ExiumContext[] = [];
       const allSubContexts: ContextReader[] = (opts?.contexts || []);
       while (!this.isEOF) {
@@ -555,14 +549,14 @@ export class ExiumStyleSheet extends ExiumProtocol {
   stylesheet_selector_list_CTX(opts?: ContextReaderOptions): boolean | null {
     this.debuggPosition("SELECTOR LIST");
     try {
-      let { char, prev, next, lastContext, nextPart } = this;
+      const { char, nextPart } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       const isValid = ![",", "@", " ", "\n"].includes(char) &&
         nextPart.match(/^([^;\{]+?)(\{)/mi);
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       const supportedSelectors: ContextReader[] = [
         this.stylesheet_end_CTX,
         this.stylesheet_selector_combinator_CTX,
@@ -617,14 +611,14 @@ export class ExiumStyleSheet extends ExiumProtocol {
   }
   stylesheet_selector_element_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char, prev, next, lastContext } = this;
+      const { char } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       const unsupportedChars = ["#", ".", "[", " ", "@", "{", "\n", ","];
       const isValid = !unsupportedChars.includes(char);
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       const children: ExiumContext[] = [];
       while (!this.isEOF) {
         this.debuggPosition("\nSELECTOR ELEMENT");
@@ -657,14 +651,14 @@ export class ExiumStyleSheet extends ExiumProtocol {
   stylesheet_selector_class_CTX(opts?: ContextReaderOptions): boolean {
     this.debuggPosition("\nSELECTOR CLASS");
     try {
-      let { char, prev, next, lastContext } = this;
+      const { char, prev } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       const previousIsClassStart = prev === "." && char !== ".";
       const isValid = (char === "." || previousIsClassStart);
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       const children: ExiumContext[] = [];
       while (!this.isEOF) {
         this.debuggPosition("\nSELECTOR CLASS");
@@ -702,13 +696,13 @@ export class ExiumStyleSheet extends ExiumProtocol {
   }
   stylesheet_selector_pseudo_class_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char, prev, next } = this;
+      const { char, prev, next } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       const isValid = (char === ":" || prev === ":") && next !== ":";
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       const children: ExiumContext[] = [];
       const allSubs: ContextReader[] = [
         this.multiple_spaces_CTX,
@@ -748,15 +742,15 @@ export class ExiumStyleSheet extends ExiumProtocol {
   }
   stylesheet_selector_pseudo_element_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char, prev, next } = this;
+      const { char, prev, next } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       const isValid =
         (char === ":" && next === ":" || prev === ":" && char === ":");
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
       this.shiftUntilEndOf("::");
-      let result = true;
+      const result = true;
       const children: ExiumContext[] = [];
       const allSubs: ContextReader[] = [
         this.multiple_spaces_CTX,
@@ -796,13 +790,13 @@ export class ExiumStyleSheet extends ExiumProtocol {
   }
   stylesheet_selector_id_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char, prev, next, lastContext } = this;
+      const { char, prev } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       const isValid = (char === "#" || prev === "#");
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       const children: ExiumContext[] = [];
       while (!this.isEOF) {
         this.debuggPosition("\nSELECTOR ID");
@@ -835,13 +829,13 @@ export class ExiumStyleSheet extends ExiumProtocol {
   stylesheet_selector_attribute_CTX(opts?: ContextReaderOptions): boolean {
     this.debuggPosition("\nSELECTOR ATTRIBUTE");
     try {
-      let { char, prev } = this;
+      const { char, prev } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       const isValid = (char === "[" || prev === "[" && char !== "]");
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isClosed = false;
       let isNamed = false;
       const children: ExiumContext[] = [];
@@ -863,7 +857,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
           isNamed = !!related.find((context) =>
             context.type === ContextTypes.StyleSheetSelectorAttributeName
           );
-        } else {}
+        }
         this.saveContextsTo(allSubContexts, children);
         this.shift(1);
         if (["]"].includes(this.prev!)) {
@@ -897,14 +891,14 @@ export class ExiumStyleSheet extends ExiumProtocol {
   stylesheet_selector_attribute_name_CTX(opts?: ContextReaderOptions): boolean {
     this.debuggPosition("\nSELECTOR ATTRIBUTE NAME START");
     try {
-      let { char, prev } = this;
+      const { char } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       const unsupported = ["^", "$", "|", "=", "*", " ", "]", "[", "\n"];
       const isValid = !unsupported.includes(char);
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       while (!this.isEOF) {
         this.debuggPosition("\nSELECTOR ATTRIBUTE NAME");
         if (unsupported.includes(this.char)) {
@@ -935,15 +929,15 @@ export class ExiumStyleSheet extends ExiumProtocol {
   ): boolean {
     this.debuggPosition("\nSELECTOR ATTRIBUTE EQUAL START");
     try {
-      let { char, prev, next } = this;
+      const { char, next } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       const supported = ["^", "$", "|", "*", "~"];
       const isValid = supported.includes(char) && next === "=" ||
         char === "=";
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       while (!this.isEOF) {
         this.debuggPosition("\nSELECTOR ATTRIBUTE EQUAL");
         if (this.char === "=") {
@@ -973,14 +967,14 @@ export class ExiumStyleSheet extends ExiumProtocol {
   stylesheet_selector_combinator_CTX(opts?: ContextReaderOptions): boolean {
     this.debuggPosition("\nSELECTOR COMBINATOR START");
     try {
-      let { char } = this;
+      const { char } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       const supported = ["+", ">", "~", "*"];
       const isValid = supported.includes(char);
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       this.shift(1);
       const contexts: { [k: string]: ContextTypes } = {
         "~": ContextTypes.StyleSheetSelectorCombinatorGeneralSibling,
@@ -1010,14 +1004,14 @@ export class ExiumStyleSheet extends ExiumProtocol {
   ): boolean {
     this.debuggPosition("\nSELECTOR ATTRIBUTE EQUAL START");
     try {
-      let { lastContext } = this;
+      const { lastContext } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       const isValid =
         lastContext.type === ContextTypes.StyleSheetSelectorAttributeEqual;
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       while (!this.isEOF) {
         this.debuggPosition("\nSELECTOR ATTRIBUTE EQUAL");
         if (this.char === "]") {
@@ -1043,8 +1037,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
       throw err;
     }
   }
-  stylesheet_end_CTX(opts?: ContextReaderOptions): boolean | null {
-    const { prev, char, next, nextPart, source } = this;
+  stylesheet_end_CTX(): boolean | null {
+    const { nextPart, source } = this;
     const { x, line, column } = this.cursor;
     const reg = /^([\s\n]*?)(\<\/style)/i;
     const isValid = reg.test(nextPart);

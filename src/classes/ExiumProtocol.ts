@@ -23,7 +23,7 @@ export class ExiumProtocol extends ExiumHTMLElements {
     try {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       const lastIsAStyleNode = this.currentContexts.find((context) =>
         context.type === ContextTypes.Node &&
         context.related.find((node) =>

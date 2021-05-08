@@ -2,10 +2,10 @@ import { Exium } from "./../mod.ts";
 import { ContextTypes } from "../src/enums/context-types.ts";
 import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
-const url = new URL(import.meta.url);
+
 
 Deno.test("exium supports template quotes", () => {
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -28,7 +28,7 @@ Deno.test("exium supports template quotes", () => {
 });
 
 Deno.test("exium should not use escaped template quotes to close quotes", () => {
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -52,7 +52,7 @@ Deno.test("exium should not use escaped template quotes to close quotes", () => 
 
 Deno.test("exium should use the onError function, when the StringTemplateQuote is not finished", () => {
   let result = false;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     // true because the quote isn't closed
     result = true;
   });
@@ -69,7 +69,7 @@ Deno.test("exium should use the onError function, when the StringTemplateQuote i
 
 Deno.test("exium should use the onError function, when the StringTemplateQuoteEval is not finished", () => {
   let result = false;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     // true because the quote isn't closed
     result = true;
   });
@@ -86,7 +86,7 @@ Deno.test("exium should use the onError function, when the StringTemplateQuoteEv
 
 Deno.test("exium supports template concatenation inside template quotes", () => {
   let result = false;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -112,7 +112,7 @@ Deno.test("exium supports template concatenation inside template quotes", () => 
 
 Deno.test("exium supports recursive template concatenation", () => {
   let result = false;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -121,7 +121,7 @@ Deno.test("exium supports recursive template concatenation", () => {
   const contexts = lexer.readSync(content, { type: "lexer" });
   if (contexts && contexts.length) {
     const [
-      space,
+      ,
       templateQuoteEval,
       templateQuote,
       templateQuoteEvalOnTop,

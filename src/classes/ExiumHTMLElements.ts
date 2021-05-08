@@ -43,7 +43,7 @@ export class ExiumHTMLElements extends ExiumBase {
     try {
       let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       const lastIsANode = Boolean(
         lastContext &&
           [
@@ -97,7 +97,7 @@ export class ExiumHTMLElements extends ExiumBase {
     try {
       let { char, prev, next, nextPart } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       if (
         char !== "<" ||
         char === "<" && [" ", "<", "!"].includes(next!) ||
@@ -106,7 +106,7 @@ export class ExiumHTMLElements extends ExiumBase {
         return false;
       }
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isClosed = false;
       let isAutoClosing = false;
       let isNamed = false;
@@ -262,12 +262,12 @@ export class ExiumHTMLElements extends ExiumBase {
    */
   node_name_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char } = this;
+      const { char } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       if ([" ", "[", "!", "-", "\n", "/"].includes(char)) return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       const children: ExiumContext[] = [];
       while (!this.isEOF) {
         this.shift(1);
@@ -303,9 +303,9 @@ export class ExiumHTMLElements extends ExiumBase {
    */
   html_comment_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char, prev, next } = this;
+      const { char, next } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       const sequence = [char, next, source[x + 2], source[x + 3]];
       if (
         char !== "<" ||
@@ -314,7 +314,7 @@ export class ExiumHTMLElements extends ExiumBase {
         return false;
       }
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isClosed = false;
       const children: ExiumContext[] = [];
       while (!this.isEOF) {
@@ -355,12 +355,11 @@ export class ExiumHTMLElements extends ExiumBase {
    */
   import_ambient_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char, prev, next } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       if (!/^import\s*(["'])(.*?)(\1)/i.test(this.nextPart)) return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isClosed = false;
       const related: ExiumContext[] = [];
       /**
@@ -424,9 +423,9 @@ export class ExiumHTMLElements extends ExiumBase {
   // TODO create contexts for the tokens between import and from
   import_statements_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char, next } = this;
+      const { char, next } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       const sequence = char +
         next +
         source[x + 2] +
@@ -441,7 +440,7 @@ export class ExiumHTMLElements extends ExiumBase {
         return false;
       }
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isClosed = false;
       const related: ExiumContext[] = [];
       const otherImportStatements: ContextReader[] = [
@@ -513,12 +512,12 @@ export class ExiumHTMLElements extends ExiumBase {
    */
   flag_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char, prev, next } = this;
+      const { char, next } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       if (char !== "-" || next !== "-") return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isClosed = false;
       let isNamed = false;
       const children: ExiumContext[] = [];
@@ -562,12 +561,12 @@ export class ExiumHTMLElements extends ExiumBase {
   }
   flag_name_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char, prev, next } = this;
+      const { char } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       if (char === "-") return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isClosed = false;
       const children: ExiumContext[] = [];
       while (!this.isEOF) {
@@ -604,12 +603,12 @@ export class ExiumHTMLElements extends ExiumBase {
   }
   flag_spread_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char, next } = this;
+      const { char } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       if (char !== "{" || !/^\{(\s*)(\.){3}/i.test(this.nextPart)) return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isClosed = false;
       const children: ExiumContext[] = [];
       const readers: ContextReader[] = [
@@ -651,9 +650,9 @@ export class ExiumHTMLElements extends ExiumBase {
    */
   attributes_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char, prev, next } = this;
+      const { char, prev } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       if (
         prev &&
           prev !== " " ||
@@ -663,7 +662,7 @@ export class ExiumHTMLElements extends ExiumBase {
         return false;
       }
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isClosed = false;
       let isNamed = false;
       const children: ExiumContext[] = [];
@@ -710,14 +709,14 @@ export class ExiumHTMLElements extends ExiumBase {
   }
   attribute_boolean_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char } = this;
+      const { char } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       if (char === "-" || !/^([^\s=\<\>\/]+?)(\s|\n|\>)/i.test(this.nextPart)) {
         return false;
       }
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isClosed = false;
       const children: ExiumContext[] = [];
       while (!this.isEOF) {
@@ -758,12 +757,12 @@ export class ExiumHTMLElements extends ExiumBase {
   }
   attribute_name_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char } = this;
+      const { char } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       if (char === "-") return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isClosed = false;
       const children: ExiumContext[] = [];
       while (!this.isEOF) {
@@ -799,12 +798,12 @@ export class ExiumHTMLElements extends ExiumBase {
   }
   attribute_unquoted_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char, prev } = this;
+      const { prev } = this;
       const { x, line, column } = this.cursor;
-      let { source } = this;
+      const { source } = this;
       if (prev !== "=") return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       let isClosed = false;
       const children: ExiumContext[] = [];
       while (!this.isEOF) {

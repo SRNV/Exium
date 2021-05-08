@@ -5,7 +5,7 @@ import {
   assertEquals,
 } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
-const url = new URL(import.meta.url);
+
 
 Deno.test("exium can retrieve nested css", () => {
   const content = `
@@ -15,7 +15,7 @@ Deno.test("exium can retrieve nested css", () => {
       @charset 'utf-8';
     </style>
   </template>`;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
@@ -39,7 +39,7 @@ Deno.test("exium can retrieve nested css", () => {
 
 Deno.test("exium can parse at-rules", () => {
   const content = ` @media screen and (min-width: 100px) {} `;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );

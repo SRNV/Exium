@@ -5,7 +5,7 @@ import {
   assertEquals,
 } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
-const url = new URL(import.meta.url);
+
 /**
  * specifications in css
  * provide a way for teams to limit features on styles
@@ -38,7 +38,7 @@ Deno.test('exium stylesheet supports specs statement', () => {
       30;
     }
   }`;
-  const lexer = new Exium((reason, cursor, context) => {
+  const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(`${reason} ${context.position.line}:${context.position.column}`);
   });
   const contexts = lexer.readSync(content, { type: 'stylesheet' });
