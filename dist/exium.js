@@ -2653,7 +2653,7 @@ class Exium1 extends ExiumStyleSheet {
       while (!this.isEOF) {
         const isValid = this.topCTX(toplevel);
         if (!isValid) {
-          this.onError(Reason.UnexpectedToken, this.cursor, this.lastContext);
+          this.onError(Reason.UnexpectedToken, this.cursor, this.unexpected);
           break;
         }
       }
