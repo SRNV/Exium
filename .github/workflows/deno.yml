@@ -34,7 +34,7 @@ jobs:
           deno-version: "v1.x"
 
       - name: Install Susano
-        run: deno install --unstable -Afq https://deno.land/x/susano@0.1.6
+        run: deno install --unstable -Afq https://deno.land/x/susano@0.1.6/cli/susano.ts
 
       - name: Run Tests
         run: deno test --fail-fast
