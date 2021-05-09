@@ -37,7 +37,7 @@ jobs:
         run: deno test --fail-fast
 
       - name: Lint with susano
-        run: deno install --unstable -Afq https://deno.land/x/susano@0.1.6/cli/susano.ts; susano lint --once --ignore=dist/ --quiet
+        run: deno install --unstable -Afq https://deno.land/x/susano@0.1.6/cli/susano.ts;  export PATH="/home/runner/.deno/bin:$PATH"; susano lint --once --ignore=dist/ --quiet
 
       - name: Format
         run: deno fmt
