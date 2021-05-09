@@ -35,7 +35,7 @@ export class ExiumContext {
   /**
    * any data to pass to the ExiumContext
    */
-  public data: { [k: string]: any } = {};
+  public data: { [k: string]: unknown } = {};
   constructor(
     public type: ContextTypes,
     public source: string,

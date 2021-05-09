@@ -5,9 +5,9 @@ import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 
 Deno.test("exium supports comments", () => {
-  const lexer = new Exium((reason, _cursor, context) => {
+  const lexer = new Exium((_reason, _cursor, context) => {
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${_reason} ${context.position.line}:${context.position.column}`,
     );
   });
   const content = "//";
@@ -25,9 +25,9 @@ Deno.test("exium supports comments", () => {
 });
 
 Deno.test("exium supports multiple comments", () => {
-  const lexer = new Exium((reason, _cursor, context) => {
+  const lexer = new Exium((_reason, _cursor, context) => {
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${_reason} ${context.position.line}:${context.position.column}`,
     );
   });
   const content = `
@@ -51,9 +51,9 @@ Deno.test("exium supports multiple comments", () => {
 });
 
 Deno.test("exium supports comment blocks", () => {
-  const lexer = new Exium((reason, _cursor, context) => {
+  const lexer = new Exium((_reason, _cursor, context) => {
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${_reason} ${context.position.line}:${context.position.column}`,
     );
   });
   const content = `/** supported! */`;
@@ -68,9 +68,9 @@ Deno.test("exium supports comment blocks", () => {
 });
 
 Deno.test("exium supports comment blocks with multi lines", () => {
-  const lexer = new Exium((reason, _cursor, context) => {
+  const lexer = new Exium((_reason, _cursor, context) => {
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${_reason} ${context.position.line}:${context.position.column}`,
     );
   });
   const content = `
@@ -101,11 +101,11 @@ Deno.test("exium supports comment blocks with multi lines", () => {
 });
 Deno.test("exium should use the onError function when a html comment isnt finished", () => {
   let result = false;
-  const lexer = new Exium((reason, _cursor, context) => {
+  const lexer = new Exium((_reason, _cursor) => {
     result = true;
   });
   const content = `<!--`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  lexer.readSync(content, { type: "component" });
   if (!result) {
     throw new Error("Exium - Failed to retrieve Space context");
   }
@@ -113,7 +113,7 @@ Deno.test("exium should use the onError function when a html comment isnt finish
 
 Deno.test("exium not a comment", () => {
   let result = false;
-  const lexer = new Exium((reason, _cursor, _context) => {
+  const lexer = new Exium((_reason, _cursor) => {
     result = true;
   });
   const content = `<! --`;
@@ -125,7 +125,7 @@ Deno.test("exium not a comment", () => {
 
 Deno.test("exium not a comment 2", () => {
   let result = false;
-  const lexer = new Exium((reason, _cursor, _context) => {
+  const lexer = new Exium((_reason, _cursor) => {
     result = true;
   });
   const content = `<!- -`;
@@ -136,9 +136,9 @@ Deno.test("exium not a comment 2", () => {
 });
 
 Deno.test("exium supports html comments", () => {
-  const lexer = new Exium((reason, _cursor, context) => {
+  const lexer = new Exium((_reason, _cursor, context) => {
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${_reason} ${context.position.line}:${context.position.column}`,
     );
   });
   const content = `<!-- -->`;
@@ -154,9 +154,9 @@ Deno.test("exium supports html comments", () => {
 });
 
 Deno.test("exium - only one html comment", () => {
-  const lexer = new Exium((reason, _cursor, context) => {
+  const lexer = new Exium((_reason, _cursor, context) => {
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${_reason} ${context.position.line}:${context.position.column}`,
     );
   });
   const content = `<!-- 'nothing else' "// " -->`;
@@ -171,9 +171,9 @@ Deno.test("exium - only one html comment", () => {
   }
 });
 Deno.test("exium supports compact html comments", () => {
-  const lexer = new Exium((reason, _cursor, context) => {
+  const lexer = new Exium((_reason, _cursor, context) => {
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${_reason} ${context.position.line}:${context.position.column}`,
     );
   });
   const content = `<!---->`;
@@ -188,9 +188,9 @@ Deno.test("exium supports compact html comments", () => {
   }
 });
 Deno.test("exium supports multiple comments", () => {
-  const lexer = new Exium((reason, _cursor, context) => {
+  const lexer = new Exium((_reason, _cursor, context) => {
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${_reason} ${context.position.line}:${context.position.column}`,
     );
   });
   const content = `<!---->

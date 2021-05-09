@@ -53,7 +53,7 @@ Deno.test("exium should not use escaped quotes to close quotes", () => {
 
 Deno.test("exium should use the onError function", () => {
   let result = false;
-  const lexer = new Exium((reason, _cursor, _context) => {
+  const lexer = new Exium((_reason, _cursor, _context) => {
     // true because there's a line break between the quotes
     result = true;
   });
@@ -71,7 +71,7 @@ Deno.test("exium should use the onError function", () => {
 
 Deno.test("exium should use the onError function, when the StringSingleQuote is not finished", () => {
   let result = false;
-  const lexer = new Exium((reason, _cursor, _context) => {
+  const lexer = new Exium((_reason, _cursor, _context) => {
     // true because the quote isn't closed
     result = true;
   });

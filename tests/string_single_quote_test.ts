@@ -4,9 +4,9 @@ import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 
 Deno.test("exium supports double quotes", () => {
-  const lexer = new Exium((reason, _cursor, context) => {
+  const lexer = new Exium((_reason, _cursor, context) => {
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${_reason} ${context.position.line}:${context.position.column}`,
     );
   });
   const content = `" single quotes are supported "`;
@@ -27,9 +27,9 @@ Deno.test("exium supports double quotes", () => {
 });
 
 Deno.test("exium should not use escaped quotes to close quotes", () => {
-  const lexer = new Exium((reason, _cursor, context) => {
+  const lexer = new Exium((_reason, _cursor, context) => {
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${_reason} ${context.position.line}:${context.position.column}`,
     );
   });
   const content =
@@ -52,7 +52,7 @@ Deno.test("exium should not use escaped quotes to close quotes", () => {
 
 Deno.test("exium should use the onError function when theres a line break into a StringDoubleQuote", () => {
   let result = false;
-  const lexer = new Exium((reason, _cursor, context) => {
+  const lexer = new Exium(() => {
     // true because there's a line break between the quotes
     result = true;
   });
@@ -69,7 +69,7 @@ Deno.test("exium should use the onError function when theres a line break into a
 });
 Deno.test("exium should use the onError function, when the StringDoubleQuote is not finished", () => {
   let result = false;
-  const lexer = new Exium((reason, _cursor, context) => {
+  const lexer = new Exium(() => {
     // true because the quote isn't closed
     result = true;
   });

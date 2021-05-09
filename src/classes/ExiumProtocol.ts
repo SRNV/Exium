@@ -1,13 +1,9 @@
 import { ExiumHTMLElements } from "./ExiumHTMLElements.ts";
 import {
-  ContextReader,
   ContextReaderOptions,
-  CursorDescriber,
-  OgooneLexerParseOptions,
 } from "../types/main.d.ts";
 import { ExiumContext } from "./ExiumContext.ts";
 import { ContextTypes } from "../enums/context-types.ts";
-import { Reason } from "../enums/error-reason.ts";
 
 /**
  * all ContextReaders to read protocols elements inside components
@@ -21,7 +17,6 @@ export class ExiumProtocol extends ExiumHTMLElements {
    */
   protocol_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char, prev, next, lastContext } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
       const lastIsAStyleNode = this.currentContexts.find((context) =>
@@ -35,7 +30,7 @@ export class ExiumProtocol extends ExiumHTMLElements {
       const isValid = !!lastIsAStyleNode;
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       const children: ExiumContext[] = [];
       const allSubContexts = [
         this.line_break_CTX,

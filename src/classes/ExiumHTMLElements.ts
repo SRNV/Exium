@@ -2,8 +2,6 @@ import { ExiumBase } from "./ExiumBase.ts";
 import {
   ContextReader,
   ContextReaderOptions,
-  CursorDescriber,
-  OgooneLexerParseOptions,
 } from "../types/main.d.ts";
 import { ExiumContext } from "./ExiumContext.ts";
 import { ContextTypes } from "../enums/context-types.ts";
@@ -41,7 +39,7 @@ export class ExiumHTMLElements extends ExiumBase {
    */
   textnode_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char, prev, next, lastContext } = this;
+      const { char, prev, lastContext } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
       const lastIsANode = Boolean(
@@ -59,7 +57,7 @@ export class ExiumHTMLElements extends ExiumBase {
           !this.comment_CTX(this.checkOnlyOptions);
       if (!isValid || !this.nodeContextStarted) return false;
       if (opts?.checkOnly) return true;
-      let result = true;
+      const result = true;
       const children: ExiumContext[] = [];
       const allSubContexts = [
         this.line_break_CTX,
@@ -95,7 +93,7 @@ export class ExiumHTMLElements extends ExiumBase {
    */
   node_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      let { char, prev, next, nextPart } = this;
+      const { char, next } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
       if (
@@ -113,7 +111,7 @@ export class ExiumHTMLElements extends ExiumBase {
       let isProto = false;
       let isTemplate = false;
       let isStyle = false;
-      let isNodeClosing = this.nextPart.startsWith("</");
+      const isNodeClosing = this.nextPart.startsWith("</");
       const subcontextEvaluatedOnce: ContextReader[] = [
         this.node_name_CTX,
       ];
@@ -167,7 +165,7 @@ export class ExiumHTMLElements extends ExiumBase {
           subcontextEvaluatedOnce.forEach((reader) => {
             const recognized = reader.apply(this, []);
             if (recognized) {
-              let context = this.lastContext;
+              const context = this.lastContext;
               related.push(context);
               isNamed = context.type === ContextTypes.NodeName;
               isProto = isNamed && context.source === "proto";

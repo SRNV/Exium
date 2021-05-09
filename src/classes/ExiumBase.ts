@@ -56,7 +56,7 @@ export class ExiumBase {
     line: 0,
     column: 0,
   };
-  protected source: string = "";
+  protected source = "";
   /**
    * the current character
    */
@@ -131,7 +131,7 @@ export class ExiumBase {
     );
   }
   protected parseOptions: OgooneLexerParseOptions | null = null;
-  protected debugg(...args: any[]): void {
+  protected debugg(...args: unknown[]): void {
     if (this.parseOptions?.debugg) {
       console.log(...args);
     }
@@ -157,7 +157,7 @@ export class ExiumBase {
       reason: Reason,
       cursor: CursorDescriber,
       context: ExiumContext,
-    ) => any,
+    ) => void,
   ) {}
   /**
    * should validate if the character is accepted inside the current context
@@ -165,7 +165,7 @@ export class ExiumBase {
    */
   isValidChar(unexpected?: ContextReader[]) {
     if (!unexpected) return;
-    for (let reader of unexpected) {
+    for (const reader of unexpected) {
       const isUnexpected = reader.apply(this, [this.checkOnlyOptions]);
       if (isUnexpected) {
         this.onError(Reason.UnexpectedToken, this.cursor, this.lastContext);
@@ -190,7 +190,7 @@ export class ExiumBase {
   ) {
     let endingCTX = false;
     this.treePosition++;
-    for (let reader of fromContexts) {
+    for (const reader of fromContexts) {
       this.debugg(
         `${"\t".repeat(this.treePosition)}%c[${this.char}]`,
         "color:yellow",
@@ -231,7 +231,7 @@ export class ExiumBase {
     const { length } = to;
     let endingCTX = false;
     this.treePosition++;
-    for (let reader of fromContexts) {
+    for (const reader of fromContexts) {
       this.debugg(
         `${"\t".repeat(this.treePosition)}%c[${this.char}]`,
         "color:yellow",
@@ -262,7 +262,7 @@ export class ExiumBase {
    * move the cursor and the column,
    * this method is used during parsing step
    */
-  shift(movement: number = 1) {
+  shift(movement = 1) {
     this.cursor.x += +movement;
     this.cursor.column += +movement;
   }
@@ -293,7 +293,7 @@ export class ExiumBase {
    */
   comment_block_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      const { char, prev, next } = this;
+      const { char, next } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
       if (char !== "/" || char === "/" && next !== "*") return false;

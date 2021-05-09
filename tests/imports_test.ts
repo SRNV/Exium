@@ -1,7 +1,4 @@
 import { Exium } from "./../mod.ts";
-import { ContextTypes } from "../src/enums/context-types.ts";
-import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
-
 
 Deno.test("exium supports import ambient statement", () => {
   const lexer = new Exium((reason, _cursor, context) => {
@@ -11,8 +8,8 @@ Deno.test("exium supports import ambient statement", () => {
   });
   const content = `import'my_stuff.js';`;
   const contexts = lexer.readSync(content, { type: "component" });
-  if (contexts && contexts.length) {
-  } else {
+  const isNotValid = !(contexts && contexts.length);
+  if (isNotValid) {
     throw new Error("Exium - Failed to retrieve Node Context");
   }
 });
@@ -39,8 +36,8 @@ Deno.test("exium supports all import statements", () => {
     } from "name-module/chemin/vers/fichier-non-exporte";
   `;
   const contexts = lexer.readSync(content, { type: "component" });
-  if (contexts && contexts.length) {
-  } else {
+  const isNotValid = !(contexts && contexts.length);
+  if (isNotValid) {
     throw new Error("Exium - Failed to retrieve Node Context");
   }
 });
