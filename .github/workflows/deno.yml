@@ -34,7 +34,10 @@ jobs:
           deno-version: "v1.x"
 
       - name: Run Tests
-        run: deno test
+        run: deno test --fail-fast
+
+      - name: Lint
+        run: deno lint --unstable --ignore=dist/ --quiet
 
       - name: Format
         run: deno fmt
