@@ -31,13 +31,16 @@ jobs:
         uses:  denoland/setup-deno@main
         with:
           # use latest version
-          deno-version: "v1.x"
+          deno-version: "v1.9"
+
+      - name: Install Susano
+        run: deno install --unstable -Afq https://deno.land/x/susano@0.1.6/cli/susano.ts;
 
       - name: Run Tests
         run: deno test --fail-fast
 
       - name: Lint with susano
-        run: deno install --unstable -Afq https://deno.land/x/susano@0.1.6/cli/susano.ts;  export PATH="/home/runner/.deno/bin:$PATH"; susano lint --once --ignore=dist/ --quiet
+        run: susano lint --once --ignore=dist/ --quiet
 
       - name: Format
         run: deno fmt
