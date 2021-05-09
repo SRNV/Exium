@@ -33,11 +33,14 @@ jobs:
           # use latest version
           deno-version: "v1.x"
 
+      - name: Install Susano
+        run: deno install --unstable -Afq https://deno.land/x/susano@0.1.6
+
       - name: Run Tests
         run: deno test --fail-fast
 
       - name: Lint
-        run: deno lint --unstable --ignore=dist/ --quiet
+        run: susano lint --once --ignore=dist/ --quiet
 
       - name: Format
         run: deno fmt
