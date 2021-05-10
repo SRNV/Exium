@@ -3,6 +3,7 @@
  * to use the onError function passed in parameters
  */
 export enum Reason {
+  Unsupported = 0,
   UnexpectedToken = 1436,
   HTMLTagNotClosed = 1443,
   CommentBlockOpen = 1519,
@@ -32,4 +33,5 @@ export enum Reason {
   StyleSheetTypeAssignmentNotFinish = 3004,
   StyleSheetAttributeNotClosed = 3408,
   StyleSheetPropertyListOpen = 3533,
+  StyleSheetRulePropertyValueNotClosed = 3764
 }

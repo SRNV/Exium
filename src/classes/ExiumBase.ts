@@ -103,6 +103,17 @@ export class ExiumBase {
     return result;
   }
   /**
+   * checks if the context.source is included into the support list
+   */
+  protected checkSupport(context: ExiumContext, supportList: string[], strict?: boolean) {
+    const result = supportList.includes(context.source);
+    if (strict && !result) {
+      this.onError(Reason.Unsupported, this.cursor, context);
+      return result
+    }
+    return result;
+  }
+  /**
    * should return the previously defined context
    */
   protected get unexpected(): ExiumContext {
@@ -636,6 +647,23 @@ export class ExiumBase {
       this.shift(1);
     }
     this.debuggPosition("\n\n\t\tCOMA END");
+    return result;
+  }
+  double_point_CTX() {
+    this.debuggPosition("\n\n\t\tDOUBLE POINT START");
+    const result = this.char === ":";
+    if (result) {
+      this.currentContexts.push(
+        new ExiumContext(ContextTypes.DoublePoint, this.char, {
+          start: this.cursor.x,
+          end: this.cursor.x + 1,
+          line: this.cursor.line,
+          column: this.cursor.column,
+        }),
+      );
+      this.shift(1);
+    }
+    this.debuggPosition("\n\n\t\tDOUBLE POINT END");
     return result;
   }
   line_break_CTX() {
