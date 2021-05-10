@@ -95,7 +95,7 @@ Deno.test("exium can retrieve classes", () => {
 
 Deno.test("exium can retrieve ids", () => {
   const content = `
-  #test,.v{}#anId#myOtherID {
+  #test,.v {}#anId#myOtherID {
     color: blue;
   }
   #op,
