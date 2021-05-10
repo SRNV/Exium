@@ -31,4 +31,5 @@ export enum Reason {
   StyleSheetAtRuleCurlyBracesAreMissing = 2960,
   StyleSheetTypeAssignmentNotFinish = 3004,
   StyleSheetAttributeNotClosed = 3408,
+  StyleSheetPropertyListOpen = 3533,
 }
