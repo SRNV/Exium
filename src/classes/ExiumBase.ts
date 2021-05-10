@@ -632,6 +632,23 @@ export class ExiumBase {
     this.debuggPosition("\n\n\t\tSEMICOLON END");
     return result;
   }
+  point_CTX() {
+    this.debuggPosition("\n\n\t\tPOINT START");
+    const result = this.char === ".";
+    if (result) {
+      this.currentContexts.push(
+        new ExiumContext(ContextTypes.Point, this.char, {
+          start: this.cursor.x,
+          end: this.cursor.x + 1,
+          line: this.cursor.line,
+          column: this.cursor.column,
+        }),
+      );
+      this.shift(1);
+    }
+    this.debuggPosition("\n\n\t\tPOINT END");
+    return result;
+  }
   coma_CTX() {
     this.debuggPosition("\n\n\t\tCOMA START");
     const result = this.char === ",";

@@ -7,6 +7,7 @@ export enum ContextTypes {
   SemiColon = "SemiColon",
   Coma = "Coma",
   DoublePoint = 'DoublePoint',
+  Point = 'Point',
   MultipleSpaces = "MultipleSpaces",
   LineBreak = "LineBreak",
   StringSingleQuote = "StringSingleQuote",
