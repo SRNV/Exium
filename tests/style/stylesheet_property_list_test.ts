@@ -14,7 +14,7 @@ Deno.test("exium can retrieve properties", () => {
       div::selection {
         ${propertiesList
           .map(([name, value]) => `${name}:${value}`)
-          .join(';\n')};
+          .join(';\n')}
       }
     </style>
   </template>
@@ -38,7 +38,7 @@ Deno.test("exium can retrieve properties", () => {
         const propName = property.related.find((context) => context.type === ContextTypes.StyleSheetPropertyName);
         const propValue = property.related.find((context) => context.type === ContextTypes.StyleSheetPropertyValue);
         assert(propName && propertiesList.find(([name]) => name === propName.source));
-        assert(propValue && propertiesList.find(([, value]) => value === propValue.source));
+        assert(propValue && propertiesList.find(([, value]) => value === propValue.source.trim()));
       });
     }
   } else {

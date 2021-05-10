@@ -1126,7 +1126,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
           );
         }
         this.saveContextsTo(subs, children);
-        if (children.find((context) => context.type === ContextTypes.SemiColon)) {
+        if (children.find((context) => context.type === ContextTypes.SemiColon)
+          || ['}'].includes(this.char)) {
           break;
         }
         this.isValidChar(opts?.unexpected);
@@ -1212,7 +1213,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       while (!this.isEOF) {
         this.debuggPosition("\nSELECTOR PROPERTY VALUE");
         this.saveContextsTo(subs, children);
-        if ([';', '\n'].includes(this.char)) {
+        if ([';', '\n', '}'].includes(this.char)) {
           isClosed = true;
           break;
         }
