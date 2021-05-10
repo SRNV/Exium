@@ -8,16 +8,12 @@ import {
 } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 Deno.test("exium can retrieve properties", () => {
   const content = `
-  <template>
-    <style>
-      div::selection {
-        color: red;
-        div {
-          color: blue;
-        }
-      }
-    </style>
-  </template>
+  div::selection {
+    color: red;
+    div {
+      color: blue;
+    }
+  }
   `;
   const lexer = new Exium((reason, _cursor, context) => {
     console.warn(context);
@@ -25,7 +21,7 @@ Deno.test("exium can retrieve properties", () => {
       `${reason} ${context.position.line}:${context.position.column}`,
     );
   });
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "component"});
   if (contexts && contexts.length) {
     const list = contexts.filter((context) =>
       context.type === ContextTypes.StyleSheetPropertyList
@@ -36,5 +32,4 @@ Deno.test("exium can retrieve properties", () => {
     );
   }
 });
-
 */

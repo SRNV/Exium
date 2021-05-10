@@ -77,3 +77,38 @@ Deno.test("exium supports all standard pseudo classes", () => {
     );
   }
 });
+
+Deno.test("exium supports all standard pseudo classes (stylesheet)", () => {
+  const content = `
+  ${
+    SupportedStyleSheetPseudoElements.map((pseudoElement) =>
+      `\n::${pseudoElement}`
+    )
+  } {
+          color: blue;
+        }`;
+  const lexer = new Exium((reason, _cursor, context) => {
+    throw new Error(
+      `${reason} ${context.position.line}:${context.position.column}`,
+    );
+  });
+  const contexts = lexer.readSync(content, { type: "stylesheet" });
+  if (contexts && contexts.length) {
+    const pseudoElements = contexts.filter((context) =>
+      context.type === ContextTypes.StyleSheetSelectorPseudoElement
+    );
+    assertEquals(
+      pseudoElements.length,
+      SupportedStyleSheetPseudoElements.length,
+    );
+    pseudoElements.forEach((pseudoElement) => {
+      const { source } = pseudoElement;
+      assert(source.startsWith("::"));
+      assert(SupportedStyleSheetPseudoElements.includes(source.slice(2)));
+    });
+  } else {
+    throw new Error(
+      `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorPseudoElement} context`,
+    );
+  }
+});

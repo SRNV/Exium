@@ -28,8 +28,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
         ) &&
         !context.related.find((node) => node.type === ContextTypes.NodeClosing)
       );
-      const isValid = !!lastIsAStyleNode || this.isParsingStylesheet;
-      if (!isValid) return false;
+      const isValid: boolean = !!lastIsAStyleNode || this.isParsingStylesheet;
+      if (!isValid) return isValid;
       if (opts?.checkOnly) return !this.isEndOfStylesheet;
       const result = true;
       const children: ExiumContext[] = [];
@@ -83,8 +83,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
     try {
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid = Boolean(this.isFollowedBy("@charset", true));
-      if (!isValid) return false;
+      const isValid: boolean = Boolean(this.isFollowedBy("@charset", true));
+      if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
       let isClosed = false;
@@ -180,8 +180,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
     try {
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid = Boolean(this.isFollowedBy("@export", true));
-      if (!isValid) return false;
+      const isValid: boolean = Boolean(this.isFollowedBy("@export", true));
+      if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
       const children: ExiumContext[] = [];
@@ -234,10 +234,10 @@ export class ExiumStyleSheet extends ExiumProtocol {
     try {
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid = Boolean(
+      const isValid: boolean = Boolean(
         this.isFollowedBy("@const", true) || opts?.data?.isExportStatement,
       );
-      if (!isValid) return false;
+      if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
       let isNamed = false;
@@ -309,8 +309,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { nextPart } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid = /^[a-zA-Z]/i.test(nextPart);
-      if (!isValid) return false;
+      const isValid: boolean = /^[a-zA-Z]/i.test(nextPart);
+      if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
       // retrieve the atrule name
@@ -344,8 +344,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { char, next } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid = char === "=" && next !== "=";
-      if (!isValid) return false;
+      const isValid: boolean = char === "=" && next !== "=";
+      if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
       const children: ExiumContext[] = [];
@@ -384,8 +384,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { char } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid = Boolean(char === "@");
-      if (!isValid) return false;
+      const isValid: boolean = Boolean(char === "@");
+      if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
       let isTyped = false;
@@ -455,9 +455,9 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { char, next } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid = (char === "@" && next === "<") ||
-        (opts?.data?.force_type_assignment_contextrce);
-      if (!isValid) return false;
+      const isValid: boolean = Boolean((char === "@" && next === "<") ||
+        (opts?.data?.force_type_assignment_contextrce));
+      if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
       let isClosed = false;
@@ -511,8 +511,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { char } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid = ![" ", "<"].includes(char);
-      if (!isValid) return false;
+      const isValid: boolean = ![" ", "<"].includes(char);
+      if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
       const children: ExiumContext[] = [];
@@ -552,9 +552,9 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { char, nextPart } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid = ![",", "@", " ", "\n", "}"].includes(char) &&
-        nextPart.match(/^([^;\{\}]*?)(\{)/mi);
-      if (!isValid) return false;
+      const isValid: boolean = ![",", "@", " ", "\n", "}"].includes(char) &&
+        /^([^;\{\}]*?)(\{)/gi.test(nextPart);
+      if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
       const supportedSelectors: ContextReader[] = [
@@ -615,8 +615,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { x, line, column } = this.cursor;
       const { source } = this;
       const unsupportedChars = ["#", ".", "[", " ", "@", "{", "\n", ",", "}"];
-      const isValid = !unsupportedChars.includes(char);
-      if (!isValid) return false;
+      const isValid: boolean = !unsupportedChars.includes(char);
+      if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
       const children: ExiumContext[] = [];
@@ -655,8 +655,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { x, line, column } = this.cursor;
       const { source } = this;
       const previousIsClassStart = prev === "." && char !== ".";
-      const isValid = (char === "." || previousIsClassStart);
-      if (!isValid) return false;
+      const isValid: boolean = (char === "." || previousIsClassStart);
+      if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
       const children: ExiumContext[] = [];
@@ -699,8 +699,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { char, prev, next } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid = (char === ":" || prev === ":") && next !== ":";
-      if (!isValid) return false;
+      const isValid: boolean = (char === ":" || prev === ":") && next !== ":";
+      if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
       const children: ExiumContext[] = [];
@@ -745,9 +745,9 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { char, prev, next } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid =
+      const isValid: boolean =
         (char === ":" && next === ":" || prev === ":" && char === ":");
-      if (!isValid) return false;
+      if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       this.shiftUntilEndOf("::");
       const result = true;
@@ -793,8 +793,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { char, prev } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid = (char === "#" || prev === "#");
-      if (!isValid) return false;
+      const isValid: boolean = (char === "#" || prev === "#");
+      if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
       const children: ExiumContext[] = [];
@@ -832,8 +832,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { char, prev } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid = (char === "[" || prev === "[" && char !== "]");
-      if (!isValid) return false;
+      const isValid: boolean = (char === "[" || prev === "[" && char !== "]");
+      if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
       let isClosed = false;
@@ -895,8 +895,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { x, line, column } = this.cursor;
       const { source } = this;
       const unsupported = ["^", "$", "|", "=", "*", " ", "]", "[", "\n"];
-      const isValid = !unsupported.includes(char);
-      if (!isValid) return false;
+      const isValid: boolean = !unsupported.includes(char);
+      if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
       while (!this.isEOF) {
@@ -933,9 +933,9 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { x, line, column } = this.cursor;
       const { source } = this;
       const supported = ["^", "$", "|", "*", "~"];
-      const isValid = supported.includes(char) && next === "=" ||
+      const isValid: boolean = supported.includes(char) && next === "=" ||
         char === "=";
-      if (!isValid) return false;
+      if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
       while (!this.isEOF) {
@@ -971,8 +971,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { x, line, column } = this.cursor;
       const { source } = this;
       const supported = ["+", ">", "~", "*"];
-      const isValid = supported.includes(char);
-      if (!isValid) return false;
+      const isValid: boolean = supported.includes(char);
+      if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
       this.shift(1);
@@ -1007,9 +1007,9 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { lastContext } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid =
+      const isValid: boolean =
         lastContext.type === ContextTypes.StyleSheetSelectorAttributeEqual;
-      if (!isValid) return false;
+      if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
       while (!this.isEOF) {
@@ -1046,7 +1046,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { char, lastContext } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid = lastContext.type === ContextTypes.StyleSheetSelectorList;
+      const isValid: boolean = lastContext.type === ContextTypes.StyleSheetSelectorList;
       if (char !== "{" || !isValid) return false;
       this.shiftUntilEndOf('{');
       if (opts?.checkOnly) return true;
@@ -1100,8 +1100,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { x, line, column } = this.cursor;
       const { source } = this;
       const unsupported = [":", "@", " ", ";", '}', "\n"];
-      const isValid = !unsupported.includes(char);
-      if (!isValid) return false;
+      const isValid: boolean = !unsupported.includes(char);
+      if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
       const related: ExiumContext[] = [];
@@ -1158,8 +1158,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { x, line, column } = this.cursor;
       const { source } = this;
       const unsupported = [":", " ", ";", '}'];
-      const isValid = !unsupported.includes(char);
-      if (!isValid) return false;
+      const isValid: boolean = !unsupported.includes(char);
+      if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
       while (!this.isEOF) {
@@ -1197,8 +1197,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { lastContext } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid = lastContext.type === ContextTypes.DoublePoint;
-      if (!isValid) return false;
+      const isValid: boolean = lastContext.type === ContextTypes.DoublePoint;
+      if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
       let isClosed = false;
@@ -1245,8 +1245,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
     const { nextPart, source } = this;
     const { x, line, column } = this.cursor;
     const reg = /^([\s\n]*?)(\<\/style)/i;
-    const isValid = reg.test(nextPart);
-    if (!isValid) return false;
+    const isValid: boolean = reg.test(nextPart);
+    if (!isValid) return isValid;
     this.debuggPosition("\nSTYLESHEET END ==================");
     const match = nextPart.match(reg);
     if (match) {
