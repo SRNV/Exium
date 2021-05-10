@@ -62,11 +62,10 @@ Deno.test("exium can parse at-rules", () => {
       throw new Error(`Exium - Failed to retrieve the name of the at rule`);
     }
     assertEquals(name.position, { start: 1, end: 7, line: 0, column: 1 });
-    assertEquals(atrule.position, { start: 1, end: 40, line: 0, column: 1 });
-    assert(atrule.source.endsWith("}"));
+    assertEquals(atrule.position, { start: 1, end: 38, line: 0, column: 1 });
     assert(
-      atrule.children.find((ctx) =>
-        ctx.type === ContextTypes.StyleSheetCurlyBraces
+      atrule.related.find((ctx) =>
+        ctx.type === ContextTypes.StyleSheetPropertyList
       ),
     );
   } else {

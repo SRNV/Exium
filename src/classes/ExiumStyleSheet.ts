@@ -47,6 +47,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
         this.stylesheet_const_at_rule_CTX,
         this.stylesheet_export_at_rule_CTX,
         this.stylesheet_default_at_rule_CTX,
+        this.stylesheet_property_list_CTX,
+
         this.stylesheet_selector_list_CTX,
         // TODO implement property list
         this.stylesheet_property_list_CTX,
@@ -389,13 +391,17 @@ export class ExiumStyleSheet extends ExiumProtocol {
       if (opts?.checkOnly) return true;
       const result = true;
       let isTyped = false;
-      let isClosed = false;
       const children: ExiumContext[] = [];
       const describers: ContextReader[] = [
         this.stylesheet_type_assignment_CTX,
         this.stylesheet_at_rule_name_CTX,
       ];
-      const allSubContexts: ContextReader[] = [];
+      const allSubContexts: ContextReader[] = [
+        this.multiple_spaces_CTX,
+        this.space_CTX,
+        this.line_break_CTX,
+        this.stylesheet_selector_list_CTX,
+      ];
       const related: ExiumContext[] = [];
       this.saveContextsTo(describers, related);
       isTyped = !!related.find((context) =>
@@ -413,18 +419,6 @@ export class ExiumStyleSheet extends ExiumProtocol {
         this.shift(1);
         this.isValidChar(opts?.unexpected);
       }
-      /**
-       * the at rule should be followed by curly bras
-       */
-      const subCurlyBracesContexts: ContextReader[] = [];
-      isClosed = this.curly_braces_CTX({
-        contexts: subCurlyBracesContexts,
-      });
-      if (isClosed) {
-        const { lastContext } = this;
-        lastContext.type = ContextTypes.StyleSheetCurlyBraces;
-        children.push(lastContext);
-      }
       // create and finish the current context
       const token = source.slice(x, this.cursor.x);
       const context = new ExiumContext(ContextTypes.StyleSheetAtRule, token, {
@@ -437,13 +431,6 @@ export class ExiumStyleSheet extends ExiumProtocol {
       context.related.push(...related);
       context.data.isTyped = isTyped;
       this.currentContexts.push(context);
-      if (!isClosed) {
-        this.onError(
-          Reason.StyleSheetAtRuleCurlyBracesAreMissing,
-          this.cursor,
-          context,
-        );
-      }
       return result;
     } catch (err) {
       throw err;
@@ -456,7 +443,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { x, line, column } = this.cursor;
       const { source } = this;
       const isValid: boolean = Boolean((char === "@" && next === "<") ||
-        (opts?.data?.force_type_assignment_contextrce));
+        (opts?.data?.force_type_assignment_context));
       if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
@@ -1046,7 +1033,9 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { char, lastContext } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid: boolean = lastContext.type === ContextTypes.StyleSheetSelectorList;
+      this.debugg(lastContext.type);
+      const isValid: boolean = lastContext.type === ContextTypes.StyleSheetSelectorList
+        || lastContext.type === ContextTypes.StyleSheetAtRule;
       if (char !== "{" || !isValid) return false;
       this.shiftUntilEndOf('{');
       if (opts?.checkOnly) return true;

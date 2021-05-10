@@ -45,8 +45,8 @@ Deno.test("exium stylesheet supports type rule assignment", () => {
     assertEquals(typeRule.position, { start: 5, end: 15, line: 1, column: 4 });
     assert(atRule.data.isTyped);
     assert(
-      atRule.children.find((ctx) =>
-        ctx.type === ContextTypes.StyleSheetCurlyBraces
+      atRule.related.find((ctx) =>
+        ctx.type === ContextTypes.StyleSheetPropertyList
       ),
     );
   } else {
@@ -92,11 +92,11 @@ Deno.test("exium stylesheet supports type rule assignment (stylesheet)", () => {
       );
     }
     assertEquals(typeRule.source, "@<myTrait>");
-    assertEquals(typeRule.position, { start: 5, end: 15, line: 1, column: 4 });
+    assertEquals(typeRule.position, { start: 32, end: 42, line: 3, column: 6 });
     assert(atRule.data.isTyped);
     assert(
-      atRule.children.find((ctx) =>
-        ctx.type === ContextTypes.StyleSheetCurlyBraces
+      atRule.related.find((ctx) =>
+        ctx.type === ContextTypes.StyleSheetPropertyList
       ),
     );
   } else {
