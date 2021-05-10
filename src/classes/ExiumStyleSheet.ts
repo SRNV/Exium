@@ -28,7 +28,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
         ) &&
         !context.related.find((node) => node.type === ContextTypes.NodeClosing)
       );
-      const isValid: boolean = !!lastIsAStyleNode || this.isParsingStylesheet;
+      const isValid = !!lastIsAStyleNode || this.isParsingStylesheet;
       if (!isValid) return isValid;
       if (opts?.checkOnly) return !this.isEndOfStylesheet;
       const result = true;
@@ -85,7 +85,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
     try {
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid: boolean = Boolean(this.isFollowedBy("@charset", true));
+      const isValid = Boolean(this.isFollowedBy("@charset", true));
       if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
@@ -182,7 +182,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
     try {
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid: boolean = Boolean(this.isFollowedBy("@export", true));
+      const isValid = Boolean(this.isFollowedBy("@export", true));
       if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
@@ -236,7 +236,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
     try {
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid: boolean = Boolean(
+      const isValid = Boolean(
         this.isFollowedBy("@const", true) || opts?.data?.isExportStatement,
       );
       if (!isValid) return isValid;
@@ -386,7 +386,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { char } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid: boolean = Boolean(char === "@");
+      const isValid = Boolean(char === "@");
       if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
@@ -442,7 +442,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { char, next } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid: boolean = Boolean((char === "@" && next === "<") ||
+      const isValid = Boolean((char === "@" && next === "<") ||
         (opts?.data?.force_type_assignment_context));
       if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
@@ -498,7 +498,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { char } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid: boolean = ![" ", "<"].includes(char);
+      const isValid = ![" ", "<"].includes(char);
       if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
@@ -539,7 +539,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { char, nextPart } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid: boolean = ![",", "@", " ", "\n", "}"].includes(char) &&
+      const isValid = ![",", "@", " ", "\n", "}"].includes(char) &&
         /^([^;\{\}]*?)(\{)/gi.test(nextPart);
       if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
@@ -602,7 +602,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { x, line, column } = this.cursor;
       const { source } = this;
       const unsupportedChars = ["#", ".", "[", " ", "@", "{", "\n", ",", "}"];
-      const isValid: boolean = !unsupportedChars.includes(char);
+      const isValid = !unsupportedChars.includes(char);
       if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
@@ -882,7 +882,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { x, line, column } = this.cursor;
       const { source } = this;
       const unsupported = ["^", "$", "|", "=", "*", " ", "]", "[", "\n"];
-      const isValid: boolean = !unsupported.includes(char);
+      const isValid = !unsupported.includes(char);
       if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
@@ -1089,7 +1089,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { x, line, column } = this.cursor;
       const { source } = this;
       const unsupported = [":", "@", " ", ";", '}', "\n"];
-      const isValid: boolean = !unsupported.includes(char);
+      const isValid = !unsupported.includes(char);
       if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
@@ -1147,7 +1147,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { x, line, column } = this.cursor;
       const { source } = this;
       const unsupported = [":", " ", ";", '}'];
-      const isValid: boolean = !unsupported.includes(char);
+      const isValid = !unsupported.includes(char);
       if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
