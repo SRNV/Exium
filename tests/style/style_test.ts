@@ -5,8 +5,6 @@ import {
   assertEquals,
 } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
-
-
 Deno.test("exium can retrieve nested css", () => {
   const content = `
   <template>

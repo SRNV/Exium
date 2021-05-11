@@ -1,7 +1,5 @@
 import { ExiumHTMLElements } from "./ExiumHTMLElements.ts";
-import {
-  ContextReaderOptions,
-} from "../types/main.d.ts";
+import { ContextReaderOptions } from "../types/main.d.ts";
 import { ExiumContext } from "./ExiumContext.ts";
 import { ContextTypes } from "../enums/context-types.ts";
 

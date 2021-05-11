@@ -7,14 +7,18 @@ import {
 } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 Deno.test("exium can retrieve properties", () => {
-  const propertiesList = SupportedStyleSheetProperties.map((property) => [property, 'inherit']);
+  const propertiesList = SupportedStyleSheetProperties.map((
+    property,
+  ) => [property, "inherit"]);
   const content = `
   <template>
     <style>
       div::selection {
-        ${propertiesList
-          .map(([name, value]) => `${name}:${value}`)
-          .join(';\n')}
+        ${
+    propertiesList
+      .map(([name, value]) => `${name}:${value}`)
+      .join(";\n")
+  }
       }
     </style>
   </template>
@@ -31,14 +35,27 @@ Deno.test("exium can retrieve properties", () => {
     );
     assert(!!list);
     if (list) {
-      const properties = list.children.filter((context) => context.type === ContextTypes.StyleSheetProperty)
+      const properties = list.children.filter((context) =>
+        context.type === ContextTypes.StyleSheetProperty
+      );
       assert(properties.length);
       assertEquals(properties.length, propertiesList.length);
       properties.forEach((property) => {
-        const propName = property.related.find((context) => context.type === ContextTypes.StyleSheetPropertyName);
-        const propValue = property.related.find((context) => context.type === ContextTypes.StyleSheetPropertyValue);
-        assert(propName && propertiesList.find(([name]) => name === propName.source));
-        assert(propValue && propertiesList.find(([, value]) => value === propValue.source.trim()));
+        const propName = property.related.find((context) =>
+          context.type === ContextTypes.StyleSheetPropertyName
+        );
+        const propValue = property.related.find((context) =>
+          context.type === ContextTypes.StyleSheetPropertyValue
+        );
+        assert(
+          propName && propertiesList.find(([name]) => name === propName.source),
+        );
+        assert(
+          propValue &&
+            propertiesList.find(([, value]) =>
+              value === propValue.source.trim()
+            ),
+        );
       });
     }
   } else {
@@ -49,12 +66,16 @@ Deno.test("exium can retrieve properties", () => {
 });
 
 Deno.test("exium can retrieve properties (stylesheet)", () => {
-  const propertiesList = SupportedStyleSheetProperties.map((property) => [property, 'inherit']);
+  const propertiesList = SupportedStyleSheetProperties.map((
+    property,
+  ) => [property, "inherit"]);
   const content = `
   div::selection {
-    ${propertiesList
+    ${
+    propertiesList
       .map(([name, value]) => `${name}:${value}`)
-      .join(';\n')}
+      .join(";\n")
+  }
   }
   `;
   const lexer = new Exium((reason, _cursor, context) => {
@@ -69,14 +90,27 @@ Deno.test("exium can retrieve properties (stylesheet)", () => {
     );
     assert(!!list);
     if (list) {
-      const properties = list.children.filter((context) => context.type === ContextTypes.StyleSheetProperty)
+      const properties = list.children.filter((context) =>
+        context.type === ContextTypes.StyleSheetProperty
+      );
       assert(properties.length);
       assertEquals(properties.length, propertiesList.length);
       properties.forEach((property) => {
-        const propName = property.related.find((context) => context.type === ContextTypes.StyleSheetPropertyName);
-        const propValue = property.related.find((context) => context.type === ContextTypes.StyleSheetPropertyValue);
-        assert(propName && propertiesList.find(([name]) => name === propName.source));
-        assert(propValue && propertiesList.find(([, value]) => value === propValue.source.trim()));
+        const propName = property.related.find((context) =>
+          context.type === ContextTypes.StyleSheetPropertyName
+        );
+        const propValue = property.related.find((context) =>
+          context.type === ContextTypes.StyleSheetPropertyValue
+        );
+        assert(
+          propName && propertiesList.find(([name]) => name === propName.source),
+        );
+        assert(
+          propValue &&
+            propertiesList.find(([, value]) =>
+              value === propValue.source.trim()
+            ),
+        );
       });
     }
   } else {
@@ -85,4 +119,3 @@ Deno.test("exium can retrieve properties (stylesheet)", () => {
     );
   }
 });
-

@@ -105,11 +105,15 @@ export class ExiumBase {
   /**
    * checks if the context.source is included into the support list
    */
-  protected checkSupport(context: ExiumContext, supportList: string[], strict?: boolean) {
+  protected checkSupport(
+    context: ExiumContext,
+    supportList: string[],
+    strict?: boolean,
+  ) {
     const result = supportList.includes(context.source);
     if (strict && !result) {
       this.onError(Reason.Unsupported, this.cursor, context);
-      return result
+      return result;
     }
     return result;
   }
@@ -276,6 +280,10 @@ export class ExiumBase {
   shift(movement = 1) {
     this.cursor.x += +movement;
     this.cursor.column += +movement;
+    this.debugg(
+      `%c\t\t${movement} ${this.prev} ${">".repeat(movement)} ${this.char}`,
+      "color:gray",
+    );
   }
   shiftUntilEndOf(text: string): boolean {
     if (!this.nextPart.startsWith(text)) return false;

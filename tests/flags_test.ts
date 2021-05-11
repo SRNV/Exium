@@ -3,8 +3,6 @@ import { ContextTypes } from "../src/enums/context-types.ts";
 import { SupportedFlags } from "../src/supports.ts";
 import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
-
-
 Deno.test("exium can retrieve node flags", () => {
   const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(

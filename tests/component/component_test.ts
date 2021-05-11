@@ -6,8 +6,6 @@ import {
 } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 import { component1 } from "./../utils/componentFile.ts";
 
-
-
 Deno.test("exium can parse a basic component", () => {
   const styleSource = `
 @charset 'utf-8';
@@ -17,7 +15,6 @@ Deno.test("exium can parse a basic component", () => {
     public basic: string = 'this is a basic component';
 `;
   const lexer = new Exium((reason, _cursor, context) => {
-    console.warn(context);
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );

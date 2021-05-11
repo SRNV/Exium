@@ -123,9 +123,7 @@ Deno.test("exium supports all standard pseudo classes", () => {
 
 Deno.test("exium supports all standard pseudo classes (stylesheet)", () => {
   const content = `
-  ${
-    SupportedStyleSheetPseudoClasses.map((pseudoClass) => `:${pseudoClass}`)
-  } {
+  ${SupportedStyleSheetPseudoClasses.map((pseudoClass) => `:${pseudoClass}`)} {
         color: blue;
       }
   `;
