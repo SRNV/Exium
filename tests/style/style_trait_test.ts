@@ -5,7 +5,6 @@ import {
   assertEquals,
 } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
-
 /**
  * traits in css
  * assert that a list of properties are respected

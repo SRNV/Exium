@@ -6,7 +6,8 @@ export enum ContextTypes {
   Space = "Space",
   SemiColon = "SemiColon",
   Coma = "Coma",
-  DoublePoint = 'DoublePoint',
+  DoublePoint = "DoublePoint",
+  Point = "Point",
   MultipleSpaces = "MultipleSpaces",
   LineBreak = "LineBreak",
   StringSingleQuote = "StringSingleQuote",
@@ -69,6 +70,7 @@ export enum ContextTypes {
   StyleSheetType = "StyleSheetType",
   StyleSheetCurlyBraces = "StyleSheetCurlyBraces",
   StyleSheetRuleSpread = "StyleSheetRuleSpread",
+  StyleSheetRuleSpreadName = "StyleSheetRuleSpreadName",
   StyleSheetParentRef = "StyleSheetParentRef",
   StyleSheetPropertyList = "StyleSheetPropertyList",
   StyleSheetProperty = "StyleSheetProperty",
@@ -93,4 +95,6 @@ export enum ContextTypes {
   StyleSheetSelectorCombinatorGeneralSibling =
     "StyleSheetSelectorCombinatorGeneralSibling",
   StyleSheetSelectorCombinatorAll = "StyleSheetSelectorCombinatorAll",
+  StyleSheetHexType = "StyleSheetHexType",
+  StyleSheetPixelType = "StyleSheetPixelType",
 }

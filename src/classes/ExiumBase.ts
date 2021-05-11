@@ -105,11 +105,15 @@ export class ExiumBase {
   /**
    * checks if the context.source is included into the support list
    */
-  protected checkSupport(context: ExiumContext, supportList: string[], strict?: boolean) {
+  protected checkSupport(
+    context: ExiumContext,
+    supportList: string[],
+    strict?: boolean,
+  ) {
     const result = supportList.includes(context.source);
     if (strict && !result) {
       this.onError(Reason.Unsupported, this.cursor, context);
-      return result
+      return result;
     }
     return result;
   }
@@ -276,6 +280,10 @@ export class ExiumBase {
   shift(movement = 1) {
     this.cursor.x += +movement;
     this.cursor.column += +movement;
+    this.debugg(
+      `%c\t\t${movement} ${this.prev} ${">".repeat(movement)} ${this.char}`,
+      "color:gray",
+    );
   }
   shiftUntilEndOf(text: string): boolean {
     if (!this.nextPart.startsWith(text)) return false;
@@ -630,6 +638,23 @@ export class ExiumBase {
       this.shift(1);
     }
     this.debuggPosition("\n\n\t\tSEMICOLON END");
+    return result;
+  }
+  point_CTX() {
+    this.debuggPosition("\n\n\t\tPOINT START");
+    const result = this.char === ".";
+    if (result) {
+      this.currentContexts.push(
+        new ExiumContext(ContextTypes.Point, this.char, {
+          start: this.cursor.x,
+          end: this.cursor.x + 1,
+          line: this.cursor.line,
+          column: this.cursor.column,
+        }),
+      );
+      this.shift(1);
+    }
+    this.debuggPosition("\n\n\t\tPOINT END");
     return result;
   }
   coma_CTX() {
