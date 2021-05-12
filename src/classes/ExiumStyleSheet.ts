@@ -573,7 +573,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
         !isValid ||
         (char === next && char === ".")
       ) {
-        return isValid;
+        return false;
       }
       if (opts?.checkOnly) return true;
       const result = true;
@@ -1070,7 +1070,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const isValid: boolean =
         lastContext.type === ContextTypes.StyleSheetSelectorList ||
         lastContext.type === ContextTypes.StyleSheetAtRule ||
-        forced;
+        forced && char === "{";
       if ((char !== "{" || !isValid) || ["}"].includes(char)) return false;
       if (opts?.checkOnly) return true;
       this.shiftUntilEndOf("{");
@@ -1095,7 +1095,6 @@ export class ExiumStyleSheet extends ExiumProtocol {
           isClosed = true;
           break;
         }
-        this.shift(1);
         this.saveContextsTo(allSubContexts, children);
         this.isValidChar(opts?.unexpected);
       }
@@ -1137,7 +1136,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       if (opts?.checkOnly) return true;
       this.shiftUntilEndOf("...");
       const result = true;
-      const children: ExiumContext[] = [];
+      const related: ExiumContext[] = [];
       const subs: ContextReader[] = [
         this.stylesheet_spread_name_CTX,
         this.semicolon_CTX,
@@ -1150,12 +1149,12 @@ export class ExiumStyleSheet extends ExiumProtocol {
       let isNamed = false;
       while (!this.isEOF) {
         this.debuggPosition("\nSTYLESHEET RULE SPREAD");
-        this.saveStrictContextsTo(subs, children);
-        isNamed = !!children.find((context) =>
+        this.saveStrictContextsTo(subs, related);
+        isNamed = !!related.find((context) =>
           context.type === ContextTypes.StyleSheetRuleSpreadName
         );
         if (
-          children.find((context) => context.type === ContextTypes.SemiColon)
+          related.find((context) => context.type === ContextTypes.SemiColon)
         ) {
           if (!isNamed) {
             this.onError(
@@ -1166,8 +1165,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
           }
           break;
         }
-        this.shift(1);
         this.isValidChar(unexpected);
+        this.shift(1);
       }
       const token = source.slice(x, this.cursor.x);
       const context = new ExiumContext(
@@ -1180,7 +1179,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
           column,
         },
       );
-      context.children.push(...children);
+      context.related.push(...related);
       this.currentContexts.push(context);
       return result;
     } catch (err) {
@@ -1205,11 +1204,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
         }
         this.shift(1);
         this.isValidChar(
-          opts?.unexpected || [
-            this.multiple_spaces_CTX,
-            this.space_CTX,
-            this.line_break_CTX,
-          ],
+          opts?.unexpected
         );
       }
       const token = source.slice(x, this.cursor.x);

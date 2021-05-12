@@ -26,12 +26,12 @@ Deno.test("exium supports spread feature", () => {
       context.type === ContextTypes.StyleSheetRuleSpread
     );
     const spreadName = spread &&
-      spread.children.find((context) =>
+      spread.related.find((context) =>
         context.type === ContextTypes.StyleSheetRuleSpreadName
       );
     assert(!!spread);
     assertEquals(spread.source, "...rule;");
-    assertEquals(spread.position, { start: 46, end: 54, line: 3, column: 20 });
+    assertEquals(spread.position, { start: 46, end: 54, line: 4, column: 8 });
     if (!spreadName) {
       throw new Error("Failed to retrieve spread identifier");
     }
@@ -61,7 +61,46 @@ Deno.test("exium supports spread feature (stylesheet)", () => {
     );
     assert(!!spread);
     assertEquals(spread.source, "...rule;");
-    assertEquals(spread.position, { start: 13, end: 21, line: 1, column: 12 });
+    assertEquals(spread.position, { start: 13, end: 21, line: 2, column: 4 });
+  } else {
+    throw new Error(
+      `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorPseudoElement} context`,
+    );
+  }
+});
+
+Deno.test("exium supports multiple spreads", () => {
+  const items = [
+    'rule',
+    'another',
+    'something',
+    'last',
+  ];
+  const content = `
+  div {
+    ${items.map((prop) => `...${prop};`).join('')}
+  }
+  `;
+  const lexer = new Exium((reason, _cursor, context) => {
+    console.warn(context, _cursor, content)
+    throw new Error(
+      `${reason} ${context.position.line}:${context.position.column}`,
+    );
+  });
+  const contexts = lexer.readSync(content, { type: "stylesheet" });
+  if (contexts && contexts.length) {
+    const spreads = contexts.filter((context) =>
+      context.type === ContextTypes.StyleSheetRuleSpread
+    );
+    const spreadsName = contexts.filter((context) =>
+      context.type === ContextTypes.StyleSheetRuleSpreadName
+    );
+    spreads.forEach((spread, i) => {
+      const name = spreadsName[i];
+      assert(name.source === items[i]);
+      assert(spread.related.includes(name));
+      assert(name.position.start === spread.position.start + 3);
+    });
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorPseudoElement} context`,
