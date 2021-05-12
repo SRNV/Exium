@@ -204,6 +204,32 @@ export const SupportedStyleSheetUnits = [
   "fr", // grid fragment
   "auto",
 ];
+/**
+ * available pseudo properties
+ * @usage
+ * ```css
+ * div {
+ *   transition::media(default: 1s ease; 100px: 2s ease);
+ *   color::media-screen-pc(
+ *     default: red;
+ *     2: blue
+ *   );
+ *   background::keyframes(
+ *     0%: red;
+ *     100%: brown
+ *   );
+ * }
+ * ```
+ */
+export const SupportedPseudoProperties = [
+  "media",
+  "media-screen",
+  ...SupportedStyleSheetUnits.map((unit) => `media-${unit}`),
+  ...SupportedStyleSheetUnits.map((unit) => `media-screen-${unit}`),
+  ...SupportedStyleSheetUnits.map((unit) => `media-screen-${unit}`),
+  "keyframes",
+  // "grid",
+];
 // available constants types
 export const SupportedStyleSheetAtRuleConstantTypes = [
   // functions
@@ -342,8 +368,6 @@ export const SupportedStyleSheetProperties = [
   "counter-reset",
   "counter-set",
   "cursor",
-  "length#ch",
-  "length#cm",
   "angle#deg",
   "direction",
   "display",
@@ -351,8 +375,6 @@ export const SupportedStyleSheetProperties = [
   "resolution#dpi",
   "resolution#dppx",
   "empty-cells",
-  "length#em",
-  "length#ex",
   "filter",
   "flex",
   "flex-basis",
@@ -421,7 +443,6 @@ export const SupportedStyleSheetProperties = [
   "inset-inline-end",
   "inset-inline-start",
   "isolation",
-  "length#in",
   "justify-content",
   "justify-items",
   "justify-self",
@@ -436,7 +457,6 @@ export const SupportedStyleSheetProperties = [
   "list-style-image",
   "list-style-position",
   "list-style-type",
-  "length#mm",
   "margin",
   "margin-block",
   "margin-block-end",
@@ -509,9 +529,7 @@ export const SupportedStyleSheetProperties = [
   "overscroll-behavior-y",
   "Pseudo-classes",
   "Pseudo-elements",
-  "length#pc",
-  "length#pt",
-  "length#px",
+  "length",
   "padding",
   "padding-block",
   "padding-block-end",
@@ -534,10 +552,8 @@ export const SupportedStyleSheetProperties = [
   "place-self",
   "pointer-events",
   "position",
-  "length#Q",
   "quotes",
   "angle#rad",
-  "length#rem",
   "resize",
   "revert",
   "right",
@@ -621,10 +637,6 @@ export const SupportedStyleSheetProperties = [
   "unicode-bidi",
   "unset",
   "user-select",
-  "length#vh",
-  "length#vmax",
-  "length#vmin",
-  "length#vw",
   "vertical-align",
   "visibility",
   "white-space",
