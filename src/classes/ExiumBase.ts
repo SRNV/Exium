@@ -168,6 +168,9 @@ export class ExiumBase {
     return Boolean(!char || this.source.length === this.cursor.x);
   }
   constructor(
+    /**
+     * function used when Exium find an unexpected token
+     */
     protected onError: (
       reason: Reason,
       cursor: CursorDescriber,

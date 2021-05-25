@@ -200,6 +200,7 @@ export class ExiumHTMLElements extends ExiumBase {
         isStyle,
         isAutoClosing,
         isNodeClosing,
+        parentNode: this.openTags[this.openTags.length - 1],
       });
       this.currentContexts.push(context);
       // start resolving open and closing tags
