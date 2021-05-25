@@ -382,13 +382,15 @@ export class ExiumHTMLElements extends ExiumBase {
           delete arr[i];
         }
       });
+      const str = related.find((context) =>
+      [
+        ContextTypes.StringDoubleQuote,
+        ContextTypes.StringSingleQuote,
+      ].includes(context.type)
+    );
       isClosed = Boolean(
-        related.find((context) =>
-          [
-            ContextTypes.StringDoubleQuote,
-            ContextTypes.StringSingleQuote,
-          ].includes(context.type)
-        ) &&
+        str
+        &&
           related.find((context) =>
             [
               ContextTypes.SemiColon,
@@ -402,7 +404,9 @@ export class ExiumHTMLElements extends ExiumBase {
         line,
         column,
       });
-
+      Object.assign(context.data, {
+        path: str
+      });
       context.related.push(...related);
       this.currentContexts.push(context);
       if (!isClosed) {
@@ -438,6 +442,8 @@ export class ExiumHTMLElements extends ExiumBase {
       if (opts?.checkOnly) return true;
       const result = true;
       let isClosed = false;
+      let isComponent = null;
+      let fromStatement = null;
       const related: ExiumContext[] = [];
       const otherImportStatements: ContextReader[] = [
         this.import_ambient_CTX,
@@ -454,17 +460,15 @@ export class ExiumHTMLElements extends ExiumBase {
       ];
       otherImportStatements.forEach((reader) => reader.apply(this, []));
       while (!this.isEOF) {
-        this.shift(1);
-        this.isValidChar(opts?.unexpected);
-        const sequenceEnd = this.char +
-          this.next +
-          source[this.cursor.x + 2] +
-          source[this.cursor.x + 3];
-        if (sequenceEnd === "from") {
-          this.cursor.x += +4;
-          this.cursor.column += +4;
+        if (!isComponent) {
+          isComponent = this.saveToken('component', ContextTypes.ImportComponentStatement);
+        }
+        fromStatement = this.saveToken('from', ContextTypes.ImportStatementFrom);
+        if (fromStatement) {
           break;
         }
+        this.shift(1);
+        this.isValidChar(opts?.unexpected);
       }
       nextContexts.forEach((reader: ContextReader, i: number, arr) => {
         const recognized = reader.apply(this, []);
@@ -473,14 +477,16 @@ export class ExiumHTMLElements extends ExiumBase {
           delete arr[i];
         }
       });
+      const str = related.find((context) =>
+      [
+        ContextTypes.StringSingleQuote,
+        ContextTypes.StringDoubleQuote,
+      ].includes(context.type)
+    );
       isClosed = Boolean(
-        related.find((context) =>
-          [
-            ContextTypes.StringSingleQuote,
-            ContextTypes.StringDoubleQuote,
-          ].includes(context.type)
-        ) &&
-          related.find((context) =>
+        fromStatement
+        && str
+        && related.find((context) =>
             [
               ContextTypes.SemiColon,
             ].includes(context.type)
@@ -493,6 +499,13 @@ export class ExiumHTMLElements extends ExiumBase {
         line,
         column,
       });
+      Object.assign(context.data, {
+        isComponent,
+        path: str,
+      });
+      if (fromStatement) {
+        context.related.push(fromStatement);
+      }
       context.related.push(...related);
       this.currentContexts.push(context);
       if (!isClosed) {

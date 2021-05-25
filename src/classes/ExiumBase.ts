@@ -297,6 +297,20 @@ export class ExiumBase {
     }
     return true;
   }
+  saveToken(token: string, type: ContextTypes): ExiumContext | undefined {
+    const { x, line, column } = this.cursor;
+    const hasShifted = this.shiftUntilEndOf(token);
+    if (hasShifted) {
+      const context = new ExiumContext(type, token, {
+        start: x,
+        end: this.cursor.x,
+        line,
+        column,
+      });
+      this.currentContexts.push(context);
+      return context;
+    }
+  }
   /**
    * read the top level of the current document
    * @param readers array of context readers which will shift the cursor of the lexer

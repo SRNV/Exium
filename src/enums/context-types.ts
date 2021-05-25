@@ -23,6 +23,8 @@ export enum ContextTypes {
   HTMLComment = "HTMLComment",
   ImportAmbient = "ImportAmbient",
   ImportStatement = "ImportStatement",
+  ImportComponentStatement = "ImportComponentStatement",
+  ImportStatementFrom = "ImportStatementFrom",
   InjectAmbient = "InjectAmbient",
   TextNode = "TextNode",
   Node = "Node",

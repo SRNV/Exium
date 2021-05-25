@@ -6,6 +6,7 @@ import { ContextTypes } from '../enums/context-types.ts';
  * and retrieve them easily
  */
 export interface ExiumDocumentOptions {
+  url: URL,
   onError: ConstructorParameters<typeof Exium>[0];
   source: Parameters<Exium['readSync']>[0];
   options?: Parameters<Exium['readSync']>[1];
@@ -15,15 +16,18 @@ export interface ExiumDocumentComponentDescriber {
   imports: ExiumContext[];
 };
 export class ExiumDocument {
+  public url: URL;
   private exium: Exium;
   private contexts: ExiumContext[];
   #_stylesheets?: ExiumContext[];
   #_proto?: ExiumContext;
+  #_head?: ExiumContext;
   #_protocol?: ExiumContext;
   #_template?: ExiumContext;
   constructor(opts: ExiumDocumentOptions) {
     this.exium = new Exium(opts.onError);
     this.contexts = this.exium.readSync(opts.source, opts.options || { type: 'component' });
+    this.url = opts.url;
   }
   get stylesheets(): ExiumContext[] {
     return this.#_stylesheets
@@ -46,6 +50,14 @@ export class ExiumDocument {
         && context.related.find((related) => related.source === "template")
         && !context.data.parentNode
         && !context.data.isNodeClosing
+      ));
+  }
+  get head(): ExiumContext | undefined {
+    return this.#_head
+      || (this.#_head = this.contexts.find((context) => context.type === ContextTypes.Node
+        && context.related.find((related) => related.source === "head")
+        && !context.data.isNodeClosing
+        && context.data.parentNode === this.template
       ));
   }
   /**
@@ -73,11 +85,11 @@ export class ExiumDocument {
   /**
    * @returns < element id="id" />
    */
-  getElementById(id: string): ExiumContext | undefined {
+  getElementById(value: string): ExiumContext | undefined {
     return this.contexts.find((context) => context.type === ContextTypes.Node
       && context.children.find((child) => child.type === ContextTypes.Attribute
         && child.related[0]?.source === 'id'
-        && child.children[0]?.source === id)
+        && child.children[0]?.source === value)
       && !context.data.isNodeClosing);
   }
   /**
@@ -99,7 +111,24 @@ export class ExiumDocument {
   getComponentsByTagName(tagname: string): ExiumDocumentComponentDescriber {
     return {
       elements: this.getElementsByTagName(tagname),
-      imports: [] // this.getComponentImports(tagname),
+      imports: this.getComponentImports(tagname),
     };
+  }
+  getComponentImports(tagname: string): ExiumContext[] {
+    return this.contexts.filter((context) => context.type === ContextTypes.ImportStatement
+      && context.source.includes(tagname)
+      && context.data.isComponent
+    );
+  }
+  getURLFromImport(importStatement: ExiumContext): URL {
+    if (!importStatement
+      || ![ContextTypes.ImportAmbient, ContextTypes.ImportStatement].includes(importStatement.type)) {
+      throw new Error('Unexpected in getURLFromImport: first argument should be an import context');
+    }
+    const path = importStatement.data.path as ExiumContext;
+    if (!path) {
+      throw new Error('path field is not exposed from the ImportStatement');
+    }
+    return new URL(path.source.replace(/(^['"]|['"]$)/gi, ''), this.url);
   }
 }
