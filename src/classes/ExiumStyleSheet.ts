@@ -1241,6 +1241,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
         this.stylesheet_property_name_CTX,
         this.double_point_CTX,
         this.stylesheet_property_value_CTX,
+        this.stylesheet_pseudo_property_CTX,
       ];
       const subs: ContextReader[] = [
         this.semicolon_CTX,
@@ -1332,13 +1333,106 @@ export class ExiumStyleSheet extends ExiumProtocol {
       throw err;
     }
   }
+  stylesheet_pseudo_property_CTX(opts?: ContextReaderOptions): boolean {
+    this.debuggPosition("\nSELECTOR PSEUDO PROPERTY START");
+    try {
+      const { lastContext, char } = this;
+      const { x, line, column } = this.cursor;
+      const { source } = this;
+      const isValid: boolean = char === ":"
+        && lastContext.type === ContextTypes.DoublePoint;
+      if (!isValid) return isValid;
+      if (opts?.checkOnly) return true;
+      const result = true;
+      let isClosed = false;
+      const children: ExiumContext[] = [];
+      const related: ExiumContext[] = [];
+      const subs: ContextReader[] = [
+        this.parenthese_CTX,
+      ];
+      const describers: ContextReader[] = [
+        this.stylesheet_pseudo_property_name_CTX,
+      ];
+      const unexpected = opts?.unexpected || [
+        this.multiple_spaces_CTX,
+        this.space_CTX,
+        this.line_break_CTX,
+      ];
+      this.shiftUntilEndOf(':');
+      this.saveStrictContextsTo(describers, related);
+      while (!this.isEOF) {
+        this.isValidChar(unexpected);
+        this.debuggPosition("\nSELECTOR PSEUDO PROPERTY");
+        this.saveStrictContextsTo(subs, children);
+        if ([";", "\n", "}"].includes(this.char)) {
+          isClosed = true;
+          break;
+        }
+      }
+      const token = source.slice(x, this.cursor.x);
+      const context = new ExiumContext(
+        ContextTypes.StyleSheetPseudoProperty,
+        token,
+        {
+          start: x,
+          end: this.cursor.x,
+          line,
+          column,
+        },
+      );
+      context.children.push(...children);
+      context.related.push(...related);
+      this.currentContexts.push(context);
+      if (!isClosed) {
+        this.onError(
+          Reason.StyleSheetRulePropertyValueNotClosed,
+          this.cursor,
+          context,
+        );
+      }
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+  stylesheet_pseudo_property_name_CTX(opts?: ContextReaderOptions): boolean {
+    try {
+      this.debuggPosition('STYLESHEET PROPERTY NAME START');
+      const { char, source } = this;
+      const { x, line, column } = this.cursor;
+      if ([':'].includes(char)) return false;
+      while(!this.isEOF) {
+        if (/([^a-zA-Z0-9\_\-])/.test(this.char)) {
+          break;
+        }
+        this.shift(1);
+        this.isValidChar(opts?.unexpected);
+      }
+      const token = source.slice(x, this.cursor.x);
+      const context = new ExiumContext(
+        ContextTypes.StyleSheetPseudoPropertyName,
+        token,
+        {
+          start: x,
+          end: this.cursor.x,
+          line,
+          column,
+        },
+      );
+      this.currentContexts.push(context);
+      return true;
+    } catch(err) {
+      throw err;
+    }
+  }
   stylesheet_property_value_CTX(opts?: ContextReaderOptions): boolean {
     this.debuggPosition("\nSELECTOR PROPERTY VALUE START");
     try {
-      const { lastContext } = this;
+      const { lastContext, char } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid: boolean = lastContext.type === ContextTypes.DoublePoint;
+      const isValid: boolean = char !== ":"
+        && lastContext.type === ContextTypes.DoublePoint;
       if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;

@@ -44,7 +44,7 @@ Deno.test("exium supports spread feature", () => {
 });
 
 Deno.test("exium supports spread feature (stylesheet)", () => {
-  const content = `
+  const content = /*css*/`
   div {
     ...rule;
   }

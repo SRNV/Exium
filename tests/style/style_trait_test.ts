@@ -11,7 +11,7 @@ import {
  * by the end user
  */
 Deno.test("exium stylesheet supports type rule assignment", () => {
-  const content = `
+  const content = /*css*/`
     @<myTrait>  div {
       color: red;
     }`;

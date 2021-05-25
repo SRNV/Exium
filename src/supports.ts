@@ -207,12 +207,14 @@ export const SupportedStyleSheetUnits = [
 /**
  * available pseudo properties
  * @usage
+ * example of pseudo properties usage
+ *
  * ```css
- * div {
+ * div.container {
  *   transition::media(default: 1s ease; 100px: 2s ease);
  *   color::media-screen-pc(
  *     default: red;
- *     2: blue
+ *     2: blue;
  *   );
  *   background::keyframes(
  *     0%: red;
