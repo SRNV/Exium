@@ -53,7 +53,7 @@ Deno.test("exium can parse at-rules", () => {
       );
     }
     const name = atrule.related.find((context) =>
-      context.type === ContextTypes.StyleSheetAtRuleName &&
+      context.type === ContextTypes.Identifier &&
       context.source === "@media"
     );
     if (!name) {

@@ -12,5 +12,6 @@
    <div --while(!item.truth)>
     show this until item.truth is true
    </div>
+   <!--send -->
    <div --send-to={'placeholder'}></div>
 </template>

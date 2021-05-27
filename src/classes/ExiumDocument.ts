@@ -66,9 +66,11 @@ export class ExiumDocument {
    * @returns {ExiumContext}
    */
   getElementsByTagName(tagname: string): ExiumContext[] {
-    return this.contexts.filter((context) => context.type === ContextTypes.Node
-      && context.related.find((related) => related.source === tagname)
-      && !context.data.isNodeClosing);
+    return this.contexts.filter((context) => {
+      return context.type === ContextTypes.Node
+        && context.related.find((related) => related.source === tagname)
+        && !context.data.isNodeClosing;
+    });
   }
   /**
    * @returns < element class="tagname" />[]
@@ -111,7 +113,7 @@ export class ExiumDocument {
     return this.contexts.filter((context) => {
       return context.type === ContextTypes.Node
         && context.children.find((child) => child.type === ContextTypes.Flag
-          && child.related.find((sub) => sub.type === ContextTypes.FlagName
+          && child.related.find((sub) => sub.type === ContextTypes.Identifier
             && (sub.source === flag || sub.source.startsWith(`${flag}:`))))
         && !context.data.isNodeClosing
     });

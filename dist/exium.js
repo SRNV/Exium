@@ -77,7 +77,7 @@ var ContextTypes;
   ContextTypes1["InjectAmbient"] = "InjectAmbient";
   ContextTypes1["TextNode"] = "TextNode";
   ContextTypes1["Node"] = "Node";
-  ContextTypes1["NodeName"] = "NodeName";
+  ContextTypes1["Identifier"] = "Identifier";
   ContextTypes1["NodeOpening"] = "NodeOpening";
   ContextTypes1["NodeOpeningEnd"] = "NodeOpeningEnd";
   ContextTypes1["NodeClosing"] = "NodeClosing";
@@ -861,7 +861,7 @@ class ExiumHTMLElements extends ExiumBase {
             if (recognized) {
               let context = this.lastContext;
               related.push(context);
-              isNamed = context.type === ContextTypes.NodeName;
+              isNamed = context.type === ContextTypes.Identifier;
               isProto = isNamed && context.source === "proto";
               isTemplate = isNamed && context.source === "template";
               isStyle = isNamed && context.source === "style";
@@ -906,13 +906,13 @@ class ExiumHTMLElements extends ExiumBase {
           const openTag = this.openTags.slice().reverse().find(
             (nodeContext) => {
               const name = nodeContext.related.find((related1) =>
-                related1.type === ContextTypes.NodeName
+                related1.type === ContextTypes.Identifier
               );
               const targetName = context.related.find((related1) =>
-                related1.type === ContextTypes.NodeName
+                related1.type === ContextTypes.Identifier
               );
               return name && targetName && !nodeContext.data.closed &&
-                name.type === ContextTypes.NodeName &&
+                name.type === ContextTypes.Identifier &&
                 name.source === targetName.source;
             },
           );
@@ -974,7 +974,7 @@ class ExiumHTMLElements extends ExiumBase {
         }
       }
       const token = source2.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.NodeName, token, {
+      const context = new ExiumContext(ContextTypes.Identifier, token, {
         start: x,
         end: this.cursor.x,
         line,
@@ -1258,7 +1258,7 @@ class ExiumHTMLElements extends ExiumBase {
         }
       }
       const token = source2.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.FlagName, token, {
+      const context = new ExiumContext(ContextTypes.Identifier, token, {
         start: x,
         end: this.cursor.x,
         line,
@@ -1474,7 +1474,7 @@ class ExiumHTMLElements extends ExiumBase {
         }
       }
       const token = source2.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.AttributeName, token, {
+      const context = new ExiumContext(ContextTypes.Identifier, token, {
         start: x,
         end: this.cursor.x,
         line,
@@ -1557,7 +1557,7 @@ class ExiumProtocol extends ExiumHTMLElements {
       let { source: source2 } = this;
       const lastIsAStyleNode = this.currentContexts.find((context) =>
         context.type === ContextTypes.Node && context.related.find((node) =>
-          node.type === ContextTypes.NodeName && node.source === "proto"
+          node.type === ContextTypes.Identifier && node.source === "proto"
         ) && !context.related.find((node) =>
           node.type === ContextTypes.NodeClosing
         )
@@ -1892,7 +1892,7 @@ class ExiumStyleSheet extends ExiumProtocol {
       let { source: source2 } = this;
       const lastIsAStyleNode = this.currentContexts.find((context) =>
         context.type === ContextTypes.Node && context.related.find((node) =>
-          node.type === ContextTypes.NodeName && node.source === "style"
+          node.type === ContextTypes.Identifier && node.source === "style"
         ) && !context.related.find((node) =>
           node.type === ContextTypes.NodeClosing
         )
@@ -2138,7 +2138,7 @@ class ExiumStyleSheet extends ExiumProtocol {
           });
           isNamed = Boolean(
             related.find((context) =>
-              context.type === ContextTypes.StyleSheetAtRuleConstName
+              context.type === ContextTypes.Identifier
             ),
           );
         } else {
@@ -2185,7 +2185,7 @@ class ExiumStyleSheet extends ExiumProtocol {
       }
       const token = source2.slice(x, this.cursor.x);
       const context = new ExiumContext(
-        ContextTypes.StyleSheetAtRuleConstName,
+        ContextTypes.Identifier,
         token,
         {
           start: x,
@@ -2260,7 +2260,7 @@ class ExiumStyleSheet extends ExiumProtocol {
         context.type === ContextTypes.StyleSheetTypeAssignment
       );
       const atRuleName = related.find((context) =>
-        context.type === ContextTypes.StyleSheetAtRuleName
+        context.type === ContextTypes.Identifier
       );
       while (!this.isEOF) {
         this.shift(1);
@@ -2382,7 +2382,7 @@ class ExiumStyleSheet extends ExiumProtocol {
       }
       const token = source2.slice(x, this.cursor.x);
       const context = new ExiumContext(
-        ContextTypes.StyleSheetAtRuleName,
+        ContextTypes.Identifier,
         token,
         {
           start: x,

@@ -13,7 +13,7 @@ Deno.test("exium supports nodes", () => {
   if (contexts && contexts.length) {
     const [tagname, node] = contexts;
     assertEquals(tagname.source, "div");
-    assertEquals(tagname.type, ContextTypes.NodeName);
+    assertEquals(tagname.type, ContextTypes.Identifier);
     assertEquals(tagname.position, { start: 1, end: 4, line: 0, column: 1 });
     assertEquals(node.position, { start: 0, end: 5, line: 0, column: 0 });
     assertEquals(node.related.includes(tagname), true);
@@ -32,7 +32,7 @@ Deno.test("exium can retrieve node names: template", () => {
   if (contexts && contexts.length) {
     const [tagname, node] = contexts;
     assertEquals(tagname.source, "template");
-    assertEquals(tagname.type, ContextTypes.NodeName);
+    assertEquals(tagname.type, ContextTypes.Identifier);
     assertEquals(tagname.position, { start: 1, end: 9, line: 0, column: 1 });
     assertEquals(node.position, { start: 0, end: 10, line: 0, column: 0 });
     assertEquals(node.related.includes(tagname), true);
@@ -51,7 +51,7 @@ Deno.test("exium can retrieve node names: proto", () => {
   if (contexts && contexts.length) {
     const [tagname, node] = contexts;
     assertEquals(tagname.source, "proto");
-    assertEquals(tagname.type, ContextTypes.NodeName);
+    assertEquals(tagname.type, ContextTypes.Identifier);
     assertEquals(tagname.position, { start: 1, end: 6, line: 0, column: 1 });
     assertEquals(node.position, { start: 0, end: 7, line: 0, column: 0 });
     assertEquals(node.related.includes(tagname), true);
@@ -72,7 +72,7 @@ Deno.test("exium tagname is accessible through the related property", () => {
       const [, node] = contexts;
       const [tagname] = node.related;
       assertEquals(tagname.source, "proto");
-      assertEquals(tagname.type, ContextTypes.NodeName);
+      assertEquals(tagname.type, ContextTypes.Identifier);
       assertEquals(tagname.position, { start: 1, end: 6, line: 0, column: 1 });
       assertEquals(node.position, { start: 0, end: 7, line: 0, column: 0 });
       assertEquals(node.related.includes(tagname), true);

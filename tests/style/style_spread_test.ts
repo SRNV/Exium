@@ -27,7 +27,7 @@ Deno.test("exium supports spread feature", () => {
     );
     const spreadName = spread &&
       spread.related.find((context) =>
-        context.type === ContextTypes.StyleSheetRuleSpreadName
+        context.type === ContextTypes.Identifier
       );
     assert(!!spread);
     assertEquals(spread.source, "...rule;");
@@ -93,7 +93,7 @@ Deno.test("exium supports multiple spreads", () => {
       context.type === ContextTypes.StyleSheetRuleSpread
     );
     const spreadsName = contexts.filter((context) =>
-      context.type === ContextTypes.StyleSheetRuleSpreadName
+      context.type === ContextTypes.Identifier
     );
     spreads.forEach((spread, i) => {
       const name = spreadsName[i];

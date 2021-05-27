@@ -1,6 +1,6 @@
 import { Exium } from "./../mod.ts";
 import { ContextTypes } from "../src/enums/context-types.ts";
-import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
+import { assertEquals, assert } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 Deno.test("exium can parse attribute unquoted", () => {
   const lexer = new Exium((reason, _cursor, context) => {
@@ -16,8 +16,9 @@ Deno.test("exium can parse attribute unquoted", () => {
       const attribute = contexts.find((context) =>
         context.type === ContextTypes.Attribute
       );
-      const attributeName = contexts.find((context) =>
-        context.type === ContextTypes.AttributeName
+      assert(attribute);
+      const attributeName = attribute.related.find((context) =>
+        context.type === ContextTypes.Identifier
       );
       const attributeUnquoted = contexts.find((context) =>
         context.type === ContextTypes.AttributeValueUnquoted

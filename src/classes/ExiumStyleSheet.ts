@@ -20,7 +20,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const lastIsAStyleNode = this.currentContexts.find((context) =>
         context.type === ContextTypes.Node &&
         context.related.find((node) =>
-          node.type === ContextTypes.NodeName &&
+          node.type === ContextTypes.Identifier &&
           node.source === "style"
         ) &&
         !context.related.find((node) => node.type === ContextTypes.NodeClosing)
@@ -254,7 +254,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
         this.stylesheet_end_CTX,
         this.multiple_spaces_CTX,
         this.space_CTX,
-        this.stylesheet_const_at_rule_name_CTX,
+        this.identifier_CTX,
         this.multiple_spaces_CTX,
         this.space_CTX,
         this.stylesheet_type_assignment_CTX,
@@ -281,7 +281,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
           });
           isNamed = Boolean(
             related.find((context) =>
-              context.type === ContextTypes.StyleSheetAtRuleConstName
+              context.type === ContextTypes.Identifier
             ) &&
               related.find((context) =>
                 context.type === ContextTypes.StyleSheetAtRuleConstEqual
@@ -339,7 +339,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       // create and finish the current context
       const token = source.slice(x, this.cursor.x);
       const context = new ExiumContext(
-        ContextTypes.StyleSheetAtRuleConstName,
+        ContextTypes.Identifier,
         token,
         {
           start: x,
@@ -542,7 +542,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       }
       const token = source.slice(x, this.cursor.x);
       const context = new ExiumContext(
-        ContextTypes.StyleSheetAtRuleName,
+        ContextTypes.Identifier,
         token,
         {
           start: x,
@@ -875,7 +875,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
         if (!isNamed) {
           this.saveContextsTo(describers, related);
           isNamed = !!related.find((context) =>
-            context.type === ContextTypes.StyleSheetSelectorAttributeName
+            context.type === ContextTypes.Identifier
           );
         }
         this.saveContextsTo(allSubContexts, children);
@@ -929,7 +929,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       }
       const token = source.slice(x, this.cursor.x);
       const context = new ExiumContext(
-        ContextTypes.StyleSheetSelectorAttributeName,
+        ContextTypes.Identifier,
         token,
         {
           start: x,
@@ -1151,7 +1151,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
         this.debuggPosition("\nSTYLESHEET RULE SPREAD");
         this.saveStrictContextsTo(subs, related);
         isNamed = !!related.find((context) =>
-          context.type === ContextTypes.StyleSheetRuleSpreadName
+          context.type === ContextTypes.Identifier
         );
         if (
           related.find((context) => context.type === ContextTypes.SemiColon)
@@ -1209,7 +1209,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       }
       const token = source.slice(x, this.cursor.x);
       const context = new ExiumContext(
-        ContextTypes.StyleSheetRuleSpreadName,
+        ContextTypes.Identifier,
         token,
         {
           start: x,
@@ -1252,7 +1252,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
           this.saveContextsTo(describers, related);
           isNamed = Boolean(
             related.find((context) =>
-              context.type === ContextTypes.StyleSheetPropertyName
+              context.type === ContextTypes.Identifier
             ) &&
               related.find((context) =>
                 context.type === ContextTypes.DoublePoint
@@ -1317,7 +1317,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       }
       const token = source.slice(x, this.cursor.x);
       const context = new ExiumContext(
-        ContextTypes.StyleSheetPropertyName,
+        ContextTypes.Identifier,
         token,
         {
           start: x,

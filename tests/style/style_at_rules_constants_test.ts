@@ -28,7 +28,7 @@ Deno.test("exium stylesheet supports @const statement, and it can retrieve the n
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetAtRuleConst} context`,
     );
     const errName = new Error(
-      `Exium - Failed to retrieve ${ContextTypes.StyleSheetAtRuleConstName} context`,
+      `Exium - Failed to retrieve ${ContextTypes.Identifier} context`,
     );
     const constant = contexts.find((context) =>
       context.type === ContextTypes.StyleSheetAtRuleConst
@@ -37,7 +37,7 @@ Deno.test("exium stylesheet supports @const statement, and it can retrieve the n
       throw err;
     }
     const constantName = constant.related.find((context) =>
-      context.type === ContextTypes.StyleSheetAtRuleConstName
+      context.type === ContextTypes.Identifier
     );
     if (!constantName) {
       throw errName;
@@ -72,7 +72,7 @@ Deno.test("exium stylesheet supports @const statement, and it can retrieve the n
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetAtRuleConst} context`,
     );
     const errName = new Error(
-      `Exium - Failed to retrieve ${ContextTypes.StyleSheetAtRuleConstName} context`,
+      `Exium - Failed to retrieve ${ContextTypes.Identifier} context`,
     );
     const constant = contexts.find((context) =>
       context.type === ContextTypes.StyleSheetAtRuleConst
@@ -81,7 +81,7 @@ Deno.test("exium stylesheet supports @const statement, and it can retrieve the n
       throw err;
     }
     const constantName = constant.related.find((context) =>
-      context.type === ContextTypes.StyleSheetAtRuleConstName
+      context.type === ContextTypes.Identifier
     );
     if (!constantName) {
       throw errName;
@@ -133,7 +133,7 @@ Deno.test("exium stylesheet supports @const statement and supports rule assignme
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetAtRuleConst} context`,
     );
     const errName = new Error(
-      `Exium - Failed to retrieve ${ContextTypes.StyleSheetAtRuleConstName} context`,
+      `Exium - Failed to retrieve ${ContextTypes.Identifier} context`,
     );
     const constant = contexts.find((context) =>
       context.type === ContextTypes.StyleSheetAtRuleConst
@@ -142,7 +142,7 @@ Deno.test("exium stylesheet supports @const statement and supports rule assignme
       throw err;
     }
     const constantName = constant.related.find((context) =>
-      context.type === ContextTypes.StyleSheetAtRuleConstName
+      context.type === ContextTypes.Identifier
     );
     if (!constantName) {
       throw errName;

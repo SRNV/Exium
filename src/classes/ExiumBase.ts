@@ -62,13 +62,65 @@ export class ExiumBase {
    */
   protected get char(): string {
     return this.source[this.cursor.x];
-  } /**
+  }
+  /**
+   * the character code of the current character
+   */
+  protected get charCode(): number {
+    return this.char?.charCodeAt(0);
+  }
+  /**
+   * if the current character is \n \t \r \s
+   */
+  get isCharSpacing(): boolean {
+    const code = this.charCode;
+    return code === 9
+      || code === 10
+      || code === 13
+      || code === 32;
+  }
+  /**
+   * if the current character is a letter
+   */
+  get isCharIdentifier(): boolean {
+    if (this.isCharSpacing) return false;
+    const code = this.charCode;
+    return code >= 65
+      && code <= 90
+      || code === 36
+      || code === 95
+      || code >= 97
+      && code <= 122;
+  }
+  /**
+   * if the current character is a number
+   */
+  get isCharDigit(): boolean {
+    if (this.isCharSpacing) return false;
+    const code = this.charCode;
+    return code >= 48 && code <= 57;
+  }
+  /**
+   * if the current character is a punctuation
+   */
+  get isCharPuntuation(): boolean {
+    const code = this.charCode;
+    return code >= 123
+      && code <= 124
+      || code >= 91
+      && code <= 96
+      || code >= 58
+      && code <= 64
+      || code >= 32
+      && code <= 47;
+  }
+  /**
   * the next character
   */
-
   protected get next(): string | undefined {
     return this.source[this.cursor.x + 1];
-  } /**
+  }
+  /**
   * the previous character
   */
 
@@ -176,7 +228,7 @@ export class ExiumBase {
       cursor: CursorDescriber,
       context: ExiumContext,
     ) => void,
-  ) {}
+  ) { }
   /**
    * should validate if the character is accepted inside the current context
    * if it's not the ogone lexer will use the error function passed into the constructor
@@ -622,6 +674,27 @@ export class ExiumBase {
     } catch (err) {
       throw err;
     }
+  }
+  identifier_CTX(opts?: ContextReaderOptions) {
+    this.debuggPosition("Identifier CTX START");
+    const { line, column, x } = this.cursor;
+    if (!this.isCharIdentifier) return false;
+    if (opts?.checkOnly) return true;
+    this.shift(1);
+    while (!this.isEOF) {
+      if (this.isCharPuntuation || this.isCharSpacing) break;
+      this.shift(1);
+    }
+    const token = this.source.slice(x, this.cursor.x);
+    this.currentContexts.push(
+      new ExiumContext(ContextTypes.Identifier, token, {
+        start: x,
+        end: this.cursor.x,
+        line,
+        column,
+      }),
+    );
+    return true;
   }
   space_CTX() {
     this.debuggPosition("\n\n\t\tSPACE START");

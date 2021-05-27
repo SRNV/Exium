@@ -115,7 +115,7 @@ export class ExiumHTMLElements extends ExiumBase {
       let isStyle = false;
       const isNodeClosing = nextPart.startsWith("</");
       const subcontextEvaluatedOnce: ContextReader[] = [
-        this.node_name_CTX,
+        this.identifier_CTX,
       ];
       const allSubContexts: ContextReader[] = isNodeClosing
         ? [
@@ -153,7 +153,7 @@ export class ExiumHTMLElements extends ExiumBase {
             if (recognized) {
               const context = this.lastContext;
               related.push(context);
-              isNamed = context.type === ContextTypes.NodeName;
+              isNamed = context.type === ContextTypes.Identifier;
               isProto = isNamed && context.source === "proto";
               isTemplate = isNamed && context.source === "template";
               isStyle = isNamed && context.source === "style";
@@ -226,15 +226,15 @@ export class ExiumHTMLElements extends ExiumBase {
             .reverse()
             .find((nodeContext) => {
               const name = nodeContext.related.find((related) =>
-                related.type === ContextTypes.NodeName
+                related.type === ContextTypes.Identifier
               );
               const targetName = context.related.find((related) =>
-                related.type === ContextTypes.NodeName
+                related.type === ContextTypes.Identifier
               );
               return name &&
                 targetName &&
                 !nodeContext.data.closed &&
-                name.type === ContextTypes.NodeName &&
+                name.type === ContextTypes.Identifier &&
                 name.source === targetName.source;
             });
           if (!openTag) {
@@ -255,47 +255,6 @@ export class ExiumHTMLElements extends ExiumBase {
       if (!isClosed) {
         this.onError(Reason.HTMLTagNotFinish, this.cursor, context);
       }
-      return result;
-    } catch (err) {
-      throw err;
-    }
-  }
-  /**
-   * reads the tagname right after the <
-   */
-  node_name_CTX(opts?: ContextReaderOptions): boolean {
-    try {
-      const { char } = this;
-      const { x, line, column } = this.cursor;
-      const { source } = this;
-      if ([" ", "[", "!", "-", "\n", "/"].includes(char)) return false;
-      if (opts?.checkOnly) return true;
-      const result = true;
-      const children: ExiumContext[] = [];
-      const closingChars = [
-        " ",
-        "/",
-        "<",
-        "\n",
-        ">",
-      ];
-      while (!this.isEOF) {
-        this.isValidChar(opts?.unexpected);
-        if (closingChars.includes(this.char)
-        ) {
-          break;
-        }
-        this.shift(1);
-      }
-      const token = source.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.NodeName, token, {
-        start: x,
-        end: this.cursor.x,
-        line,
-        column,
-      });
-      context.children.push(...children);
-      this.currentContexts.push(context);
       return result;
     } catch (err) {
       throw err;
@@ -546,7 +505,7 @@ export class ExiumHTMLElements extends ExiumBase {
       while (!this.isEOF) {
         if (!isNamed) {
           isNamed = Boolean(
-            this.flag_name_CTX() &&
+            this.identifier_CTX() &&
             related.push(this.lastContext),
           );
         }
@@ -567,49 +526,6 @@ export class ExiumHTMLElements extends ExiumBase {
       });
       context.children.push(...children);
       context.related.push(...related);
-      this.currentContexts.push(context);
-      if (!isClosed) {
-        this.onError(Reason.OgoneFlagNotFinish, this.cursor, context);
-      }
-      return result;
-    } catch (err) {
-      throw err;
-    }
-  }
-  flag_name_CTX(opts?: ContextReaderOptions): boolean {
-    try {
-      const { char } = this;
-      const { x, line, column } = this.cursor;
-      const { source } = this;
-      const unsupported = [" ", ">", "=", "\n", "/"];
-      if (char === "-" || unsupported.includes(this.char)) return false;
-      if (opts?.checkOnly) return true;
-      const result = true;
-      let isClosed = false;
-      const children: ExiumContext[] = [];
-      while (!this.isEOF) {
-        if (unsupported.includes(this.char)) {
-          isClosed = true;
-          break;
-        }
-        this.shift(1);
-        this.isValidChar(
-          opts?.unexpected || [
-            this.array_CTX,
-            this.braces_CTX,
-            this.curly_braces_CTX,
-          ],
-        );
-      }
-      const token = source.slice(x, this.cursor.x);
-
-      const context = new ExiumContext(ContextTypes.FlagName, token, {
-        start: x,
-        end: this.cursor.x,
-        line,
-        column,
-      });
-      context.children.push(...children);
       this.currentContexts.push(context);
       if (!isClosed) {
         this.onError(Reason.OgoneFlagNotFinish, this.cursor, context);
@@ -695,7 +611,7 @@ export class ExiumHTMLElements extends ExiumBase {
       ];
       if (!isNamed) {
         isNamed = Boolean(
-          this.attribute_name_CTX() &&
+          this.identifier_CTX() &&
           related.push(this.lastContext),
         );
       }
@@ -736,49 +652,6 @@ export class ExiumHTMLElements extends ExiumBase {
       this.currentContexts.push(context);
       if (!isClosed) {
         this.onError(Reason.HTMLAttributeNotClosed, this.cursor, context);
-      }
-      return result;
-    } catch (err) {
-      throw err;
-    }
-  }
-  attribute_name_CTX(opts?: ContextReaderOptions): boolean {
-    try {
-      const { char } = this;
-      const { x, line, column } = this.cursor;
-      const { source } = this;
-      if (char === "-") return false;
-      if (opts?.checkOnly) return true;
-      this.shift(1);
-      const result = true;
-      let isClosed = false;
-      const children: ExiumContext[] = [];
-      const exitChars = [" ", "/", ">", "=", "\n"];
-      while (!this.isEOF) {
-        this.isValidChar(
-          opts?.unexpected || [
-            this.array_CTX,
-            this.braces_CTX,
-            this.curly_braces_CTX,
-          ],
-        );
-        if (exitChars.includes(this.char)) {
-          isClosed = true;
-          break;
-        }
-        this.shift(1);
-      }
-      const token = source.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.AttributeName, token, {
-        start: x,
-        end: this.cursor.x,
-        line,
-        column,
-      });
-      context.children.push(...children);
-      this.currentContexts.push(context);
-      if (!isClosed) {
-        this.onError(Reason.HTMLAttributeNameNotClosed, this.cursor, context);
       }
       return result;
     } catch (err) {
