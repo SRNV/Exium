@@ -77,7 +77,6 @@ Deno.test("exium can parse boolean attributes and a space after", () => {
         assertEquals(target.position, attribute.position);
         assertEquals(attribute.source, source);
       } else {
-        console.error("attribute", attribute);
         throw new Error("Exium - test failed");
       }
     } catch (err) {

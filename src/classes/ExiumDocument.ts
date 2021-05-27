@@ -10,11 +10,11 @@ export interface ExiumDocumentOptions {
   onError: ConstructorParameters<typeof Exium>[0];
   source: Parameters<Exium['readSync']>[0];
   options?: Parameters<Exium['readSync']>[1];
-};
+}
 export interface ExiumDocumentComponentDescriber {
   elements: ExiumContext[];
   imports: ExiumContext[];
-};
+}
 export class ExiumDocument {
   public url: URL;
   private exium: Exium;
@@ -74,23 +74,47 @@ export class ExiumDocument {
    * @returns < element class="tagname" />[]
    */
   getElementsByClassName(className: string): ExiumContext[] {
-    return this.contexts.filter((context) => context.type === ContextTypes.Node
-      && context.children.find((child) => child.type === ContextTypes.Attribute
-        && child.related[0]?.source === 'class'
-        && child.children[0]?.source
-          .split(' ')
-          .includes(className))
-      && !context.data.isNodeClosing);
+    return this.contexts.filter((context) => {
+      return context.type === ContextTypes.Node
+        && context.children.find((child) => {
+          const subChild = child.children[0];
+          return child.type === ContextTypes.Attribute
+            && child.related[0]?.source === 'class'
+            && (
+              subChild
+                ?.source === className
+              || typeof subChild.value === 'string'
+              && subChild.value
+                .split(' ')
+                .includes(className))
+        })
+        && !context.data.isNodeClosing
+    });
   }
   /**
-   * @returns < element id="id" />
+   * @returns < element id="id" id=id />
    */
   getElementById(value: string): ExiumContext | undefined {
-    return this.contexts.find((context) => context.type === ContextTypes.Node
-      && context.children.find((child) => child.type === ContextTypes.Attribute
-        && child.related[0]?.source === 'id'
-        && child.children[0]?.source === value)
-      && !context.data.isNodeClosing);
+    return this.contexts.find((context) => {
+      return context.type === ContextTypes.Node
+        && context.children.find((child) => child.type === ContextTypes.Attribute
+          && child.related[0]?.source === 'id'
+          && (child.children[0]?.source === value
+            || child.children[0]?.value === value))
+        && !context.data.isNodeClosing
+    });
+  }
+  /**
+   * @returns < element --flag={value} />
+   */
+  getElementsByFlag(flag: string): ExiumContext[] {
+    return this.contexts.filter((context) => {
+      return context.type === ContextTypes.Node
+        && context.children.find((child) => child.type === ContextTypes.Flag
+          && child.related.find((sub) => sub.type === ContextTypes.FlagName
+            && (sub.source === flag || sub.source.startsWith(`${flag}:`))))
+        && !context.data.isNodeClosing
+    });
   }
   /**
    * get all elements by attributes defined inside the document
@@ -108,10 +132,12 @@ export class ExiumDocument {
    * @param tagname the name of the component
    * @returns {ExiumDocumentComponentDescriber}
    */
-  getComponentsByTagName(tagname: string): ExiumDocumentComponentDescriber {
+  getComponentByName(tagname: string): ExiumDocumentComponentDescriber | null {
+    const imports = this.getComponentImports(tagname);
+    if (!imports.length) return null;
     return {
       elements: this.getElementsByTagName(tagname),
-      imports: this.getComponentImports(tagname),
+      imports,
     };
   }
   getComponentImports(tagname: string): ExiumContext[] {

@@ -1199,6 +1199,7 @@ class ExiumHTMLElements extends ExiumBase {
         if (
           [
             " ",
+            "/",
             ">",
             "\n",
           ].includes(this.char)

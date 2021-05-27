@@ -1,0 +1,16 @@
+<template>
+  <div
+    --for(item of this.items)
+    --if(item)
+    --else-if(item.id)>
+  </div>
+   <template --switch(item.value)>
+     <p --case={'n'}> show n </p>
+     <p --case={'p'}> show p </p>
+     <p --default> show default </p>
+   </template>
+   <div --while(!item.truth)>
+    show this until item.truth is true
+   </div>
+   <div --send-to={'placeholder'}></div>
+</template>

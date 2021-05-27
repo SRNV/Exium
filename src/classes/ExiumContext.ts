@@ -1,4 +1,5 @@
 import { ContextTypes } from "../../src/enums/context-types.ts";
+export type ExiumContextValue = ExiumContext | string;
 /**
  * ExiumContext constructor for all retrieved contexts.
  *
@@ -19,6 +20,11 @@ import { ContextTypes } from "../../src/enums/context-types.ts";
  */
 export class ExiumContext {
   /**
+   * cache for value
+   * can return the ExiumContext
+   */
+  #_value?: ExiumContextValue;
+  /**
    * the children context
    * mainly the context that doesn't describe the current context
    * but are parsed into it
@@ -33,6 +39,18 @@ export class ExiumContext {
    */
   public related: ExiumContext[] = [];
   /**
+   * the computed value of the ExiumContext
+   */
+  get value(): ExiumContextValue {
+    if (this.#_value) return this.#_value;
+    switch (this.type) {
+      case ContextTypes.StringDoubleQuote:
+      case ContextTypes.StringSingleQuote:
+        return (this.#_value = this.source.slice(1, -1));
+    }
+    return this;
+  }
+  /**
    * any data to pass to the ExiumContext
    */
   public data: { [k: string]: unknown } = {};
@@ -45,5 +63,5 @@ export class ExiumContext {
       line: number;
       column: number;
     },
-  ) {}
+  ) { }
 }

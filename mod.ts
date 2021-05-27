@@ -15,8 +15,6 @@ import { Reason } from "./src/enums/error-reason.ts";
 import { ExiumContext } from "./src/classes/ExiumContext.ts";
 import { ExiumStyleSheet } from "./src/classes/ExiumStyleSheet.ts";
 
-export * from "./src/classes/ExiumDocument.ts";
-
 /**
  * @README
  * this class exists to improve the performances

@@ -38,6 +38,7 @@ export enum ContextTypes {
   FlagSpread = "FlagSpread",
   Attribute = "Attribute",
   AttributeName = "AttributeName",
+  AttributeProperty = "AttributeProperty",
   AttributeBoolean = "AttributeBoolean",
   AttributeValueQuoteSingle = "AttributeValueQuoteSingle",
   AttributeValueQuoteDouble = "AttributeValueQuoteDouble",
