@@ -680,9 +680,12 @@ export class ExiumBase {
     const { line, column, x } = this.cursor;
     if (!this.isCharIdentifier) return false;
     if (opts?.checkOnly) return true;
+    const allowedIdentifierChars = [
+      ...(opts?.data?.allowedIdentifierChars as string[] || [])
+    ];
     this.shift(1);
     while (!this.isEOF) {
-      if (this.isCharPuntuation || this.isCharSpacing) break;
+      if ((this.isCharPuntuation || this.isCharSpacing) && !allowedIdentifierChars.includes(this.char)) break;
       this.shift(1);
     }
     const token = this.source.slice(x, this.cursor.x);

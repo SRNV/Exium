@@ -5,6 +5,8 @@ export enum ContextTypes {
   Unexpected = "Unexpected",
   Space = "Space",
   Identifier = "Identifier",
+  // @
+  At = "At",
   SemiColon = "SemiColon",
   Coma = "Coma",
   DoublePoint = "DoublePoint",

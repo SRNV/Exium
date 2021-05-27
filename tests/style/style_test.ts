@@ -54,12 +54,12 @@ Deno.test("exium can parse at-rules", () => {
     }
     const name = atrule.related.find((context) =>
       context.type === ContextTypes.Identifier &&
-      context.source === "@media"
+      context.source === "media"
     );
     if (!name) {
       throw new Error(`Exium - Failed to retrieve the name of the at rule`);
     }
-    assertEquals(name.position, { start: 1, end: 7, line: 0, column: 1 });
+    assertEquals(name.position, { start: 2, end: 7, line: 0, column: 2 });
     assertEquals(atrule.position, { start: 1, end: 38, line: 0, column: 1 });
     assert(
       atrule.related.find((ctx) =>
