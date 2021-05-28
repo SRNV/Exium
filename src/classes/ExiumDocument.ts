@@ -2,7 +2,7 @@ import { Exium } from './../../mod.ts';
 import { ExiumContext } from './ExiumContext.ts';
 import { ContextTypes } from '../enums/context-types.ts';
 /**
- * a class to manager contexts
+ * a class to manage contexts
  * and retrieve them easily
  */
 export interface ExiumDocumentOptions {
@@ -28,6 +28,13 @@ export class ExiumDocument {
     this.exium = new Exium(opts.onError);
     this.contexts = this.exium.readSync(opts.source, opts.options || { type: 'component' });
     this.url = opts.url;
+  }
+  /**
+   * @returns styles declared in the document
+   */
+  get styles(): ExiumContext[] {
+    return this.#_stylesheets
+      || (this.#_stylesheets = this.contexts.filter((context) => context.type === ContextTypes.Node && context.name === 'style'));
   }
   get stylesheets(): ExiumContext[] {
     return this.#_stylesheets
