@@ -44,11 +44,23 @@ export class ExiumContext {
   get value(): ExiumContextValue {
     if (this.#_value) return this.#_value;
     switch (this.type) {
+      case ContextTypes.Braces:
+      case ContextTypes.CurlyBraces:
+      case ContextTypes.Parenthese:
       case ContextTypes.StringDoubleQuote:
       case ContextTypes.StringSingleQuote:
         return (this.#_value = this.source.slice(1, -1));
+      case ContextTypes.TextNode:
+        return this.source;
     }
     return this;
+  }
+  /**
+   * the name of the token
+   */
+  get name(): string | undefined {
+    const ctx = this.related.find((ctx) => ctx.type === ContextTypes.Identifier);
+    return ctx?.source;
   }
   /**
    * any data to pass to the ExiumContext

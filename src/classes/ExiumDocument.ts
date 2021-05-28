@@ -112,11 +112,23 @@ export class ExiumDocument {
   getElementsByFlag(flag: string): ExiumContext[] {
     return this.contexts.filter((context) => {
       return context.type === ContextTypes.Node
-        && context.children.find((child) => child.type === ContextTypes.Flag
+        && context.children.find((child) => [ContextTypes.Flag, ContextTypes.FlagStruct].includes(child.type)
           && child.related.find((sub) => sub.type === ContextTypes.Identifier
             && (sub.source === flag || sub.source.startsWith(`${flag}:`))))
         && !context.data.isNodeClosing
     });
+  }
+  /**
+   * @returns Flag.value
+   */
+  getFlagValue(element: ExiumContext, flag: string): string | boolean | undefined {
+    if (!element || element.type !== ContextTypes.Node) throw new Error('first argument should be a Node');
+    const retrievedFlag = element.children.find((context) => [ContextTypes.Flag, ContextTypes.FlagStruct].includes(context.type)
+      && context.name === flag);
+    if (!retrievedFlag) return;
+    const flagValue = retrievedFlag.children.find((context) => [ContextTypes.Braces, ContextTypes.CurlyBraces,].includes(context.type));
+    if (!flagValue) return true;
+    return flagValue.value as string;
   }
   /**
    * get all elements by attributes defined inside the document

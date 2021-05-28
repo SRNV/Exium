@@ -633,7 +633,7 @@ class ExiumBase {
       throw err;
     }
   }
-  curly_braces_CTX(opts) {
+  curly_brackets_CTX(opts) {
     try {
       let { char: __char } = this;
       const { x, line, column } = this.cursor;
@@ -646,7 +646,7 @@ class ExiumBase {
         this.line_break_CTX,
         this.multiple_spaces_CTX,
         this.space_CTX,
-        this.curly_braces_CTX,
+        this.curly_brackets_CTX,
       ];
       const children = [];
       while (!this.isEOF) {
@@ -1184,7 +1184,7 @@ class ExiumHTMLElements extends ExiumBase {
       const children = [];
       const related = [];
       const allSubContexts = [
-        this.curly_braces_CTX,
+        this.curly_brackets_CTX,
         this.braces_CTX,
       ];
       while (!this.isEOF) {
@@ -1242,7 +1242,7 @@ class ExiumHTMLElements extends ExiumBase {
           opts?.unexpected || [
             this.array_CTX,
             this.braces_CTX,
-            this.curly_braces_CTX,
+            this.curly_brackets_CTX,
           ],
         );
         if (
@@ -1291,7 +1291,7 @@ class ExiumHTMLElements extends ExiumBase {
         this.multiple_spaces_CTX,
         this.space_CTX,
         this.array_CTX,
-        this.curly_braces_CTX,
+        this.curly_brackets_CTX,
       ];
       while (!this.isEOF) {
         this.shift(1);
@@ -1403,7 +1403,7 @@ class ExiumHTMLElements extends ExiumBase {
           opts?.unexpected || [
             this.array_CTX,
             this.braces_CTX,
-            this.curly_braces_CTX,
+            this.curly_brackets_CTX,
           ],
         );
         if (
@@ -1457,7 +1457,7 @@ class ExiumHTMLElements extends ExiumBase {
           opts?.unexpected || [
             this.array_CTX,
             this.braces_CTX,
-            this.curly_braces_CTX,
+            this.curly_brackets_CTX,
           ],
         );
         if (
@@ -1506,7 +1506,7 @@ class ExiumHTMLElements extends ExiumBase {
           opts?.unexpected || [
             this.array_CTX,
             this.braces_CTX,
-            this.curly_braces_CTX,
+            this.curly_brackets_CTX,
           ],
         );
         if (
@@ -1913,7 +1913,7 @@ class ExiumStyleSheet extends ExiumProtocol {
         this.stylesheet_export_at_rule_CTX,
         this.stylesheet_default_at_rule_CTX,
         this.stylesheet_selector_list_CTX,
-        this.curly_braces_CTX,
+        this.curly_brackets_CTX,
       ];
       this.saveContextsTo(allSubContexts, children);
       while (!this.isEOF) {
@@ -2273,7 +2273,7 @@ class ExiumStyleSheet extends ExiumProtocol {
         }
       }
       const subCurlyBracesContexts = [];
-      isClosed = this.curly_braces_CTX({
+      isClosed = this.curly_brackets_CTX({
         contexts: subCurlyBracesContexts,
       });
       if (isClosed) {

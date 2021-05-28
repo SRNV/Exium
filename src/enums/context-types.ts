@@ -36,6 +36,7 @@ export enum ContextTypes {
   NodeClosing = "NodeClosing",
   NodeClosingEnd = "NodeClosingEnd",
   Flag = "Flag",
+  FlagStruct = "FlagStruct",
   FlagSpread = "FlagSpread",
   Attribute = "Attribute",
   AttributeProperty = "AttributeProperty",
