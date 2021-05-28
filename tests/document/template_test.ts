@@ -42,7 +42,7 @@ Deno.test("exium - document can expose the component's proto", () => {
   }
 });
 
-Deno.test("exium - document can expose the component's proto", () => {
+Deno.test("exium - document can expose the component's styles", () => {
   const textnode = "$\{this.basic}";
   const content = `<template>
   <style></style>
