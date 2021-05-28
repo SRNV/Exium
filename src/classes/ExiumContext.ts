@@ -50,6 +50,7 @@ export class ExiumContext {
       case ContextTypes.StringDoubleQuote:
       case ContextTypes.StringSingleQuote:
         return (this.#_value = this.source.slice(1, -1));
+      case ContextTypes.AttributeValueUnquoted:
       case ContextTypes.TextNode:
         return this.source;
     }
