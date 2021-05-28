@@ -64,6 +64,23 @@ export class ExiumContext {
     return ctx?.source;
   }
   /**
+   * the node type of the context
+   * default is 6: ENTITY_NODE
+   */
+  get nodeType(): number {
+    switch(this.type) {
+      case ContextTypes.Node: return 1;
+      case ContextTypes.TextNode: return 3;
+      case ContextTypes.StyleSheet: return 9;
+      case ContextTypes.Attribute: return 2;
+    }
+    return 6;
+  }
+
+  get parentNode(): ExiumContext | undefined {
+    return this.data.parentNode as ExiumContext | undefined;
+  }
+  /**
    * any data to pass to the ExiumContext
    */
   public data: { [k: string]: unknown } = {};
