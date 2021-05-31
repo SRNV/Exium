@@ -1,7 +1,7 @@
 import { Exium } from "./../mod.ts";
 import { ContextTypes } from "../src/enums/context-types.ts";
 
-Deno.test("exium can retrieve nested css", () => {
+Deno.test("exium can retrieve nested protocol", () => {
   const content = `
   <proto>
     declare:

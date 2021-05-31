@@ -1082,6 +1082,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
         this.line_break_CTX,
         this.stylesheet_end_CTX,
         this.stylesheet_spread_CTX,
+        this.stylesheet_default_at_rule_CTX,
         // nested rules
         this.stylesheet_selector_list_CTX,
         this.stylesheet_property_list_CTX,
@@ -1095,7 +1096,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
           isClosed = true;
           break;
         }
-        this.saveContextsTo(allSubContexts, children);
+        this.saveStrictContextsTo(allSubContexts, children);
         this.isValidChar(opts?.unexpected);
       }
       const token = source.slice(x, this.cursor.x);
@@ -1431,8 +1432,8 @@ export class ExiumStyleSheet extends ExiumProtocol {
       const { lastContext, char } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const isValid: boolean = char !== ":"
-        && lastContext.type === ContextTypes.DoublePoint;
+      const isValid: boolean = lastContext.type === ContextTypes.DoublePoint
+        && char !== ':';
       if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
       const result = true;
@@ -1444,10 +1445,16 @@ export class ExiumStyleSheet extends ExiumProtocol {
         this.space_CTX,
         this.string_double_quote_CTX,
         this.string_single_quote_CTX,
+        this.braces_CTX,
       ];
       while (!this.isEOF) {
         this.debuggPosition("\nSELECTOR PROPERTY VALUE");
-        this.saveContextsTo(subs, children);
+        this.saveContextsTo(subs, children, {
+          data : {
+            argument_CTX_starts_with: '|',
+          },
+          contexts: subs,
+        });
         if ([";", "\n", "}"].includes(this.char)) {
           isClosed = true;
           break;

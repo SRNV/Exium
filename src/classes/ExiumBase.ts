@@ -895,4 +895,231 @@ export class ExiumBase {
       throw err;
     }
   }
+  /**
+   * should read all ambient import statements
+   */
+   import_ambient_CTX(opts?: ContextReaderOptions): boolean {
+    try {
+      const { x, line, column } = this.cursor;
+      const { source } = this;
+      if (!/^import\s*(["'])(.*?)(\1)/i.test(this.nextPart)) return false;
+      if (opts?.checkOnly) return true;
+      const result = true;
+      let isClosed = false;
+      const related: ExiumContext[] = [];
+      /**
+       * expected next contexts
+       */
+      const nextContexts: ContextReader[] = [
+        this.multiple_spaces_CTX,
+        this.space_CTX,
+        this.string_double_quote_CTX,
+        this.string_single_quote_CTX,
+        this.semicolon_CTX,
+      ];
+      while (!this.isEOF) {
+        this.shift(1);
+        this.isValidChar(opts?.unexpected);
+        if (this.char === " " || ['"', "'"].includes(this.char)) {
+          break;
+        }
+      }
+      nextContexts.forEach((reader: ContextReader, i: number, arr) => {
+        const recognized = reader.apply(this, []);
+        if (recognized) {
+          related.push(this.lastContext);
+          delete arr[i];
+        }
+      });
+      const str = related.find((context) =>
+        [
+          ContextTypes.StringDoubleQuote,
+          ContextTypes.StringSingleQuote,
+        ].includes(context.type)
+      );
+      isClosed = Boolean(
+        str
+        &&
+        related.find((context) =>
+          [
+            ContextTypes.SemiColon,
+          ].includes(context.type)
+        ),
+      );
+      const token = source.slice(x, this.cursor.x);
+      const context = new ExiumContext(ContextTypes.ImportAmbient, token, {
+        start: x,
+        end: this.cursor.x,
+        line,
+        column,
+      });
+      Object.assign(context.data, {
+        path: str
+      });
+      context.related.push(...related);
+      this.currentContexts.push(context);
+      if (!isClosed) {
+        this.onError(Reason.ImportAmbientStringMissing, this.cursor, context);
+      }
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+  /**
+   * should read all import statements
+   */
+  // TODO create contexts for the tokens between import and from
+  import_statements_CTX(opts?: ContextReaderOptions): boolean {
+    try {
+      const { char, next } = this;
+      const { x, line, column } = this.cursor;
+      const { source } = this;
+      const sequence = char +
+        next +
+        source[x + 2] +
+        source[x + 3] +
+        source[x + 4] +
+        source[x + 5] +
+        source[x + 6];
+      if (
+        char !== "i" ||
+        sequence !== "import "
+      ) {
+        return false;
+      }
+      if (opts?.checkOnly) return true;
+      const result = true;
+      let isClosed = false;
+      let isComponent = null;
+      let fromStatement = null;
+      const related: ExiumContext[] = [];
+      const otherImportStatements: ContextReader[] = [
+        this.import_ambient_CTX,
+      ];
+      /**
+       * expected next contexts
+       */
+      const nextContexts: ContextReader[] = [
+        this.multiple_spaces_CTX,
+        this.space_CTX,
+        this.string_double_quote_CTX,
+        this.string_single_quote_CTX,
+        this.semicolon_CTX,
+      ];
+      otherImportStatements.forEach((reader) => reader.apply(this, []));
+      while (!this.isEOF) {
+        if (!isComponent) {
+          isComponent = this.saveToken('component', ContextTypes.ImportComponentStatement);
+        }
+        fromStatement = this.saveToken('from', ContextTypes.ImportStatementFrom);
+        if (fromStatement) {
+          break;
+        }
+        this.shift(1);
+        this.isValidChar(opts?.unexpected);
+      }
+      nextContexts.forEach((reader: ContextReader, i: number, arr) => {
+        const recognized = reader.apply(this, []);
+        if (recognized) {
+          related.push(this.lastContext);
+          delete arr[i];
+        }
+      });
+      const str = related.find((context) =>
+        [
+          ContextTypes.StringSingleQuote,
+          ContextTypes.StringDoubleQuote,
+        ].includes(context.type)
+      );
+      isClosed = Boolean(
+        fromStatement
+        && str
+        && related.find((context) =>
+          [
+            ContextTypes.SemiColon,
+          ].includes(context.type)
+        ),
+      );
+      const token = source.slice(x, this.cursor.x);
+      const context = new ExiumContext(ContextTypes.ImportStatement, token, {
+        start: x,
+        end: this.cursor.x,
+        line,
+        column,
+      });
+      Object.assign(context.data, {
+        isComponent,
+        path: str,
+      });
+      if (fromStatement) {
+        context.related.push(fromStatement);
+      }
+      context.related.push(...related);
+      this.currentContexts.push(context);
+      if (!isClosed) {
+        this.onError(Reason.ImportStatementNotFinish, this.cursor, context);
+      }
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+  /**
+   * @returns true if the argument_CTx is valid for the current char
+   * @usage
+   * ```
+   * exium.argument_CTX({
+   *   data: {
+   *     argument_CTX_starts_with: '&'
+   *   }
+   * }); // boolean
+   * ```
+   */
+  argument_CTX(opts?: ContextReaderOptions): boolean {
+    try {
+    const {
+      char,
+      source
+    } = this;
+    const {
+      line,
+      column,
+      x,
+    } = this.cursor;
+    const startingChar = opts && opts.data?.argument_CTX_starts_with as string || ':';
+    const isValid = char === startingChar;
+    if (!isValid) return false;
+    this.shiftUntilEndOf(startingChar);
+    const related: ExiumContext[] = [];
+    const children: ExiumContext[] = [];
+    while(!this.isEOF) {
+      this.isValidChar(opts && opts?.unexpected);
+      Boolean(
+        this.identifier_CTX({
+          data: {
+            allowedIdentifierChars: ['-']
+          }
+        })
+          && related.push(this.lastContext)
+      );
+      this.saveContextsTo(opts?.contexts || [], children);
+      if (this.isCharPuntuation) break;
+      this.shift(1);
+    }
+    const token = source.slice(x, this.cursor.x);
+    const context = new ExiumContext(ContextTypes.Argument, token, {
+      start: x,
+      end: this.cursor.x,
+      line,
+      column,
+    });
+    context.related.push(...related);
+    context.children.push(...children);
+    this.currentContexts.push(context);
+    return true;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
