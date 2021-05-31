@@ -1,6 +1,6 @@
 import { Exium } from "./../mod.ts";
 import { ContextTypes } from "../src/enums/context-types.ts";
-import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
+import { assertEquals, assert } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 Deno.test("exium can parse attribute unquoted", () => {
   const lexer = new Exium((reason, _cursor, context) => {
@@ -10,14 +10,15 @@ Deno.test("exium can parse attribute unquoted", () => {
   });
   const source = "a=value";
   const content = `<div ${source}></div>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const attribute = contexts.find((context) =>
         context.type === ContextTypes.Attribute
       );
-      const attributeName = contexts.find((context) =>
-        context.type === ContextTypes.AttributeName
+      assert(attribute);
+      const attributeName = attribute.related.find((context) =>
+        context.type === ContextTypes.Identifier
       );
       const attributeUnquoted = contexts.find((context) =>
         context.type === ContextTypes.AttributeValueUnquoted
@@ -60,7 +61,7 @@ Deno.test("exium can parse boolean attributes and a space after", () => {
   });
   const source = "hidden";
   const content = `<div ${source} ></div>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const attribute = contexts.find((context) =>
@@ -77,7 +78,6 @@ Deno.test("exium can parse boolean attributes and a space after", () => {
         assertEquals(target.position, attribute.position);
         assertEquals(attribute.source, source);
       } else {
-        console.error("attribute", attribute);
         throw new Error("Exium - test failed");
       }
     } catch (err) {
@@ -96,7 +96,7 @@ Deno.test("exium can parse multiple boolean attributes", () => {
   });
   const sources = ["hidden", "named", "href", "src-p"];
   const content = `<div ${sources.join("\n\t")} ></div>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const targets = [
@@ -150,7 +150,7 @@ Deno.test("exium can parse boolean attributes and without space after", () => {
   });
   const source = "hidden";
   const content = `<div ${source}></div>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const attribute = contexts.find((context) =>

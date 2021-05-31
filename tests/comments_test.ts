@@ -9,7 +9,7 @@ Deno.test("exium supports comments", () => {
     );
   });
   const content = "//";
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     const [comment] = contexts;
     assertEquals(comment.type, ContextTypes.Comment);
@@ -33,7 +33,7 @@ Deno.test("exium supports multiple comments", () => {
   // 2
   // 3
   `;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     const [, , comment, , comment2, , comment3] = contexts;
     assertEquals(comment.type, ContextTypes.Comment);
@@ -55,7 +55,7 @@ Deno.test("exium supports comment blocks", () => {
     );
   });
   const content = `/** supported! */`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     const [commentBlock] = contexts;
     assertEquals(commentBlock.type, ContextTypes.CommentBlock);
@@ -78,7 +78,7 @@ Deno.test("exium supports comment blocks with multi lines", () => {
  * to make it isomorphic with Node and Deno
  */
   `;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     const commentBlock = contexts.find((comment) =>
       comment.type === ContextTypes.CommentBlock
@@ -103,7 +103,7 @@ Deno.test("exium should use the onError function when a html comment isnt finish
     result = true;
   });
   const content = `<!--`;
-  lexer.readSync(content, { type: "component" });
+  lexer.readSync(content, { type: "ogone" });
   if (!result) {
     throw new Error("Exium - Failed to retrieve Space context");
   }
@@ -115,7 +115,7 @@ Deno.test("exium not a comment", () => {
     result = true;
   });
   const content = `<! --`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (!result || contexts.length) {
     throw new Error("Exium - Failed to retrieve Space context");
   }
@@ -127,7 +127,7 @@ Deno.test("exium not a comment 2", () => {
     result = true;
   });
   const content = `<!- -`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (!result || contexts.length) {
     throw new Error("Exium - Failed to retrieve Space context");
   }
@@ -140,7 +140,7 @@ Deno.test("exium supports html comments", () => {
     );
   });
   const content = `<!-- -->`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     const [comment] = contexts;
     assertEquals(comment.type, ContextTypes.HTMLComment);
@@ -158,7 +158,7 @@ Deno.test("exium - only one html comment", () => {
     );
   });
   const content = `<!-- 'nothing else' "// " -->`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length && contexts.length === 1) {
     const [comment] = contexts;
     assertEquals(comment.type, ContextTypes.HTMLComment);
@@ -175,7 +175,7 @@ Deno.test("exium supports compact html comments", () => {
     );
   });
   const content = `<!---->`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length && contexts.length === 1) {
     const [comment] = contexts;
     assertEquals(comment.type, ContextTypes.HTMLComment);
@@ -196,7 +196,7 @@ Deno.test("exium supports multiple comments", () => {
 <!--
     with line breaks
 -->`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     const [comment, , comment2, , comment3] = contexts;
     assertEquals(comment.type, ContextTypes.HTMLComment);

@@ -28,7 +28,7 @@ import component A from './b.o3';
 </template>
 <proto>${protocol}</proto>
   `;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const importStatement = contexts.find((context) =>
@@ -110,11 +110,69 @@ Deno.test("exium large component is parsed < 100ms", () => {
     );
   });
   const content = component1;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   const parseTime = performance.now() - perf;
   if (contexts && contexts.length) {
     try {
       assert(parseTime < 100);
+    } catch (err) {
+      throw err;
+    }
+  } else {
+    throw new Error("Exium - Failed to retrieve Node Context");
+  }
+});
+
+Deno.test("exium supports props to component", () => {
+  const lexer = new Exium((reason, _cursor, context) => {
+    throw new Error(
+      `${reason} ${context.position.line}:${context.position.column}`,
+    );
+  });
+  const content = `
+  import component A from './A.o3';
+  <template><A prop={ 0}/></template>`;
+  const contexts = lexer.readSync(content, { type: "ogone" });
+  if (contexts && contexts.length) {
+    try {
+      const property = contexts.find((context) =>
+        context.type === ContextTypes.AttributeProperty
+        && !context.source.endsWith('/'));
+        assert(property);
+        assertEquals(property.source, 'prop={ 0}');
+        const [name] = property.related;
+        assert(name);
+        assertEquals(name.source, 'prop');
+        assertEquals(name.position, { start: 52, end: 56, line: 2, column: 15 });
+    } catch (err) {
+      throw err;
+    }
+  } else {
+    throw new Error("Exium - Failed to retrieve Node Context");
+  }
+});
+
+Deno.test("exium supports functions into props", () => {
+  const lexer = new Exium((reason, _cursor, context) => {
+    throw new Error(
+      `${reason} ${context.position.line}:${context.position.column}`,
+    );
+  });
+  const content = `
+  import component A from './A.o3';
+  <template><A prop={() => 0}/></template>`;
+  const contexts = lexer.readSync(content, { type: "ogone" });
+  if (contexts && contexts.length) {
+    try {
+      const property = contexts.find((context) =>
+        context.type === ContextTypes.AttributeProperty
+        && !context.source.endsWith('/'));
+        assert(property);
+        assertEquals(property.source, 'prop={() => 0}');
+        const [name] = property.related;
+        assert(name);
+        assertEquals(name.source, 'prop');
+        assertEquals(name.position, { start: 52, end: 56, line: 2, column: 15 });
     } catch (err) {
       throw err;
     }

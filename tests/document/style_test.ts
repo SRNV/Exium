@@ -75,7 +75,6 @@ Deno.test("exium - document can select rules (div, .className, #id, attribute) a
     assert(document.getStylesheetRulesByAttribute('attr').length === 2);
     assert(document.getStylesheetRulesByProperty('color').length === 5);
     assert(document.getStylesheetRulesByProperty('color', 'brown').length === 1);
-    assert(document.getStylesheetRulesByPseudoProperty('media').length === 1);
   } catch (err) {
     throw err;
   }

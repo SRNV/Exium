@@ -62,13 +62,65 @@ export class ExiumBase {
    */
   protected get char(): string {
     return this.source[this.cursor.x];
-  } /**
+  }
+  /**
+   * the character code of the current character
+   */
+  protected get charCode(): number {
+    return this.char?.charCodeAt(0);
+  }
+  /**
+   * if the current character is \n \t \r \s
+   */
+  get isCharSpacing(): boolean {
+    const code = this.charCode;
+    return code === 9
+      || code === 10
+      || code === 13
+      || code === 32;
+  }
+  /**
+   * if the current character is a letter
+   */
+  get isCharIdentifier(): boolean {
+    if (this.isCharSpacing) return false;
+    const code = this.charCode;
+    return code >= 65
+      && code <= 90
+      || code === 36
+      || code === 95
+      || code >= 97
+      && code <= 122;
+  }
+  /**
+   * if the current character is a number
+   */
+  get isCharDigit(): boolean {
+    if (this.isCharSpacing) return false;
+    const code = this.charCode;
+    return code >= 48 && code <= 57;
+  }
+  /**
+   * if the current character is a punctuation
+   */
+  get isCharPuntuation(): boolean {
+    const code = this.charCode;
+    return code >= 123
+      && code <= 124
+      || code >= 91
+      && code <= 96
+      || code >= 58
+      && code <= 64
+      || code >= 32
+      && code <= 47;
+  }
+  /**
   * the next character
   */
-
   protected get next(): string | undefined {
     return this.source[this.cursor.x + 1];
-  } /**
+  }
+  /**
   * the previous character
   */
 
@@ -168,12 +220,15 @@ export class ExiumBase {
     return Boolean(!char || this.source.length === this.cursor.x);
   }
   constructor(
+    /**
+     * function used when Exium find an unexpected token
+     */
     protected onError: (
       reason: Reason,
       cursor: CursorDescriber,
       context: ExiumContext,
     ) => void,
-  ) {}
+  ) { }
   /**
    * should validate if the character is accepted inside the current context
    * if it's not the ogone lexer will use the error function passed into the constructor
@@ -293,6 +348,20 @@ export class ExiumBase {
       this.shift(1);
     }
     return true;
+  }
+  saveToken(token: string, type: ContextTypes): ExiumContext | undefined {
+    const { x, line, column } = this.cursor;
+    const hasShifted = this.shiftUntilEndOf(token);
+    if (hasShifted) {
+      const context = new ExiumContext(type, token, {
+        start: x,
+        end: this.cursor.x,
+        line,
+        column,
+      });
+      this.currentContexts.push(context);
+      return context;
+    }
   }
   /**
    * read the top level of the current document
@@ -606,6 +675,30 @@ export class ExiumBase {
       throw err;
     }
   }
+  identifier_CTX(opts?: ContextReaderOptions) {
+    this.debuggPosition("Identifier CTX START");
+    const { line, column, x } = this.cursor;
+    if (!this.isCharIdentifier) return false;
+    if (opts?.checkOnly) return true;
+    const allowedIdentifierChars = [
+      ...(opts?.data?.allowedIdentifierChars as string[] || [])
+    ];
+    this.shift(1);
+    while (!this.isEOF) {
+      if ((this.isCharPuntuation || this.isCharSpacing) && !allowedIdentifierChars.includes(this.char)) break;
+      this.shift(1);
+    }
+    const token = this.source.slice(x, this.cursor.x);
+    this.currentContexts.push(
+      new ExiumContext(ContextTypes.Identifier, token, {
+        start: x,
+        end: this.cursor.x,
+        line,
+        column,
+      }),
+    );
+    return true;
+  }
   space_CTX() {
     this.debuggPosition("\n\n\t\tSPACE START");
     const result = this.char === " " && this.next !== this.char;
@@ -759,7 +852,7 @@ export class ExiumBase {
   /**
    * should match with {...} and is recursive
    */
-  curly_braces_CTX(opts?: ContextReaderOptions): boolean {
+  curly_brackets_CTX(opts?: ContextReaderOptions): boolean {
     try {
       const { char } = this;
       const { x, line, column } = this.cursor;
@@ -772,7 +865,7 @@ export class ExiumBase {
         this.line_break_CTX,
         this.multiple_spaces_CTX,
         this.space_CTX,
-        this.curly_braces_CTX,
+        this.curly_brackets_CTX,
       ];
       const children: ExiumContext[] = [];
       while (!this.isEOF) {
@@ -786,7 +879,7 @@ export class ExiumBase {
         }
       }
       const token = source.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.CurlyBraces, token, {
+      const context = new ExiumContext(ContextTypes.CurlyBrackets, token, {
         start: x,
         end: this.cursor.x,
         line,
@@ -795,7 +888,7 @@ export class ExiumBase {
       context.children.push(...children);
       this.currentContexts.push(context);
       if (!isClosed) {
-        this.onError(Reason.CurlyBracesOpen, this.cursor, context);
+        this.onError(Reason.CurlyBracketsOpen, this.cursor, context);
       }
       return result;
     } catch (err) {
@@ -1103,7 +1196,6 @@ export class ExiumBase {
         })
           && related.push(this.lastContext)
       );
-      this.saveContextsTo(opts?.contexts || [], children);
       if (this.isCharPuntuation) break;
       this.shift(1);
     }

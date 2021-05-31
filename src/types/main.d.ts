@@ -35,7 +35,7 @@ export interface OgooneLexerParseOptions {
    * the type of the document
    */
   type:
-    | "component"
+    | "ogone"
     | "lexer"
     | "custom"
     | "stylesheet"

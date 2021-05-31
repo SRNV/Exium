@@ -40,8 +40,8 @@ Deno.test("exium stylesheet supports type rule assignment", () => {
         `Exium - Failed to retrieve ${ContextTypes.StyleSheetTypeAssignment} context`,
       );
     }
-    assertEquals(typeRule.source, "@<myTrait>");
-    assertEquals(typeRule.position, { start: 5, end: 15, line: 1, column: 4 });
+    assertEquals(typeRule.source, "<myTrait>");
+    assertEquals(typeRule.position, { start: 6, end: 15, line: 1, column: 5 });
     assert(atRule.data.isTyped);
     assert(
       atRule.related.find((ctx) =>
@@ -71,7 +71,7 @@ Deno.test("exium stylesheet supports type rule assignment (stylesheet)", () => {
     );
   });
   const contexts = lexer.readSync(content, {
-    type: "component",
+    type: "ogone",
   });
   if (contexts && contexts.length) {
     const atRule = contexts.find((context) =>
@@ -90,8 +90,8 @@ Deno.test("exium stylesheet supports type rule assignment (stylesheet)", () => {
         `Exium - Failed to retrieve ${ContextTypes.StyleSheetTypeAssignment} context`,
       );
     }
-    assertEquals(typeRule.source, "@<myTrait>");
-    assertEquals(typeRule.position, { start: 32, end: 42, line: 3, column: 6 });
+    assertEquals(typeRule.source, "<myTrait>");
+    assertEquals(typeRule.position, { start: 33, end: 42, line: 3, column: 7 });
     assert(atRule.data.isTyped);
     assert(
       atRule.related.find((ctx) =>

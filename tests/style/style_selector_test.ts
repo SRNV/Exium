@@ -235,7 +235,7 @@ Deno.test("exium can retrieve attribute with value 1", () => {
       context.type === ContextTypes.StyleSheetSelectorAttribute
     );
     const attributeName = contexts.find((context) =>
-      context.type === ContextTypes.StyleSheetSelectorAttributeName
+      context.type === ContextTypes.Identifier
     );
     const attributeValue = contexts.find((context) =>
       context.type === ContextTypes.StyleSheetSelectorAttributeValue
@@ -274,7 +274,7 @@ Deno.test("exium can retrieve attribute with value 2", () => {
       context.type === ContextTypes.StyleSheetSelectorAttribute
     );
     const attributeName = contexts.find((context) =>
-      context.type === ContextTypes.StyleSheetSelectorAttributeName
+      context.type === ContextTypes.Identifier
     );
     const attributeValue = contexts.find((context) =>
       context.type === ContextTypes.StyleSheetSelectorAttributeValue
@@ -313,7 +313,7 @@ Deno.test("exium can retrieve attribute with value 3", () => {
       context.type === ContextTypes.StyleSheetSelectorAttribute
     );
     const attributeName = contexts.find((context) =>
-      context.type === ContextTypes.StyleSheetSelectorAttributeName
+      context.type === ContextTypes.Identifier
     );
     const attributeValue = contexts.find((context) =>
       context.type === ContextTypes.StyleSheetSelectorAttributeValue
@@ -352,7 +352,7 @@ Deno.test("exium can retrieve attribute with value 4", () => {
       context.type === ContextTypes.StyleSheetSelectorAttribute
     );
     const attributeName = contexts.find((context) =>
-      context.type === ContextTypes.StyleSheetSelectorAttributeName
+      context.type === ContextTypes.Identifier
     );
     const attributeValue = contexts.find((context) =>
       context.type === ContextTypes.StyleSheetSelectorAttributeValue
@@ -391,7 +391,7 @@ Deno.test("exium can retrieve attribute with value 5", () => {
       context.type === ContextTypes.StyleSheetSelectorAttribute
     );
     const attributeName = contexts.find((context) =>
-      context.type === ContextTypes.StyleSheetSelectorAttributeName
+      context.type === ContextTypes.Identifier
     );
     const attributeValue = contexts.find((context) =>
       context.type === ContextTypes.StyleSheetSelectorAttributeValue
@@ -430,7 +430,7 @@ Deno.test("exium can retrieve attribute with value 6", () => {
       context.type === ContextTypes.StyleSheetSelectorAttribute
     );
     const attributeName = contexts.find((context) =>
-      context.type === ContextTypes.StyleSheetSelectorAttributeName
+      context.type === ContextTypes.Identifier
     );
     const attributeValue = contexts.find((context) =>
       context.type === ContextTypes.StyleSheetSelectorAttributeValue

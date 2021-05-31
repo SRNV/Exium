@@ -20,14 +20,14 @@ Deno.test("exium supports spread feature", () => {
       `${reason} ${context.position.line}:${context.position.column}`,
     );
   });
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     const spread = contexts.find((context) =>
       context.type === ContextTypes.StyleSheetRuleSpread
     );
     const spreadName = spread &&
       spread.related.find((context) =>
-        context.type === ContextTypes.StyleSheetRuleSpreadName
+        context.type === ContextTypes.Identifier
       );
     assert(!!spread);
     assertEquals(spread.source, "...rule;");
@@ -93,7 +93,7 @@ Deno.test("exium supports multiple spreads", () => {
       context.type === ContextTypes.StyleSheetRuleSpread
     );
     const spreadsName = contexts.filter((context) =>
-      context.type === ContextTypes.StyleSheetRuleSpreadName
+      context.type === ContextTypes.Identifier
     );
     spreads.forEach((spread, i) => {
       const name = spreadsName[i];

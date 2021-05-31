@@ -20,7 +20,7 @@ export class ExiumProtocol extends ExiumHTMLElements {
       const lastIsAStyleNode = this.currentContexts.find((context) =>
         context.type === ContextTypes.Node &&
         context.related.find((node) =>
-          node.type === ContextTypes.NodeName &&
+          node.type === ContextTypes.Identifier &&
           node.source === "proto"
         ) &&
         !context.related.find((node) => node.type === ContextTypes.NodeClosing)

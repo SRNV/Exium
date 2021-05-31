@@ -9,7 +9,7 @@ Deno.test("exium supports single quotes", () => {
     );
   });
   const content = "' single quotes are supported '";
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     const [singleQuote] = contexts;
     assertEquals(singleQuote.type, ContextTypes.StringSingleQuote);
@@ -33,7 +33,7 @@ Deno.test("exium should not use escaped quotes to close quotes", () => {
   });
   const content =
     "' single quotes are supported \\' is escaped but still open'";
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     const [singleQuote] = contexts;
     assertEquals(singleQuote.type, ContextTypes.StringSingleQuote);
@@ -57,7 +57,7 @@ Deno.test("exium should use the onError function", () => {
   });
   const content = `'
   '`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     assertEquals(result, true);
   } else {
@@ -74,7 +74,7 @@ Deno.test("exium should use the onError function, when the StringSingleQuote is 
     result = true;
   });
   const content = `'`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     assertEquals(result, true);
   } else {

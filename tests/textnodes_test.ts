@@ -10,7 +10,7 @@ Deno.test("exium supports textnodes", () => {
       `${reason} ${context.position.line}:${context.position.column}`,
     );
   });
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     const textnodes = contexts.filter((context) =>
       context.type === ContextTypes.TextNode
@@ -36,7 +36,7 @@ Deno.test("exium supports textnodes with template", () => {
       `${reason} ${context.position.line}:${context.position.column}`,
     );
   });
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     const textnodes = contexts.filter((context) =>
       context.type === ContextTypes.TextNode
@@ -74,7 +74,7 @@ Deno.test("exium should use onError function when an unsupported textnode is par
       context.source === content;
     assertEquals(context.position, { start: 0, line: 0, column: 0, end: 1 });
   })
-    .readSync(content, { type: "component" });
+    .readSync(content, { type: "ogone" });
   if (!result) {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.TextNode} context`,
@@ -90,7 +90,7 @@ Deno.test("exium supports textnodes using < but not starting a new node", () => 
       `${reason} ${context.position.line}:${context.position.column}`,
     );
   });
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     const textnodes = contexts.filter((context) =>
       context.type === ContextTypes.TextNode

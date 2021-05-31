@@ -1,6 +1,6 @@
-import { Exium } from "./../mod.ts";
-import { ContextTypes } from "../src/enums/context-types.ts";
-import { SupportedFlags } from "../src/supports.ts";
+import { Exium } from "./../../mod.ts";
+import { ContextTypes } from "../../src/enums/context-types.ts";
+import { SupportedFlags } from "../../src/supports.ts";
 import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 Deno.test("exium can retrieve node flags", () => {
@@ -13,7 +13,7 @@ Deno.test("exium can retrieve node flags", () => {
     ${SupportedFlags.join("\n    ")}
     not-a-flag
     ></proto>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const { length } = SupportedFlags;
@@ -37,7 +37,7 @@ Deno.test("exium flag name is accessible through related", () => {
   });
   const source = "then:flag:name";
   const content = `<proto --${source}></proto>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const flag = contexts.find((context) =>
@@ -47,8 +47,8 @@ Deno.test("exium flag name is accessible through related", () => {
         throw new Error(`Failed to retrieve flags value`);
       }
       const [flagName] = flag.related;
-      assertEquals(flagName.type, ContextTypes.FlagName);
-      assertEquals(flagName.source, source);
+      assertEquals(flagName.type, ContextTypes.Identifier);
+      assertEquals(flagName.source, 'then');
     } catch (err) {
       throw err;
     }
@@ -64,7 +64,7 @@ Deno.test("exium can retrieve flags value", () => {
     );
   });
   const content = `<proto --if={true}></proto>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const flag = contexts.find((context) =>
@@ -79,7 +79,7 @@ Deno.test("exium can retrieve flags value", () => {
         position: { start: 7, end: 18, line: 0, column: 7 },
         children: [
           {
-            type: "CurlyBraces",
+            type: "CurlyBrackets",
             source: "{true}",
           },
         ],
@@ -93,8 +93,7 @@ Deno.test("exium can retrieve flags value", () => {
       assertEquals(target.position, flag.position);
       assertEquals(target.source, flag.source);
       assertEquals(target.type, flag.type);
-      assertEquals(target.children[0].source, flag.children[0].source);
-      assertEquals(target.related[0].source, flag.related[0].source);
+      assertEquals(flag.name, 'if');
     } catch (err) {
       throw err;
     }
@@ -110,7 +109,7 @@ Deno.test("exium can retrieve spread value", () => {
     );
   });
   const content = `<proto { ...this.spread }></proto>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const flag = contexts.find((context) =>
@@ -135,7 +134,7 @@ Deno.test("exium can retrieve spread value on a auto-closing tag", () => {
     );
   });
   const content = `<proto { ...this.spread }/>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const flag = contexts.find((context) =>
@@ -160,7 +159,7 @@ Deno.test("exium can retrieve spread value without spaces", () => {
     );
   });
   const content = `<proto {...this.spread}/>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const flag = contexts.find((context) =>

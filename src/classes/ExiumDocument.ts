@@ -321,10 +321,9 @@ export class ExiumDocument {
             || (value
               && props.type === ContextTypes.StyleSheetProperty
               && props.name === property
-              && props.related.find((propValue) => {
-                return propValue.type === ContextTypes.StyleSheetPropertyValue
-                  && propValue.source.trim() === value;
-              }))
+              && props.related.find((propValue) =>
+                propValue.type === ContextTypes.StyleSheetPropertyValue
+                && propValue.source.trim() === value))
           ));
     })
   }

@@ -21,17 +21,20 @@ export type ExiumContextValue = string;
 export class ExiumContext {
   #_name?: string;
   /**
+   * cache for value
+   * can return the ExiumContext
+   */
+  #_value?: ExiumContextValue;
+  /**
    * the children context
-   * mainly the context that doesn't describe the current context
+   * mostly the context that doesn't describe the current context
    * but are parsed into it
    */
   public children: ExiumContext[] = [];
   /**
    * related contexts
-   *
    * these whill describe the current context.
-   *
-   * mainly things like name or type of the current context.
+   * mostly things like name or type of the current context.
    */
   public related: ExiumContext[] = [];
   /**
