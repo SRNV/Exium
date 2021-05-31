@@ -79,7 +79,7 @@ Deno.test("exium can retrieve flags value", () => {
         position: { start: 7, end: 18, line: 0, column: 7 },
         children: [
           {
-            type: "CurlyBraces",
+            type: "CurlyBrackets",
             source: "{true}",
           },
         ],
@@ -93,8 +93,7 @@ Deno.test("exium can retrieve flags value", () => {
       assertEquals(target.position, flag.position);
       assertEquals(target.source, flag.source);
       assertEquals(target.type, flag.type);
-      assertEquals(target.children[0].source, flag.children[0].source);
-      assertEquals(target.related[0].source, flag.related[0].source);
+      assertEquals(flag.name, 'if');
     } catch (err) {
       throw err;
     }

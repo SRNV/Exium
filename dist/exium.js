@@ -10,7 +10,7 @@ var Reason;
   Reason1[Reason1["StringTemplateQuoteEvaluationOpen"] = 1725] =
     "StringTemplateQuoteEvaluationOpen";
   Reason1[Reason1["BracesOpen"] = 1773] = "BracesOpen";
-  Reason1[Reason1["CurlyBracesOpen"] = 1819] = "CurlyBracesOpen";
+  Reason1[Reason1["CurlyBracketsOpen"] = 1819] = "CurlyBracketsOpen";
   Reason1[Reason1["ArrayOpen"] = 1866] = "ArrayOpen";
   Reason1[Reason1["HTMLClosingTagWithoutOpening"] = 2116] =
     "HTMLClosingTagWithoutOpening";
@@ -36,8 +36,8 @@ var Reason;
     "StyleSheetAtRuleCharsetStringIsMissing";
   Reason1[Reason1["StyleSheetAtRuleCharsetNotFinish"] = 2894] =
     "StyleSheetAtRuleCharsetNotFinish";
-  Reason1[Reason1["StyleSheetAtRuleCurlyBracesAreMissing"] = 2960] =
-    "StyleSheetAtRuleCurlyBracesAreMissing";
+  Reason1[Reason1["StyleSheetAtRuleCurlyBracketsAreMissing"] = 2960] =
+    "StyleSheetAtRuleCurlyBracketsAreMissing";
   Reason1[Reason1["StyleSheetTypeAssignmentNotFinish"] = 3004] =
     "StyleSheetTypeAssignmentNotFinish";
 })(Reason || (Reason = {}));
@@ -69,7 +69,7 @@ var ContextTypes;
   ContextTypes1["Comment"] = "Comment";
   ContextTypes1["CommentBlock"] = "CommentBlock";
   ContextTypes1["Braces"] = "Braces";
-  ContextTypes1["CurlyBraces"] = "CurlyBraces";
+  ContextTypes1["CurlyBrackets"] = "CurlyBrackets";
   ContextTypes1["Array"] = "Array";
   ContextTypes1["HTMLComment"] = "HTMLComment";
   ContextTypes1["ImportAmbient"] = "ImportAmbient";
@@ -91,7 +91,7 @@ var ContextTypes;
   ContextTypes1["AttributeValueQuoteSingle"] = "AttributeValueQuoteSingle";
   ContextTypes1["AttributeValueQuoteDouble"] = "AttributeValueQuoteDouble";
   ContextTypes1["AttributeValueQuoteTemplate"] = "AttributeValueQuoteTemplate";
-  ContextTypes1["AttributeValueCurlyBraces"] = "AttributeValueCurlyBraces";
+  ContextTypes1["AttributeValueCurlyBrackets"] = "AttributeValueCurlyBrackets";
   ContextTypes1["AttributeValueUnquoted"] = "AttributeValueUnquoted";
   ContextTypes1["AttributeValueBraces"] = "AttributeValueBraces";
   ContextTypes1["AttributeValueArray"] = "AttributeValueArray";
@@ -112,7 +112,7 @@ var ContextTypes;
   ContextTypes1["StyleSheetAtRuleConstValue"] = "StyleSheetAtRuleConstValue";
   ContextTypes1["StyleSheetAtRuleExport"] = "StyleSheetAtRuleExport";
   ContextTypes1["StyleSheetType"] = "StyleSheetType";
-  ContextTypes1["StyleSheetCurlyBraces"] = "StyleSheetCurlyBraces";
+  ContextTypes1["StyleSheetCurlyBrackets"] = "StyleSheetCurlyBrackets";
   ContextTypes1["StyleSheetSelector"] = "StyleSheetSelector";
   ContextTypes1["StyleSheetSelectorList"] = "StyleSheetSelectorList";
   ContextTypes1["StyleSheetSelectorHTMLElement"] =
@@ -660,7 +660,7 @@ class ExiumBase {
         }
       }
       const token = source2.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.CurlyBraces, token, {
+      const context = new ExiumContext(ContextTypes.CurlyBrackets, token, {
         start: x,
         end: this.cursor.x,
         line,
@@ -669,7 +669,7 @@ class ExiumBase {
       context.children.push(...children);
       this.currentContexts.push(context);
       if (!isClosed) {
-        this.onError(Reason.CurlyBracesOpen, this.cursor, context);
+        this.onError(Reason.CurlyBracketsOpen, this.cursor, context);
       }
       return result;
     } catch (err) {
@@ -2272,13 +2272,13 @@ class ExiumStyleSheet extends ExiumProtocol {
           break;
         }
       }
-      const subCurlyBracesContexts = [];
+      const subCurlyBracketsContexts = [];
       isClosed = this.curly_brackets_CTX({
-        contexts: subCurlyBracesContexts,
+        contexts: subCurlyBracketsContexts,
       });
       if (isClosed) {
         const { lastContext: lastContext1 } = this;
-        lastContext1.type = ContextTypes.StyleSheetCurlyBraces;
+        lastContext1.type = ContextTypes.StyleSheetCurlyBrackets;
         children.push(lastContext1);
       }
       const token = source2.slice(x, this.cursor.x);
@@ -2294,7 +2294,7 @@ class ExiumStyleSheet extends ExiumProtocol {
       this.currentContexts.push(context);
       if (!isClosed) {
         this.onError(
-          Reason.StyleSheetAtRuleCurlyBracesAreMissing,
+          Reason.StyleSheetAtRuleCurlyBracketsAreMissing,
           this.cursor,
           context,
         );

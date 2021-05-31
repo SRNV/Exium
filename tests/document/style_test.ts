@@ -87,11 +87,12 @@ Deno.test("exium - document can get stylesheet constants", () => {
       }
     </style>
     <div>
-      document can select rules
+      document can get stylesheet constants
     </div>
   </template>
   <proto type=app>
-  </proto>`;
+  </proto>
+`;
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {

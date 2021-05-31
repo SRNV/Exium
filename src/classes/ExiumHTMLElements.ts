@@ -331,9 +331,11 @@ export class ExiumHTMLElements extends ExiumBase {
       const related: ExiumContext[] = [];
       const allSubContexts: ContextReader[] = [
         this.curly_brackets_CTX,
+        this.argument_CTX,
         this.braces_CTX,
       ];
       const exitChars = [" ", ">", "\n", "/"];
+      const argumentChar = ':';
       while (!this.isEOF) {
         if (!isNamed) {
           isNamed = Boolean(
@@ -352,7 +354,11 @@ export class ExiumHTMLElements extends ExiumBase {
           isStructure = false;
           usingStructure = false;
         }
-        this.saveContextsTo(allSubContexts, children);
+        this.saveContextsTo(allSubContexts, children, {
+          data: {
+            argument_CTX_starts_with: argumentChar
+          }
+        });
         if (isNamed && usingStructure && !isStructure) {
           isStructure = Boolean(children.find((context) => context.type === ContextTypes.Braces));
         }
@@ -360,13 +366,16 @@ export class ExiumHTMLElements extends ExiumBase {
           isClosed = true;
           break;
         }
-        this.shift(1);
+        if (this.char !== argumentChar) {
+          this.shift(1);
+        }
         this.isValidChar(opts?.unexpected);
       }
       const token = source.slice(x, this.cursor.x);
       const context = new ExiumContext(isStructure ?
         ContextTypes.FlagStruct :
-        ContextTypes.Flag, token,
+        ContextTypes.Flag,
+        token,
       {
         start: x,
         end: this.cursor.x,
@@ -476,7 +485,7 @@ export class ExiumHTMLElements extends ExiumBase {
         }
         this.saveContextsTo(allSubContexts, children);
         if (!isProp && !isBoolean) {
-          isProp = Boolean(children.find((context) => context.type === ContextTypes.CurlyBraces))
+          isProp = Boolean(children.find((context) => context.type === ContextTypes.CurlyBrackets))
         }
         if (exitChars.includes(this.char)) {
           isClosed = true;

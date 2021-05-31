@@ -150,7 +150,7 @@ export class ExiumDocument {
     const retrievedFlag = element.children.find((context) => [ContextTypes.Flag, ContextTypes.FlagStruct].includes(context.type)
       && context.name === flag);
     if (!retrievedFlag) return;
-    const flagValue = retrievedFlag.children.find((context) => [ContextTypes.Braces, ContextTypes.CurlyBraces,].includes(context.type));
+    const flagValue = retrievedFlag.children.find((context) => [ContextTypes.Braces, ContextTypes.CurlyBrackets,].includes(context.type));
     if (!flagValue) return true;
     return flagValue.value as string;
   }

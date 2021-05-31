@@ -879,7 +879,7 @@ export class ExiumBase {
         }
       }
       const token = source.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.CurlyBraces, token, {
+      const context = new ExiumContext(ContextTypes.CurlyBrackets, token, {
         start: x,
         end: this.cursor.x,
         line,
@@ -888,7 +888,7 @@ export class ExiumBase {
       context.children.push(...children);
       this.currentContexts.push(context);
       if (!isClosed) {
-        this.onError(Reason.CurlyBracesOpen, this.cursor, context);
+        this.onError(Reason.CurlyBracketsOpen, this.cursor, context);
       }
       return result;
     } catch (err) {
@@ -1154,6 +1154,60 @@ export class ExiumBase {
         this.onError(Reason.ImportStatementNotFinish, this.cursor, context);
       }
       return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+  /**
+   * @returns true if the argument_CTx is valid for the current char
+   * @usage
+   * ```
+   * exium.argument_CTX({
+   *   data: {
+   *     argument_CTX_starts_with: '&'
+   *   }
+   * }); // boolean
+   * ```
+   */
+  argument_CTX(opts?: ContextReaderOptions): boolean {
+    try {
+    const {
+      char,
+      source
+    } = this;
+    const {
+      line,
+      column,
+      x,
+    } = this.cursor;
+    const startingChar = opts && opts.data?.argument_CTX_starts_with as string || ':';
+    const isValid = char === startingChar;
+    if (!isValid) return false;
+    this.shiftUntilEndOf(startingChar);
+    const related: ExiumContext[] = [];
+    while(!this.isEOF) {
+      this.isValidChar(opts && opts?.unexpected);
+      Boolean(
+        this.identifier_CTX({
+          data: {
+            allowedIdentifierChars: ['-']
+          }
+        })
+          && related.push(this.lastContext)
+      );
+      if (this.isCharPuntuation) break;
+      this.shift(1);
+    }
+    const token = source.slice(x, this.cursor.x);
+    const context = new ExiumContext(ContextTypes.Argument, token, {
+      start: x,
+      end: this.cursor.x,
+      line,
+      column,
+    });
+    context.related.push(...related);
+    this.currentContexts.push(context);
+    return true;
     } catch (err) {
       throw err;
     }

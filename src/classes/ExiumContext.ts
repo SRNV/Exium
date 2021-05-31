@@ -26,16 +26,14 @@ export class ExiumContext {
   #_value?: ExiumContextValue;
   /**
    * the children context
-   * mainly the context that doesn't describe the current context
+   * mostly the context that doesn't describe the current context
    * but are parsed into it
    */
   public children: ExiumContext[] = [];
   /**
    * related contexts
-   *
    * these whill describe the current context.
-   *
-   * mainly things like name or type of the current context.
+   * mostly things like name or type of the current context.
    */
   public related: ExiumContext[] = [];
   /**
@@ -47,12 +45,12 @@ export class ExiumContext {
       ContextTypes.Braces,
       ContextTypes.StringDoubleQuote,
       ContextTypes.StringSingleQuote,
-      ContextTypes.CurlyBraces,
+      ContextTypes.CurlyBrackets,
       ContextTypes.AttributeValueUnquoted,
     ].includes(context.type));
     switch (this.type) {
       case ContextTypes.Braces:
-      case ContextTypes.CurlyBraces:
+      case ContextTypes.CurlyBrackets:
       case ContextTypes.Parenthese:
       case ContextTypes.StringDoubleQuote:
       case ContextTypes.StringSingleQuote:
@@ -68,7 +66,7 @@ export class ExiumContext {
     return this;
   }
   /**
-   * the name of the token
+   * the name of the ExiumContext
    */
   get name(): string | undefined {
     const ctx = this.related.find((ctx) => ctx.type === ContextTypes.Identifier);
@@ -92,7 +90,15 @@ export class ExiumContext {
     }
     return 6;
   }
-
+  /**
+   * @returns the parentNode of the context
+   * @usage
+   * ```
+   * const [div] = document.getElementsByTagName('div');
+   * assert(div);
+   * console.log(div.parentNode); // ExiumContext {}
+   * ```
+   */
   get parentNode(): ExiumContext | undefined {
     return this.data.parentNode as ExiumContext | undefined;
   }
@@ -112,13 +118,50 @@ export class ExiumContext {
   ) { }
   /**
    * @returns the value of the attribute or undefined
+   * @usage
+   * ```typescript
+   *  const [div] = document.getElementsByAttribute('attribute');
+   *  assert(div);
+   *  const value = div.getAttribute('attribute'); // string or undefined
+   * ```
    */
-  getAttribute(attribute: string): string | undefined {
+   getAttributeContext(attribute: string): ExiumContext | undefined {
     const attr = this.children.find((context) => [ContextTypes.Attribute, ContextTypes.AttributeBoolean].includes(context.type)
       && context.name === attribute);
-    if (attr) {
-      return attr.value as string;
-    }
-    return;
+    return attr;
+  }
+  /**
+   * @returns the value of the attribute or undefined
+   * @usage
+   * ```typescript
+   *  const [div] = document.getElementsByAttribute('attribute');
+   *  assert(div);
+   *  const value = div.getAttribute('attribute'); // string or undefined
+   * ```
+   */
+  getAttribute(attribute: string): string | undefined {
+    const attr = this.getAttributeContext(attribute);
+    if (!attr) return;
+    return attr.value as string;
+  }
+  /**
+   * @returns the flag context of a node context
+   * @usage
+   * ```typescript
+   *  const [div] = document.getElementsByFlag('then');
+   *  assert(div);
+   *  const thenFlag = div.getFlagContext('then');
+   * ```
+   */
+  getFlagContext(name: string): ExiumContext | undefined {
+    if (this.type !== ContextTypes.Node) throw new Error(`getFlagContext is not allowed with this context. context's type has to be ${ContextTypes.Node}`);
+    return this.children.find((context) => [
+      ContextTypes.Flag,
+      ContextTypes.FlagStruct,
+    ].includes(context.type)
+    && context.name === name);
+  }
+  getArguments(): ExiumContext[] {
+    return this.children.filter((context) => context.type === ContextTypes.Argument);
   }
 }

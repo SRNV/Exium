@@ -157,6 +157,28 @@ Deno.test("exium - document can retrieve an element with getElementsByFlag (:arg
   }
 });
 
+Deno.test("exium - document can retrieve arguments on flag", () => {
+  const content = `<template><div --then:argument:name></div></template>`;
+  const document = new ExiumDocument({
+    url: new URL(import.meta.url),
+    onError: (reason, _cursor, context) => {
+      throw new Error(
+        `${reason} ${context.position.line}:${context.position.column}`,
+      );
+    },
+    source: content,
+  });
+  try {
+    const [div] = document.getElementsByFlag('then');
+    assert(div);
+    const thenFlag = div.getFlagContext('then');
+    assert(thenFlag);
+    assert(thenFlag.getArguments().length === 2);
+  } catch (err) {
+    throw err;
+  }
+});
+
 Deno.test("exium - document can describe a sub-component", () => {
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
