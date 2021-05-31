@@ -43,6 +43,13 @@ export class ExiumContext {
    */
   get value(): ExiumContextValue {
     if (this.#_value) return this.#_value;
+    const attributeValue = this.children.find((context) => [
+      ContextTypes.Braces,
+      ContextTypes.StringDoubleQuote,
+      ContextTypes.StringSingleQuote,
+      ContextTypes.CurlyBraces,
+      ContextTypes.AttributeValueUnquoted,
+    ].includes(context.type));
     switch (this.type) {
       case ContextTypes.Braces:
       case ContextTypes.CurlyBraces:
@@ -54,14 +61,7 @@ export class ExiumContext {
       case ContextTypes.TextNode:
         return this.source;
       case ContextTypes.Attribute:
-        const ctx = this.children.find((context) => [
-          ContextTypes.Braces,
-          ContextTypes.StringDoubleQuote,
-          ContextTypes.StringSingleQuote,
-          ContextTypes.CurlyBraces,
-          ContextTypes.AttributeValueUnquoted,
-        ].includes(context.type));
-        return ctx ? ctx.value : '';
+        return attributeValue ? attributeValue.value : '';
       case ContextTypes.AttributeBoolean:
         return '';
     }

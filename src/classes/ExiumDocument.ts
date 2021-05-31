@@ -207,11 +207,12 @@ export class ExiumDocument {
         return 'stylesheet';
       case 'protocol':
         return 'protocol';
-      case 'ogone':
+      case 'ogone': {
         const { proto } = this;
         if (!proto) return 'component';
         const type = proto.getAttribute('type');
         return type && type.length ? type : 'component';
+      }
     }
     return 'component';
   }
@@ -278,7 +279,7 @@ export class ExiumDocument {
   /**
    * @returns returns all the stylesheets constants
    */
-   getStylesheetConstants(): ExiumContext[] {
+  getStylesheetConstants(): ExiumContext[] {
     return this.contexts.filter((context) => {
       return context.type === ContextTypes.StyleSheetAtRuleConst;
     });
@@ -286,7 +287,7 @@ export class ExiumDocument {
   /**
    * @returns all the exported stylesheets constants
    */
-   getStylesheetExportedConstants(): ExiumContext[] {
+  getStylesheetExportedConstants(): ExiumContext[] {
     const exports = this.contexts.filter((context) => {
       return context.type === ContextTypes.StyleSheetAtRuleExport;
     });
