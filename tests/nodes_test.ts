@@ -9,7 +9,7 @@ Deno.test("exium supports nodes", () => {
     );
   });
   const content = `<div></div>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     const [tagname, node] = contexts;
     assertEquals(tagname.source, "div");
@@ -28,7 +28,7 @@ Deno.test("exium can retrieve node names: template", () => {
     );
   });
   const content = `<template></template>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     const [tagname, node] = contexts;
     assertEquals(tagname.source, "template");
@@ -47,7 +47,7 @@ Deno.test("exium can retrieve node names: proto", () => {
     );
   });
   const content = `<proto></proto>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     const [tagname, node] = contexts;
     assertEquals(tagname.source, "proto");
@@ -66,7 +66,7 @@ Deno.test("exium tagname is accessible through the related property", () => {
     );
   });
   const content = `<proto></proto>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const [, node] = contexts;
@@ -90,7 +90,7 @@ Deno.test("exium should use the onError function when a node isnt finished", () 
     result = true;
   });
   const content = `<div`;
-  lexer.readSync(content, { type: "component" });
+  lexer.readSync(content, { type: "ogone" });
   if (!result) {
     throw new Error("Exium - Failed to retrieve Node Context");
   }
@@ -102,7 +102,7 @@ Deno.test("exium shouldnt consider this as a node", () => {
     result = true;
   });
   const content = `<:div`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (!result || contexts.length) {
     throw new Error("Exium - Failed to retrieve Node Context");
   }
@@ -114,7 +114,7 @@ Deno.test("exium shouldnt consider this as a node 2", () => {
     result = true;
   });
   const content = `<!div`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (!result || contexts.length) {
     throw new Error("Exium - Failed to retrieve Node Context");
   }
@@ -126,7 +126,7 @@ Deno.test("exium shouldnt consider this as a node 3", () => {
     result = true;
   });
   const content = `< div`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (!result || contexts.length) {
     throw new Error("Exium - Failed to retrieve Node Context");
   }
@@ -138,7 +138,7 @@ Deno.test("exium should use onError when anything is typed on a closing node", (
     result = true;
   });
   const content = `<div></div nothing should appear here >`;
-  lexer.readSync(content, { type: "component" });
+  lexer.readSync(content, { type: "ogone" });
   if (!result) {
     throw new Error("Exium - Failed to retrieve Node Context");
   }
@@ -150,7 +150,7 @@ Deno.test("exium should fail when anything is typed on a closing node 2", () => 
     result = true;
   });
   const content = `<div></div a>`;
-  lexer.readSync(content, { type: "component" });
+  lexer.readSync(content, { type: "ogone" });
   if (!result) {
     throw new Error("Exium - Failed to retrieve Node Context");
   }
@@ -164,7 +164,7 @@ Deno.test("exium should support line breaks into closing tag", () => {
     >`;
   new Exium((_reason, _cursor) => {
     supported = false;
-  }).readSync(content, { type: "component" });
+  }).readSync(content, { type: "ogone" });
   if (!supported) {
     throw new Error("Exium - Failed to retrieve Node Context");
   }
@@ -174,7 +174,7 @@ Deno.test("exium should use onError function when a node is not closed", () => {
   let result = false;
   new Exium(() => {
     result = true;
-  }).readSync(`<div></div><div><p><p></p></p>`, { type: "component" });
+  }).readSync(`<div></div><div><p><p></p></p>`, { type: "ogone" });
   if (!result) {
     throw new Error("Exium - Failed to retrieve Node Context");
   }
@@ -187,7 +187,7 @@ Deno.test("exium supports auto closing tags", () => {
     );
   });
   const content = `<proto/>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const proto = contexts.find((context) =>
@@ -214,7 +214,7 @@ Deno.test("exium supports auto closing tags 2", () => {
     );
   });
   const content = `<proto />`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const proto = contexts.find((context) =>
@@ -246,7 +246,7 @@ Deno.test("exium supports auto closing tags 3", () => {
     with
     attributes
   />`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const proto = contexts.find((context) =>
@@ -272,7 +272,7 @@ Deno.test("exium supports auto closing tags 4 (ending with an attribute)", () =>
     );
   });
   const content = `<proto ending/>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const proto = contexts.find((context) =>
@@ -298,7 +298,7 @@ Deno.test("exium supports auto closing tags 4 (ending with a flag)", () => {
     );
   });
   const content = `<proto --await/>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const proto = contexts.find((context) =>
@@ -324,7 +324,7 @@ Deno.test("exium supports auto closing tags 4 (ending with a flag and a value)",
     );
   });
   const content = `<proto --await={}/>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const proto = contexts.find((context) =>

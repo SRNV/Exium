@@ -21,7 +21,7 @@ Deno.test("exium can retrieve properties", () => {
       `${reason} ${context.position.line}:${context.position.column}`,
     );
   });
-  const contexts = lexer.readSync(content, { type: "component"});
+  const contexts = lexer.readSync(content, { type: "ogone"});
   if (contexts && contexts.length) {
     const list = contexts.filter((context) =>
       context.type === ContextTypes.StyleSheetPropertyList

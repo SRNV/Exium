@@ -21,7 +21,7 @@ Deno.test("exium can retrieve selectors with pseudo elements", () => {
       `${reason} ${context.position.line}:${context.position.column}`,
     );
   });
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     const hover = contexts.find((context) =>
       context.type === ContextTypes.StyleSheetSelectorPseudoElement
@@ -57,7 +57,7 @@ Deno.test("exium supports all standard pseudo classes", () => {
       `${reason} ${context.position.line}:${context.position.column}`,
     );
   });
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     const pseudoElements = contexts.filter((context) =>
       context.type === ContextTypes.StyleSheetSelectorPseudoElement

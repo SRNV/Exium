@@ -20,7 +20,7 @@ Deno.test("exium supports spread feature", () => {
       `${reason} ${context.position.line}:${context.position.column}`,
     );
   });
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     const spread = contexts.find((context) =>
       context.type === ContextTypes.StyleSheetRuleSpread

@@ -10,7 +10,7 @@ Deno.test("exium can parse attribute unquoted", () => {
   });
   const source = "a=value";
   const content = `<div ${source}></div>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const attribute = contexts.find((context) =>
@@ -61,7 +61,7 @@ Deno.test("exium can parse boolean attributes and a space after", () => {
   });
   const source = "hidden";
   const content = `<div ${source} ></div>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const attribute = contexts.find((context) =>
@@ -96,7 +96,7 @@ Deno.test("exium can parse multiple boolean attributes", () => {
   });
   const sources = ["hidden", "named", "href", "src-p"];
   const content = `<div ${sources.join("\n\t")} ></div>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const targets = [
@@ -150,7 +150,7 @@ Deno.test("exium can parse boolean attributes and without space after", () => {
   });
   const source = "hidden";
   const content = `<div ${source}></div>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const attribute = contexts.find((context) =>

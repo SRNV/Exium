@@ -43,7 +43,7 @@ import { ExiumStyleSheet } from "./src/classes/ExiumStyleSheet.ts";
  * exium.readSync(text, { type: 'lexer' });
  *
  * // to parse ogone components
- * exium.readSync(text, { type: 'component' });
+ * exium.readSync(text, { type: "ogone" });
  *
  * // to parse protocols
  * exium.readSync(text, { type: 'protocol' });
@@ -78,7 +78,7 @@ export class Exium extends ExiumStyleSheet {
     /**
      * use this scope to parse ogone components
      */
-    component: [
+    ogone: [
       this.comment_CTX,
       this.comment_block_CTX,
       this.line_break_CTX,

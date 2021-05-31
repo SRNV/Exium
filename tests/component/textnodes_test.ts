@@ -13,7 +13,7 @@ Deno.test("exium can parse textnodes with template eval ctx inside a component's
     );
   });
   const content = `<template><div>${textnode}</div></template>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const textnodeCTX = contexts.find((context) =>

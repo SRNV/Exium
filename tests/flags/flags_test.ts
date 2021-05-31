@@ -13,7 +13,7 @@ Deno.test("exium can retrieve node flags", () => {
     ${SupportedFlags.join("\n    ")}
     not-a-flag
     ></proto>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const { length } = SupportedFlags;
@@ -37,7 +37,7 @@ Deno.test("exium flag name is accessible through related", () => {
   });
   const source = "then:flag:name";
   const content = `<proto --${source}></proto>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const flag = contexts.find((context) =>
@@ -64,7 +64,7 @@ Deno.test("exium can retrieve flags value", () => {
     );
   });
   const content = `<proto --if={true}></proto>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const flag = contexts.find((context) =>
@@ -110,7 +110,7 @@ Deno.test("exium can retrieve spread value", () => {
     );
   });
   const content = `<proto { ...this.spread }></proto>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const flag = contexts.find((context) =>
@@ -135,7 +135,7 @@ Deno.test("exium can retrieve spread value on a auto-closing tag", () => {
     );
   });
   const content = `<proto { ...this.spread }/>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const flag = contexts.find((context) =>
@@ -160,7 +160,7 @@ Deno.test("exium can retrieve spread value without spaces", () => {
     );
   });
   const content = `<proto {...this.spread}/>`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const flag = contexts.find((context) =>

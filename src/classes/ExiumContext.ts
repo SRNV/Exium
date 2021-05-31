@@ -53,6 +53,17 @@ export class ExiumContext {
       case ContextTypes.AttributeValueUnquoted:
       case ContextTypes.TextNode:
         return this.source;
+      case ContextTypes.Attribute:
+        const ctx = this.children.find((context) => [
+          ContextTypes.Braces,
+          ContextTypes.StringDoubleQuote,
+          ContextTypes.StringSingleQuote,
+          ContextTypes.CurlyBraces,
+          ContextTypes.AttributeValueUnquoted,
+        ].includes(context.type));
+        return ctx ? ctx.value : '';
+      case ContextTypes.AttributeBoolean:
+        return '';
     }
     return this;
   }
@@ -68,11 +79,16 @@ export class ExiumContext {
    * default is 6: ENTITY_NODE
    */
   get nodeType(): number {
-    switch(this.type) {
+    switch (this.type) {
       case ContextTypes.Node: return 1;
-      case ContextTypes.TextNode: return 3;
-      case ContextTypes.StyleSheet: return 9;
+      case ContextTypes.NodeClosing: return 1;
       case ContextTypes.Attribute: return 2;
+      case ContextTypes.AttributeBoolean: return 2;
+      case ContextTypes.Flag: return 2;
+      case ContextTypes.FlagStruct: return 2;
+      case ContextTypes.TextNode: return 3;
+      case ContextTypes.Protocol: return 3;
+      case ContextTypes.StyleSheet: return 9;
     }
     return 6;
   }
@@ -94,4 +110,15 @@ export class ExiumContext {
       column: number;
     },
   ) { }
+  /**
+   * @returns the value of the attribute or undefined
+   */
+  getAttribute(attribute: string): string | undefined {
+    const attr = this.children.find((context) => [ContextTypes.Attribute, ContextTypes.AttributeBoolean].includes(context.type)
+      && context.name === attribute);
+    if (attr) {
+      return attr.value as string;
+    }
+    return;
+  }
 }

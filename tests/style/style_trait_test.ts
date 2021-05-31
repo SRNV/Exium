@@ -71,7 +71,7 @@ Deno.test("exium stylesheet supports type rule assignment (stylesheet)", () => {
     );
   });
   const contexts = lexer.readSync(content, {
-    type: "component",
+    type: "ogone",
   });
   if (contexts && contexts.length) {
     const atRule = contexts.find((context) =>

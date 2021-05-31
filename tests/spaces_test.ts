@@ -8,7 +8,7 @@ Deno.test("exium supports spaces", () => {
       `${reason} ${context.position.line}:${context.position.column}`,
     );
   });
-  const contexts = lexer.readSync(" ", { type: "component" });
+  const contexts = lexer.readSync(" ", { type: "ogone" });
   if (contexts && contexts.length) {
     const [space] = contexts;
     assertEquals(space.type, ContextTypes.Space);
@@ -27,7 +27,7 @@ Deno.test("exium supports multiple spaces", () => {
       `${reason} ${context.position.line}:${context.position.column}`,
     );
   });
-  const contexts = lexer.readSync("  ", { type: "component" });
+  const contexts = lexer.readSync("  ", { type: "ogone" });
   if (contexts && contexts.length) {
     const [space] = contexts;
     assertEquals(space.type, ContextTypes.MultipleSpaces);
@@ -49,7 +49,7 @@ Deno.test("exium supports line break", () => {
   const contexts = lexer.readSync(
     `
   `,
-    { type: "component" },
+    { type: "ogone" },
   );
   if (contexts && contexts.length) {
     const [lineBreak] = contexts;

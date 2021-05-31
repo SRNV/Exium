@@ -24,7 +24,7 @@ ${structures.map((struct) => `    --${struct[0]}${struct[1]}(${struct[2]})`).joi
   </div>
 </template>
   `;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
       const retrievedStructures = contexts.filter((context) => context.type === ContextTypes.FlagStruct);
@@ -69,7 +69,7 @@ ${structures.map((struct) => `    --${struct[0]}${struct[1]}(${struct[2]})`).joi
     },
     source: content,
     options: {
-      type: 'component',
+      type: "ogone",
     }
   });
   if (document) {

@@ -23,49 +23,6 @@ Deno.test("exium - document can expose the component's template", () => {
   }
 });
 
-Deno.test("exium - document can expose the component's proto", () => {
-  const textnode = "$\{this.basic}";
-  const content = `<template><div>${textnode}</div></template><proto></proto>`;
-  const document = new ExiumDocument({
-    url: new URL(import.meta.url),
-    onError: (reason, _cursor, context) => {
-      throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
-      );
-    },
-    source: content,
-  });
-  try {
-    assert(document.proto);
-  } catch (err) {
-    throw err;
-  }
-});
-
-Deno.test("exium - document can expose the component's styles", () => {
-  const textnode = "$\{this.basic}";
-  const content = `<template>
-  <style></style>
-  <style></style>
-  <style></style>
-  <style></style>
-  <div>${textnode}</div></template><proto></proto>`;
-  const document = new ExiumDocument({
-    url: new URL(import.meta.url),
-    onError: (reason, _cursor, context) => {
-      throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
-      );
-    },
-    source: content,
-  });
-  try {
-    assertEquals(document.styles.length, 4);
-  } catch (err) {
-    throw err;
-  }
-});
-
 Deno.test("exium - document can retrieve an element", () => {
   const textnode = "$\{this.basic}";
   const content = `<template><div>${textnode}</div></template>`;

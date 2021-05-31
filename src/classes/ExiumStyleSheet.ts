@@ -239,6 +239,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
       );
       if (!isValid) return isValid;
       if (opts?.checkOnly) return true;
+      this.nextPart.startsWith('const ') && this.shiftUntilEndOf('const');
       const result = true;
       let isNamed = false;
       const children: ExiumContext[] = [];

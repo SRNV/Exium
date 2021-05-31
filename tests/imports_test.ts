@@ -7,7 +7,7 @@ Deno.test("exium supports import ambient statement", () => {
     );
   });
   const content = `import'my_stuff.js';`;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   const isNotValid = !(contexts && contexts.length);
   if (isNotValid) {
     throw new Error("Exium - Failed to retrieve Node Context");
@@ -35,7 +35,7 @@ Deno.test("exium supports all import statements", () => {
       bar
     } from "name-module/chemin/vers/fichier-non-exporte";
   `;
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   const isNotValid = !(contexts && contexts.length);
   if (isNotValid) {
     throw new Error("Exium - Failed to retrieve Node Context");

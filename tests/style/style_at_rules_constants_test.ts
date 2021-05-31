@@ -66,7 +66,7 @@ Deno.test("exium stylesheet supports @const statement, and it can retrieve the n
       `${reason} ${context.position.line}:${context.position.column}`,
     );
   });
-  const contexts = lexer.readSync(content, { type: "component" });
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     const err = new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetAtRuleConst} context`,
