@@ -13,8 +13,8 @@
      <p --case={'p'}> show p </p>
      <p --default> show default </p>
    </template>
-   <div --while(!item.truth)>
-    show this until item.truth is true
+   <div --while(item.truth)>
+    show this until item.truth is false
    </div>
    <!--send -->
    <div --send-to={'placeholder'}></div>

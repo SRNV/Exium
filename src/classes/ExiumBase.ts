@@ -678,7 +678,8 @@ export class ExiumBase {
   identifier_CTX(opts?: ContextReaderOptions) {
     this.debuggPosition("Identifier CTX START");
     const { line, column, x } = this.cursor;
-    if (!this.isCharIdentifier) return false;
+    if (!this.isCharIdentifier
+      && (!opts?.data?.allowDigit && !this.isCharDigit)) return false;
     if (opts?.checkOnly) return true;
     const allowedIdentifierChars = [
       ...(opts?.data?.allowedIdentifierChars as string[] || [])
@@ -808,11 +809,13 @@ export class ExiumBase {
    */
   braces_CTX(opts?: ContextReaderOptions): boolean {
     try {
+      this.debuggPosition('BRACES_CTX START');
       const { char } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
       if (char !== "(") return false;
       if (opts?.checkOnly) return true;
+      this.shift(1);
       const result = true;
       let isClosed = false;
       const allSubContexts = [
@@ -820,10 +823,11 @@ export class ExiumBase {
         this.multiple_spaces_CTX,
         this.space_CTX,
         this.braces_CTX,
+        ...(opts?.data?.braces_contexts as [] || []),
       ];
       const children: ExiumContext[] = [];
       while (!this.isEOF) {
-        this.shift(1);
+        this.debuggPosition('BRACES_CTX');
         this.isValidChar(opts?.unexpected);
         this.saveContextsTo(allSubContexts, children);
         if (this.char === ")") {
@@ -831,6 +835,7 @@ export class ExiumBase {
           isClosed = true;
           break;
         }
+        this.shift(1);
       }
       const token = source.slice(x, this.cursor.x);
       const context = new ExiumContext(ContextTypes.Braces, token, {

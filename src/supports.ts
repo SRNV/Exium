@@ -226,11 +226,12 @@ export const SupportedStyleSheetUnits = [
 export const SupportedPseudoProperties = [
   "media",
   "media-screen",
-  ...SupportedStyleSheetUnits.map((unit) => `media-${unit}`),
-  ...SupportedStyleSheetUnits.map((unit) => `media-screen-${unit}`),
-  ...SupportedStyleSheetUnits.map((unit) => `media-screen-${unit}`),
+  "media-min-width",
+  "media-max-width",
   "keyframes",
-  // "grid",
+  "anim",
+  "animation",
+  "grid",
 ];
 // available constants types
 export const SupportedStyleSheetAtRuleConstantTypes = [

@@ -121,6 +121,8 @@ export class Exium extends ExiumStyleSheet {
    */
   readSync(text: string, opts: OgooneLexerParseOptions): ExiumContext[] {
     try {
+      /**remove previous contexts */
+      this.currentContexts.length && this.currentContexts.splice(0);
       /**
        * save the options argument
        */

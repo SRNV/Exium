@@ -29,7 +29,7 @@ Deno.test("exium - document can expose the component's styles", () => {
 });
 
 Deno.test("exium - document can select rules (div, .className, #id, attribute) and properties", () => {
-  const content = `
+  const content = /*css*/`
   <template>
     <style>
       div {
@@ -48,18 +48,19 @@ Deno.test("exium - document can select rules (div, .className, #id, attribute) a
         color: brown;
       }
       p {
-        background::media(default: red);
+        background::media(default: red );
       }
     </style>
     <div>
       document can select rules
     </div>
   </template>
-  <proto type=app>
-  </proto>`;
+  <proto type=app />
+  `;
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
+      console.warn(_cursor)
       throw new Error(
         `${reason} ${context.position.line}:${context.position.column}`,
       );

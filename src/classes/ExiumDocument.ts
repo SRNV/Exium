@@ -6,6 +6,7 @@ export interface ExiumDocumentOptions {
   onError: ConstructorParameters<typeof Exium>[0];
   source: Parameters<Exium['readSync']>[0];
   options?: Parameters<Exium['readSync']>[1];
+  injections?: ExiumContext[];
 }
 export interface ExiumDocumentComponentDescriber {
   elements: ExiumContext[];
@@ -68,6 +69,7 @@ export interface ExiumDocumentComponentDescriber {
  */
 export class ExiumDocument {
   public url: URL;
+  private injections: ExiumDocumentOptions['injections'];
   private exium: Exium;
   private contexts: ExiumContext[];
   #_stylesheets?: ExiumContext[];
@@ -81,6 +83,7 @@ export class ExiumDocument {
     this.contexts = this.exium.readSync(opts.source, opts.options || { type: "ogone" });
     this.url = opts.url;
     this.#_type = opts.options?.type || 'ogone';
+    this.injections = opts.injections;
   }
   /**
    * @returns styles declared in the document
