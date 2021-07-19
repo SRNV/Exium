@@ -76,23 +76,28 @@ import component A from './b.o3';
         throw new Error("Failed to retrieve the protocol context");
       }
       assertEquals(proto.position, {
-        start: 125,
-        end: 132,
-        line: 9,
-        column: 0,
+        column: 2,
+        end: 154,
+        line: 10,
+        start: 147,
       });
       assertEquals(template.position, {
-        start: 36,
-        end: 46,
-        line: 3,
-        column: 0,
-      });
-      assertEquals(style.position, { start: 49, end: 56, line: 4, column: 2 });
-      assertEquals(protocolCTX.position, {
-        start: 135,
-        end: 200,
-        line: 10,
         column: 2,
+        end: 60,
+        line: 4,
+        start: 50,
+      });
+      assertEquals(style.position, {
+        column: 4,
+        end: 72,
+        line: 5,
+        start: 65,
+      });
+      assertEquals(protocolCTX.position, {
+        column: 2,
+        end: 222,
+        line: 11,
+        start: 157,
       });
       assertEquals(protocolCTX.source.trim(), protocol.trim());
       assertEquals(stylesheet.source.trim(), styleSource.trim());
@@ -143,12 +148,17 @@ Deno.test("exium supports props to component", () => {
       const property = contexts.find((context) =>
         context.type === ContextTypes.AttributeProperty
         && !context.source.endsWith('/'));
-        assert(property);
-        assertEquals(property.source, 'prop={ 0}');
-        const [name] = property.related;
-        assert(name);
-        assertEquals(name.source, 'prop');
-        assertEquals(name.position, { start: 52, end: 56, line: 2, column: 15 });
+      assert(property);
+      assertEquals(property.source, 'prop={ 0}');
+      const [name] = property.related;
+      assert(name);
+      assertEquals(name.source, 'prop');
+      assertEquals(name.position, {
+        column: 17,
+        end: 73,
+        line: 4,
+        start: 69,
+      });
     } catch (err) {
       throw err;
     }
@@ -174,12 +184,17 @@ Deno.test("exium supports functions into props", () => {
       const property = contexts.find((context) =>
         context.type === ContextTypes.AttributeProperty
         && !context.source.endsWith('/'));
-        assert(property);
-        assertEquals(property.source, 'prop={() => 0}');
-        const [name] = property.related;
-        assert(name);
-        assertEquals(name.source, 'prop');
-        assertEquals(name.position, { start: 52, end: 56, line: 2, column: 15 });
+      assert(property);
+      assertEquals(property.source, 'prop={() => 0}');
+      const [name] = property.related;
+      assert(name);
+      assertEquals(name.source, 'prop');
+      assertEquals(name.position, {
+        column: 17,
+        end: 72,
+        line: 3,
+        start: 68,
+      });
     } catch (err) {
       throw err;
     }

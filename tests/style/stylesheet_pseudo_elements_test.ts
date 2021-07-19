@@ -32,7 +32,12 @@ Deno.test("exium can retrieve selectors with pseudo elements", () => {
       throw new Error("failed to retrieve the hover pseudo class");
     }
     assertEquals(hover.source, "::selection");
-    assertEquals(hover.position, { start: 35, end: 46, line: 3, column: 9 });
+    assertEquals(hover.position, {
+      end: 55,
+      line: 4,
+      start: 44,
+      column: 9
+    });
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorPseudoElement} context`,
@@ -45,16 +50,15 @@ Deno.test("exium supports all standard pseudo classes", () => {
   <Test>
     <template>
       <style>
-        ${
-    SupportedStyleSheetPseudoElements.map((pseudoElement) =>
-      `\n::${pseudoElement}`
-    )
-  } {
+        ${SupportedStyleSheetPseudoElements.map((pseudoElement) =>
+    `\n::${pseudoElement}`
+  )
+    } {
           color: blue;
         }
       </style>
     </template>
-  <Test>
+  </Test>
     `;
   const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
@@ -84,11 +88,10 @@ Deno.test("exium supports all standard pseudo classes", () => {
 
 Deno.test("exium supports all standard pseudo classes (stylesheet)", () => {
   const content = `
-  ${
-    SupportedStyleSheetPseudoElements.map((pseudoElement) =>
-      `\n::${pseudoElement}`
-    )
-  } {
+  ${SupportedStyleSheetPseudoElements.map((pseudoElement) =>
+    `\n::${pseudoElement}`
+  )
+    } {
           color: blue;
         }`;
   const lexer = new Exium((reason, _cursor, context) => {

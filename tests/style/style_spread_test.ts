@@ -33,7 +33,7 @@ Deno.test("exium supports spread feature", () => {
       );
     assert(!!spread);
     assertEquals(spread.source, "...rule;");
-    assertEquals(spread.position, { start: 46, end: 54, line: 4, column: 8 });
+    assertEquals(spread.position, { start: 53, end: 61, line: 5, column: 8 });
     if (!spreadName) {
       throw new Error("Failed to retrieve spread identifier");
     }

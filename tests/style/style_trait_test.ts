@@ -93,7 +93,12 @@ Deno.test("exium stylesheet supports type rule assignment (stylesheet)", () => {
       );
     }
     assertEquals(typeRule.source, "<myTrait>");
-    assertEquals(typeRule.position, { start: 33, end: 42, line: 3, column: 7 });
+    assertEquals(typeRule.position, {
+      end: 49,
+      line: 4,
+      start: 40,
+      column: 7
+    });
     assert(atRule.data.isTyped);
     assert(
       atRule.related.find((ctx) =>

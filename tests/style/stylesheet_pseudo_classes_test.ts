@@ -32,7 +32,7 @@ Deno.test("exium can retrieve selectors with pseudo classes", () => {
       throw new Error("failed to retrieve the hover pseudo class");
     }
     assertEquals(hover.source, ":hover");
-    assertEquals(hover.position, { start: 35, end: 41, line: 3, column: 9 });
+    assertEquals(hover.position, { start: 44, end: 50, line: 4, column: 9 });
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorPseudoClass} context`,
@@ -66,7 +66,12 @@ Deno.test("exium can retrieve the not pseudo class", () => {
       throw new Error("failed to retrieve the not pseudo class");
     }
     assertEquals(not.source, ":not");
-    assertEquals(not.position, { start: 35, end: 39, line: 3, column: 9 });
+    assertEquals(not.position, {
+      column: 11,
+      end: 54,
+      line: 4,
+      start: 50,
+    });
     // find the parenthese following the pseudo class
     const parenthese = not.children.find((context) =>
       context.type === ContextTypes.Parenthese
@@ -78,10 +83,10 @@ Deno.test("exium can retrieve the not pseudo class", () => {
     }
     assertEquals(parenthese.source, "(.class)");
     assertEquals(parenthese.position, {
-      start: 39,
-      end: 47,
-      line: 3,
-      column: 13,
+      column: 15,
+      end: 62,
+      line: 4,
+      start: 54,
     });
   } else {
     throw new Error(
@@ -95,9 +100,8 @@ Deno.test("exium supports all standard pseudo classes", () => {
   <Test>
   <template>
     <style>
-      ${
-    SupportedStyleSheetPseudoClasses.map((pseudoClass) => `:${pseudoClass}`)
-  } {
+      ${SupportedStyleSheetPseudoClasses.map((pseudoClass) => `:${pseudoClass}`)
+    } {
         color: blue;
       }
     </style>

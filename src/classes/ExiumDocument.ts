@@ -102,6 +102,7 @@ export class ExiumDocument {
   }
   /**
    * @returns the proto element of the document
+   * @deprecated support single file poly components
    */
   get proto(): ExiumContext | undefined {
     return this.#_proto
@@ -119,17 +120,20 @@ export class ExiumDocument {
   }
   /**
    * @returns the template element of the document
+   * @deprecated support single file poly components
    */
   get template(): ExiumContext | undefined {
     return this.#_template
       || (this.#_template = this.contexts.find((context) => context.type === ContextTypes.Node
         && context.related.find((related) => related.source === "template")
-        && !context.data.parentNode
+        && context.data.parentNode
+        && !(context.data.parentNode as ExiumContext).data.parentNode
         && !context.data.isNodeClosing
       ));
   }
   /**
    * @returns the head element of the document
+   * @deprecated support single file poly components
    */
   get head(): ExiumContext | undefined {
     return this.#_head
