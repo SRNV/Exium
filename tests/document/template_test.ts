@@ -17,7 +17,10 @@ Deno.test("exium - document can expose the component's template", () => {
     source: content,
   });
   try {
-    assert(document.template);
+    const [component] = document.components;
+    assert(component);
+    const { template } = component;
+    assert(template);
   } catch (err) {
     throw err;
   }
@@ -197,7 +200,7 @@ Deno.test("exium - document can describe a sub-component", () => {
     },
   });
   try {
-    const components = document.getComponentByName('AsyncComponent');
+    const components = document.getExternalComponentByName('AsyncComponent');
     assert(components);
     assert(components.elements.length === 1);
     assert(components.imports.length === 1);
@@ -225,7 +228,7 @@ Deno.test("exium - document should return null when a component is not imported"
     },
   });
   try {
-    assertEquals(document.getComponentByName('AsyncComponent'), null);
+    assertEquals(document.getExternalComponentByName('AsyncComponent'), null);
   } catch (err) {
     throw err;
   }

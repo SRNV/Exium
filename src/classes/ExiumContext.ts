@@ -21,6 +21,13 @@ export type ExiumContextValue = string;
 export class ExiumContext {
   #_name?: string;
   /**
+   * if the context doesn't have a parent context, and is a Node context
+   * we can say it's a Local Component and use the template and protocol inside it
+   */
+  #_template?: ExiumContext;
+  #_proto?: ExiumContext;
+  // #_styles?: ExiumContext[];
+  /**
    * cache for value
    * can return the ExiumContext
    */
@@ -119,6 +126,23 @@ export class ExiumContext {
     return this.data.parentNode as ExiumContext | undefined;
   }
   /**
+   * if the context is a node
+   */
+  get template(): ExiumContext | undefined {
+    return !this.parentNode && this.nodeType === 1 ?
+      this.#_template || (this.#_template = this.children.find((context) => context.type === ContextTypes.Node
+        && !context.data.isNodeClosing
+        && context.name === 'template'))
+      : undefined;
+  }
+  get proto(): ExiumContext | undefined {
+    return !this.parentNode && this.nodeType === 1 ?
+      this.#_proto || (this.#_proto = this.children.find((context) => context.type === ContextTypes.Node
+        && !context.data.isNodeClosing
+        && context.name === 'proto'))
+      : undefined;
+  }
+  /**
    * any data to pass to the ExiumContext
    */
   public data: { [k: string]: unknown } = {};
@@ -132,6 +156,22 @@ export class ExiumContext {
       column: number;
     },
   ) { }
+  /**
+   * recursive function
+   * @param search a function to use to retrieve a context, a basic find function
+   * @returns the matching context
+   */
+  #getDeepElement(search: (context?: ExiumContext, index?: number, obj?: ExiumContext[]) => unknown): ExiumContext | undefined {
+    let result = this.children.find(search);
+    if (!result) {
+      this.children.forEach((context) => {
+        if (!result) {
+          result = context.#getDeepElement(search)
+        }
+      });
+    }
+    return result;
+  }
   /**
    * @returns the value of the attribute or undefined
    * @usage
@@ -185,7 +225,7 @@ export class ExiumContext {
    * @returns all the properties identified with the name
    */
   getPropertyContexts(name: string): ExiumContext[] {
-    switch(this.type) {
+    switch (this.type) {
       case ContextTypes.StyleSheetSelectorList: {
         const propertyList = this.related.find((context) => context.type === ContextTypes.StyleSheetPropertyList);
         if (!propertyList) return [];

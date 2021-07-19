@@ -24,7 +24,10 @@ Deno.test("exium - document can retrieve the component type", () => {
     source: content,
   });
   try {
-    assert(document.proto);
+    const [component] = document.components;
+    assert(component);
+    const { proto } = component;
+    assert(proto);
     assertEquals(document.getType(), 'app');
   } catch (err) {
     throw err;
@@ -51,7 +54,10 @@ Deno.test("exium - document can retrieve the component type (unquoted)", () => {
     source: content,
   });
   try {
-    assert(document.proto);
+    const [component] = document.components;
+    assert(component);
+    const { proto } = component;
+    assert(proto);
     assertEquals(document.getType(), 'app');
   } catch (err) {
     throw err;
@@ -77,7 +83,10 @@ Deno.test("exium - document can expose the component's proto", () => {
     source: content,
   });
   try {
-    assert(document.proto);
+    const [component] = document.components;
+    assert(component);
+    const { proto } = component;
+    assert(proto);
   } catch (err) {
     throw err;
   }

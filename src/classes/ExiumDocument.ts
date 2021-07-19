@@ -64,7 +64,7 @@ export interface ExiumDocumentComponentDescriber {
  * const {
  *   elements, // where the component is used
  *   imports // where the component is imported
- * } = document.getComponentByName('Message');
+ * } = document.getExternalComponentByName('Message');
  *
  * ```
  */
@@ -78,6 +78,7 @@ export class ExiumDocument {
   #_head?: ExiumContext;
   #_protocol?: ExiumContext;
   #_template?: ExiumContext;
+  #_components?: ExiumContext[];
   #_type?: Parameters<Exium['readSync']>[1]['type'];
   constructor(opts: ExiumDocumentOptions) {
     this.exium = new Exium(opts.onError);
@@ -85,6 +86,7 @@ export class ExiumDocument {
     this.url = opts.url;
     this.#_type = opts.options?.type || 'ogone';
     this.injections = opts.injections;
+    this.#onload();
   }
   /**
    * @returns styles declared in the document
@@ -142,6 +144,16 @@ export class ExiumDocument {
         && !context.data.isNodeClosing
         && context.data.parentNode === this.template
       ));
+  }
+  /**
+   * retrieve top level components
+   */
+  get components(): ExiumContext[] {
+    return this.#_components
+      || (this.#_components = this.contexts.filter((context) => context.type === ContextTypes.Node
+        && context.name
+        && context.name[0] === context.name[0].toUpperCase()
+        && !context.data.parentNode));
   }
   /**
    * retrieve all the matching elements inside the document
@@ -225,19 +237,27 @@ export class ExiumDocument {
       && !context.data.isNodeClosing);
   }
   /**
-   *
+   * retrieve local component
+   * @param tagname the name of the component
+   * @returns {ExiumContext}
+   */
+  getComponent(tagname: string): ExiumContext | undefined {
+    return this.components.find((context) => context.name === tagname);
+  }
+  /**
+   * retrieve imported component by tagname
    * @param tagname the name of the component
    * @returns {ExiumDocumentComponentDescriber}
    */
-  getComponentByName(tagname: string): ExiumDocumentComponentDescriber | null {
-    const imports = this.getComponentImports(tagname);
+  getExternalComponentByName(tagname: string): ExiumDocumentComponentDescriber | null {
+    const imports = this.getExternalComponentImports(tagname);
     if (!imports.length) return null;
     return {
       elements: this.getElementsByTagName(tagname),
       imports,
     };
   }
-  getComponentImports(tagname: string): ExiumContext[] {
+  getExternalComponentImports(tagname: string): ExiumContext[] {
     return this.contexts.filter((context) => context.type === ContextTypes.ImportStatement
       && context.source.includes(tagname)
       && context.data.isComponent
@@ -267,7 +287,8 @@ export class ExiumDocument {
       case 'protocol':
         return 'protocol';
       case 'ogone': {
-        const { proto } = this;
+        const [component] = this.components;
+        const { proto } = component;
         if (!proto) return 'component';
         const type = proto.getAttribute('type');
         return type && type.length ? type : 'component';
@@ -338,7 +359,7 @@ export class ExiumDocument {
   /**
    * retrieve the stylesheet's rules that are using a pseudo-property
    */
-   getStylesheetRulesByPseudoProperty(property: string): ExiumContext[] {
+  getStylesheetRulesByPseudoProperty(property: string): ExiumContext[] {
     return this.contexts.filter((child) => {
       return child.type === ContextTypes.StyleSheetSelectorList
         && child.related.find((subchild) => subchild.type === ContextTypes.StyleSheetPropertyList
@@ -385,5 +406,16 @@ export class ExiumDocument {
     if (!exportCTX) return;
     return exportCTX.children.find((child) => child.type === ContextTypes.StyleSheetAtRuleConst
       && child.name === name);
+  }
+  /**
+   * when the document is ready, update the node contexts.
+   * basically save the node contexts into their parent
+   */
+  #onload() {
+    this.contexts.forEach((context) => {
+      if (context.type === ContextTypes.Node) {
+        context.parentNode?.children.push(context);
+      }
+    });
   }
 }
