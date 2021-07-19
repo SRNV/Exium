@@ -27,7 +27,7 @@ Deno.test("exium can retrieve node names: template", () => {
       `${reason} ${context.position.line}:${context.position.column}`,
     );
   });
-  const content = `<template></template>`;
+  const content = `<Node><template></template></Node>`;
   const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     const [tagname, node] = contexts;

@@ -17,12 +17,14 @@ Deno.test("exium can retrieve node flags", () => {
     ['else-if', '',`item.id`],
   ];
   const content = `
+<Component>
   <template>
-  <div
-${structures.map((struct) => `    --${struct[0]}${struct[1]}(${struct[2]})`).join('\n')}
-  >
-  </div>
-</template>
+    <div
+  ${structures.map((struct) => `    --${struct[0]}${struct[1]}(${struct[2]})`).join('\n')}
+    >
+    </div>
+  </template>
+</Component>
   `;
   const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
@@ -53,12 +55,14 @@ Deno.test("exium document can retrieve flag value", () => {
     ['click', '', clickSource],
   ];
   const content = `
+<Component>
   <template>
   <div
 ${structures.map((struct) => `    --${struct[0]}${struct[1]}(${struct[2]})`).join('\n')}
   >
   </div>
 </template>
+</Component>
   `;
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
@@ -93,12 +97,14 @@ Deno.test("exium document can retrieve flag value (using value)", () => {
     ['click', '', clickSource],
   ];
   const content = `
+<Component>
   <template>
-  <div
-${structures.map((struct) => `    --${struct[0]}${struct[1]}(${struct[2]})`).join('\n')}
-  >
-  </div>
-</template>
+    <div
+  ${structures.map((struct) => `    --${struct[0]}${struct[1]}(${struct[2]})`).join('\n')}
+    >
+    </div>
+  </template>
+</Component>
   `;
   const document = new ExiumDocument({
     url: new URL(import.meta.url),

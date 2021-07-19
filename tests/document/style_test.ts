@@ -30,6 +30,7 @@ Deno.test("exium - document can expose the component's styles", () => {
 
 Deno.test("exium - document can select rules (div, .className, #id, attribute) and properties", () => {
   const content = /*css*/`
+<Component>
   <template>
     <style>
       div {
@@ -56,6 +57,7 @@ Deno.test("exium - document can select rules (div, .className, #id, attribute) a
     </div>
   </template>
   <proto type=app />
+</Component>
   `;
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
@@ -83,6 +85,7 @@ Deno.test("exium - document can select rules (div, .className, #id, attribute) a
 
 Deno.test("exium - document can get stylesheet constants", () => {
   const content = `
+<Component>
   <template>
     <style>
       @export const prop<hex> = #090909;
@@ -96,6 +99,7 @@ Deno.test("exium - document can get stylesheet constants", () => {
   </template>
   <proto type=app>
   </proto>
+</Component>
 `;
   const document = new ExiumDocument({
     url: new URL(import.meta.url),

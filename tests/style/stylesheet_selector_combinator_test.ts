@@ -4,24 +4,26 @@ import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 Deno.test("exium support combinators", () => {
   const content = `
-  <template>
-    <style>
-    [attribute=""],
-    [attribute2],
-    [attribute3] element,
-    element.class#id,
-    element#id,
-    .class + #id,
-    element element2,
-    element[attribute],
-    element:hover,
-    element2:not(.class), *,
-    * > p + div,
-    div ~ ul {
+  <Test>
+    <template>
+      <style>
+      [attribute=""],
+      [attribute2],
+      [attribute3] element,
+      element.class#id,
+      element#id,
+      .class + #id,
+      element element2,
+      element[attribute],
+      element:hover,
+      element2:not(.class), *,
+      * > p + div,
+      div ~ ul {
 
-    }
-    </style>
-  </template>
+      }
+      </style>
+    </template>
+  </Test>
   `;
   const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(

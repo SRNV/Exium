@@ -6,7 +6,7 @@ import {
 
 Deno.test("exium - document can expose the component's template", () => {
   const textnode = "$\{this.basic}";
-  const content = `<template><div>${textnode}</div></template>`;
+  const content = `<Component><template><div>${textnode}</div></template></Component>`;
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
@@ -25,7 +25,7 @@ Deno.test("exium - document can expose the component's template", () => {
 
 Deno.test("exium - document can retrieve an element", () => {
   const textnode = "$\{this.basic}";
-  const content = `<template><div>${textnode}</div></template>`;
+  const content = `<Component><template><div>${textnode}</div></template></Component>`;
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
@@ -44,7 +44,7 @@ Deno.test("exium - document can retrieve an element", () => {
 });
 
 Deno.test("exium - document can retrieve an element with getElementsByClassName (quoted)", () => {
-  const content = `<template><div class="myClass anotherClass"></div></template>`;
+  const content = `<Component><template><div class="myClass anotherClass"></div></template></Component>`;
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
@@ -63,7 +63,7 @@ Deno.test("exium - document can retrieve an element with getElementsByClassName 
 });
 
 Deno.test("exium - document can retrieve an element with getElementsByClassName (unquoted)", () => {
-  const content = `<template><div class=myClass></div></template>`;
+  const content = `<Component><template><div class=myClass></div></template></Component>`;
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
@@ -82,7 +82,7 @@ Deno.test("exium - document can retrieve an element with getElementsByClassName 
 });
 
 Deno.test("exium - document can retrieve an element with getElementById (quoted)", () => {
-  const content = `<template><div id="myId"></div></template>`;
+  const content = `<Component><template><div id="myId"></div></template></Component>`;
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
@@ -101,7 +101,7 @@ Deno.test("exium - document can retrieve an element with getElementById (quoted)
 });
 
 Deno.test("exium - document can retrieve an element with getElementById (unquoted)", () => {
-  const content = `<template><div id=myId></div></template>`;
+  const content = `<Component><template><div id=myId></div></template></Component>`;
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
@@ -120,7 +120,7 @@ Deno.test("exium - document can retrieve an element with getElementById (unquote
 });
 
 Deno.test("exium - document can retrieve an element with getElementsByFlag", () => {
-  const content = `<template><div --for={id of this.ids}></div></template>`;
+  const content = `<Component><template><div --for={id of this.ids}></div></template></Component>`;
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
@@ -139,7 +139,7 @@ Deno.test("exium - document can retrieve an element with getElementsByFlag", () 
 });
 
 Deno.test("exium - document can retrieve an element with getElementsByFlag (:argument)", () => {
-  const content = `<template><div --then:argument></div></template>`;
+  const content = `<Component><template><div --then:argument></div></template></Component>`;
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
@@ -158,7 +158,7 @@ Deno.test("exium - document can retrieve an element with getElementsByFlag (:arg
 });
 
 Deno.test("exium - document can retrieve arguments on flag", () => {
-  const content = `<template><div --then:argument:name></div></template>`;
+  const content = `<Component><template><div --then:argument:name></div></template></Component>`;
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
@@ -184,9 +184,11 @@ Deno.test("exium - document can describe a sub-component", () => {
     url: new URL(import.meta.url),
     source: `
     import component AsyncComponent from './AsyncComponent.o3';
-    <template>
-      <AsyncComponent />
-    </template>
+    <Component>
+      <template>
+        <AsyncComponent />
+      </template>
+    </Component>
   `,
     onError: (reason, _cursor, context) => {
       throw new Error(
@@ -210,9 +212,11 @@ Deno.test("exium - document should return null when a component is not imported"
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     source: `
-    <template>
-      <AsyncComponent />
-    </template>
+    <Component>
+      <template>
+        <AsyncComponent />
+      </template>
+    </Component>
   `,
     onError: (reason, _cursor, context) => {
       throw new Error(

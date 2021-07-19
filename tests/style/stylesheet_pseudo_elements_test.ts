@@ -8,6 +8,7 @@ import {
 
 Deno.test("exium can retrieve selectors with pseudo elements", () => {
   const content = `
+  <Test>
   <template>
     <style>
       div::selection {
@@ -15,6 +16,7 @@ Deno.test("exium can retrieve selectors with pseudo elements", () => {
       }
     </style>
   </template>
+  </Test>
   `;
   const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
@@ -40,6 +42,7 @@ Deno.test("exium can retrieve selectors with pseudo elements", () => {
 
 Deno.test("exium supports all standard pseudo classes", () => {
   const content = `
+  <Test>
     <template>
       <style>
         ${
@@ -51,6 +54,7 @@ Deno.test("exium supports all standard pseudo classes", () => {
         }
       </style>
     </template>
+  <Test>
     `;
   const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(

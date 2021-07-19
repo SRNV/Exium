@@ -36,6 +36,7 @@ Deno.test("exium can retrieve pseudo properties", () => {
 
 Deno.test("exium can retrieve pseudo properties (ogone)", () => {
   const content = /*css*/`
+<Test>
 <template>
   <style>
     div:hover {
@@ -47,6 +48,7 @@ Deno.test("exium can retrieve pseudo properties (ogone)", () => {
     }
   </style>
 </template>
+</Test>
   `;
   const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
@@ -68,17 +70,19 @@ Deno.test("exium can retrieve pseudo properties (ogone)", () => {
 
 Deno.test("exium can retrieve pseudo properties (media-min-width)", () => {
   const content = /*css*/`
-<template>
-  <style>
-    div:hover {
-      color::media-min-width(
-        default: blue;
-        10px: red;
-        200px: green;
-      );
-    }
-  </style>
-</template>
+<Test>
+  <template>
+    <style>
+      div:hover {
+        color::media-min-width(
+          default: blue;
+          10px: red;
+          200px: green;
+        );
+      }
+    </style>
+  </template>
+</Test>
   `;
   const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
@@ -100,6 +104,7 @@ Deno.test("exium can retrieve pseudo properties (media-min-width)", () => {
 
 Deno.test("exium can retrieve pseudo properties (keyframes)", () => {
   const content = /*css*/`
+<Test>
 <template>
   <style>
     div:hover {
@@ -120,6 +125,7 @@ Deno.test("exium can retrieve pseudo properties (keyframes)", () => {
     }
   </style>
 </template>
+</Test>
   `;
   const lexer = new Exium((reason, _cursor, context) => {
     console.warn(_cursor, context)

@@ -8,6 +8,7 @@ import {
 
 Deno.test("exium can retrieve selectors with pseudo classes", () => {
   const content = `
+  <Test>
   <template>
     <style>
       div:hover {
@@ -15,6 +16,7 @@ Deno.test("exium can retrieve selectors with pseudo classes", () => {
       }
     </style>
   </template>
+  </Test>
   `;
   const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
@@ -40,13 +42,15 @@ Deno.test("exium can retrieve selectors with pseudo classes", () => {
 
 Deno.test("exium can retrieve the not pseudo class", () => {
   const content = `
-  <template>
-    <style>
-      div:not(.class) {
-        color: blue;
-      }
-    </style>
-  </template>
+  <Test>
+    <template>
+      <style>
+        div:not(.class) {
+          color: blue;
+        }
+      </style>
+    </template>
+  </Test>
   `;
   const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
@@ -88,6 +92,7 @@ Deno.test("exium can retrieve the not pseudo class", () => {
 
 Deno.test("exium supports all standard pseudo classes", () => {
   const content = `
+  <Test>
   <template>
     <style>
       ${
@@ -97,6 +102,7 @@ Deno.test("exium supports all standard pseudo classes", () => {
       }
     </style>
   </template>
+  </Test>
   `;
   const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(

@@ -30,15 +30,16 @@ export interface ExiumDocumentComponentDescriber {
  * ```ogone
  * // ./App.o3
  *import component Message from './Message.o3';
- *
- *<template>
- *  <div
- *    --click(console.warn('click'))
- *    id=b
- *    class=a></div>
- *  <Message content={'My super App'}/>
- *</template>
- *<proto type=app/>
+ *<App>
+ *  <template>
+ *    <div
+ *      --click(console.warn('click'))
+ *      id=b
+ *      class=a></div>
+ *    <Message content={'My super App'}/>
+ *  </template>
+ *  <proto type=app/>
+ </App>
  * ```
  *
  * in the example,

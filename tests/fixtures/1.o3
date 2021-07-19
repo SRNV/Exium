@@ -1,21 +1,23 @@
-<template>
-  <div
-    --for(item of this.items)
-    --click(() => console.warn('yup'))
-    --on:eventName(this.eval(item))
-    --if(item)
-    --else-if(item.id)
-    prop={'my prop'}>
-  </div>
-  <span --else> else </span>
-   <template --switch(item.value)>
-     <p --case={'n'}> show n </p>
-     <p --case={'p'}> show p </p>
-     <p --default> show default </p>
-   </template>
-   <div --while(item.truth)>
-    show this until item.truth is false
-   </div>
-   <!--send -->
-   <div --send-to={'placeholder'}></div>
-</template>
+<Component>
+  <template>
+    <div
+      --for(item of this.items)
+      --click(() => console.warn('yup'))
+      --on:eventName(this.eval(item))
+      --if(item)
+      --else-if(item.id)
+      prop={'my prop'}>
+    </div>
+    <span --else> else </span>
+    <template --switch(item.value)>
+      <p --case={'n'}> show n </p>
+      <p --case={'p'}> show p </p>
+      <p --default> show default </p>
+    </template>
+    <div --while(item.truth)>
+      show this until item.truth is false
+    </div>
+    <!--send -->
+    <div --send-to={'placeholder'}></div>
+  </template>
+</Component>

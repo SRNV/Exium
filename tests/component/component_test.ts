@@ -22,11 +22,13 @@ Deno.test("exium can parse a basic component", () => {
   const content = `
 import component A from './b.o3';
 
-<template>
-  <style>${styleSource}</style>
-  <div> $\{this.basic} </div>
-</template>
-<proto>${protocol}</proto>
+<Component>
+  <template>
+    <style>${styleSource}</style>
+    <div> $\{this.basic} </div>
+  </template>
+  <proto>${protocol}</proto>
+</Component>
   `;
   const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
@@ -131,7 +133,10 @@ Deno.test("exium supports props to component", () => {
   });
   const content = `
   import component A from './A.o3';
-  <template><A prop={ 0}/></template>`;
+
+  <Component>
+    <template><A prop={ 0}/></template>
+  </Component>`;
   const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
@@ -160,7 +165,9 @@ Deno.test("exium supports functions into props", () => {
   });
   const content = `
   import component A from './A.o3';
-  <template><A prop={() => 0}/></template>`;
+  <Component>
+    <template><A prop={() => 0}/></template>
+  </Component>`;
   const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {

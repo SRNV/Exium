@@ -7,12 +7,14 @@ import {
 
 Deno.test("exium can retrieve nested css", () => {
   const content = `
+<Deno>
   <template>
     <style>
     /** comments */
       @charset 'utf-8';
     </style>
-  </template>`;
+  </template>
+</Deno>`;
   const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,

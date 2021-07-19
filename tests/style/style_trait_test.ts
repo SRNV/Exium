@@ -57,6 +57,7 @@ Deno.test("exium stylesheet supports type rule assignment", () => {
 
 Deno.test("exium stylesheet supports type rule assignment (stylesheet)", () => {
   const content = /*css*/`
+<Test>
   <template>
     <style>
       @<myTrait>  div {
@@ -64,6 +65,7 @@ Deno.test("exium stylesheet supports type rule assignment (stylesheet)", () => {
       }
     </style>
   </template>
+</Test>
 `;
   const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(

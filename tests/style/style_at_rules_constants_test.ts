@@ -53,6 +53,7 @@ Deno.test("exium stylesheet supports @const statement, and it can retrieve the n
 Deno.test("exium stylesheet supports @const statement, and it can retrieve the name of the const and its type 2 (in component)", () => {
   const constName = "myColor";
   const content = `
+<Styling>
   <template>
     <style>
       @const myColor<hex>= #001000;
@@ -60,7 +61,8 @@ Deno.test("exium stylesheet supports @const statement, and it can retrieve the n
         color: $myColor;
       }
     </style>
-  </template>`;
+  </template>
+</Styling>`;
   const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,

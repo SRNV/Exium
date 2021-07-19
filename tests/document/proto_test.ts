@@ -7,10 +7,12 @@ import {
 Deno.test("exium - document can retrieve the component type", () => {
   const content = `
   import component M from '../M.o3';
-  <template>
-    M
-  </template>
-  <proto type="app" />
+  <Component>
+    <template>
+      M
+    </template>
+    <proto type="app" />
+  </Component>
   `;
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
@@ -31,10 +33,13 @@ Deno.test("exium - document can retrieve the component type", () => {
 Deno.test("exium - document can retrieve the component type (unquoted)", () => {
   const content = `
   import component M from '../M.o3';
-  <template>
-    M
-  </template>
-  <proto type=app/>
+
+  <Component>
+    <template>
+      M
+    </template>
+    <proto type=app/>
+  </Component>
   `;
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
@@ -54,7 +59,14 @@ Deno.test("exium - document can retrieve the component type (unquoted)", () => {
 });
 Deno.test("exium - document can expose the component's proto", () => {
   const textnode = "$\{this.basic}";
-  const content = `<template><div>${textnode}</div></template><proto></proto>`;
+  const content = `
+  <Component>
+    <template>
+      <div>${textnode}</div>
+    </template>
+    <proto></proto>
+  </Component>
+  `;
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {

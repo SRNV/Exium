@@ -7,6 +7,7 @@ import {
 
 Deno.test("exium supports spread feature", () => {
   const content = `
+<Deno>
   <template>
     <style>
       div {
@@ -14,6 +15,7 @@ Deno.test("exium supports spread feature", () => {
       }
     </style>
   </template>
+</Deno>
   `;
   const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(

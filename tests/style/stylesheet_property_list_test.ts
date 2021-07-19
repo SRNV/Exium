@@ -11,6 +11,7 @@ Deno.test("exium can retrieve properties", () => {
     property,
   ) => [property, "inherit"]);
   const content = `
+<Test>
   <template>
     <style>
       div::selection {
@@ -22,6 +23,7 @@ Deno.test("exium can retrieve properties", () => {
       }
     </style>
   </template>
+</Test>
   `;
   const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
