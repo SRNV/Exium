@@ -72,7 +72,7 @@ export class ExiumDocument {
   public url: URL;
   private injections: ExiumDocumentOptions['injections'];
   private exium: Exium;
-  private contexts: ExiumContext[];
+  public contexts: ExiumContext[];
   #_stylesheets?: ExiumContext[];
   #_proto?: ExiumContext;
   #_head?: ExiumContext;
@@ -301,6 +301,7 @@ export class ExiumDocument {
    * retrieve the stylesheet's rules that apply on an element
    */
   getStylesheetRulesByTagName(tagname: string): ExiumContext[] {
+    if (this.#_type !== 'stylesheet') return [];
     return this.contexts.filter((child) => {
       return child.type === ContextTypes.StyleSheetSelectorList
         && child.children.find((subchild) => subchild.type === ContextTypes.StyleSheetSelectorHTMLElement
@@ -311,6 +312,7 @@ export class ExiumDocument {
    * retrieve the stylesheet's rules that apply on a class
    */
   getStylesheetRulesByClassName(className: string): ExiumContext[] {
+    if (this.#_type !== 'stylesheet') return [];
     return this.contexts.filter((child) => {
       return child.type === ContextTypes.StyleSheetSelectorList
         && child.children.find((subchild) => subchild.type === ContextTypes.StyleSheetSelectorClass
@@ -321,6 +323,7 @@ export class ExiumDocument {
    * retrieve the stylesheet's rules that apply on an id
    */
   getStylesheetRulesById(id: string): ExiumContext[] {
+    if (this.#_type !== 'stylesheet') return [];
     return this.contexts.filter((child) => {
       return child.type === ContextTypes.StyleSheetSelectorList
         && child.children.find((subchild) => subchild.type === ContextTypes.StyleSheetSelectorId
@@ -331,6 +334,7 @@ export class ExiumDocument {
    * retrieve the stylesheet's rules that apply on an attribute
    */
   getStylesheetRulesByAttribute(attr: string): ExiumContext[] {
+    if (this.#_type !== 'stylesheet') return [];
     return this.contexts.filter((child) => {
       return child.type === ContextTypes.StyleSheetSelectorList
         && child.children.find((subchild) => subchild.type === ContextTypes.StyleSheetSelectorAttribute
@@ -341,6 +345,7 @@ export class ExiumDocument {
    * retrieve the stylesheet's rules that are using a property
    */
   getStylesheetRulesByProperty(property: string, value?: string): ExiumContext[] {
+    if (this.#_type !== 'stylesheet') return [];
     return this.contexts.filter((child) => {
       return child.type === ContextTypes.StyleSheetSelectorList
         && child.related.find((subchild) => subchild.type === ContextTypes.StyleSheetPropertyList
@@ -361,6 +366,7 @@ export class ExiumDocument {
    * retrieve the stylesheet's rules that are using a pseudo-property
    */
   getStylesheetRulesByPseudoProperty(property: string): ExiumContext[] {
+    if (this.#_type !== 'stylesheet') return [];
     return this.contexts.filter((child) => {
       return child.type === ContextTypes.StyleSheetSelectorList
         && child.related.find((subchild) => subchild.type === ContextTypes.StyleSheetPropertyList
@@ -375,6 +381,7 @@ export class ExiumDocument {
    * @returns returns all the stylesheets constants
    */
   getStylesheetConstants(): ExiumContext[] {
+    if (this.#_type !== 'stylesheet') return [];
     return this.contexts.filter((context) => {
       return context.type === ContextTypes.StyleSheetAtRuleConst;
     });
@@ -383,6 +390,7 @@ export class ExiumDocument {
    * @returns all the exported stylesheets constants
    */
   getStylesheetExportedConstants(): ExiumContext[] {
+    if (this.#_type !== 'stylesheet') return [];
     const exports = this.contexts.filter((context) => {
       return context.type === ContextTypes.StyleSheetAtRuleExport;
     });
@@ -393,6 +401,7 @@ export class ExiumDocument {
    * @returns the context describing the constant
    */
   getStylesheetConstant(name: string): ExiumContext | undefined {
+    if (this.#_type !== 'stylesheet') return;
     return this.contexts.find((context) => {
       return context.type === ContextTypes.StyleSheetAtRuleConst && context.name === name;
     });
@@ -401,6 +410,7 @@ export class ExiumDocument {
    * @returns the context describing the constant that is exported
    */
   getStylesheetExportedConstant(name: string): ExiumContext | undefined {
+    if (this.#_type !== 'stylesheet') return;
     const exportCTX = this.contexts.find((context) => {
       return context.type === ContextTypes.StyleSheetAtRuleExport;
     });
@@ -409,7 +419,7 @@ export class ExiumDocument {
       && child.name === name);
   }
   /**
-   * when the document is ready, update the node contexts.
+   * when the document is ready, update the node contexts, set the context's document.
    * basically save the node contexts into their parent
    */
   #onload() {
@@ -417,6 +427,10 @@ export class ExiumDocument {
       if (context.type === ContextTypes.Node) {
         context.parentNode?.children.push(context);
       }
+      /**
+       * save the document to allow global actions/search from the context
+       */
+      context.document = this;
     });
   }
 }
