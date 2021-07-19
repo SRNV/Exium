@@ -36,39 +36,29 @@ import component A from './b.o3';
       const importStatement = contexts.find((context) =>
         context.type === ContextTypes.ImportStatement
       );
-      if (!importStatement) {
-        throw new Error("Failed to retrieve import statement");
-      }
+      assert(importStatement);
       const template = contexts.find((context) =>
         context.type === ContextTypes.Node &&
         context.related.find((related) => related.source === "template") &&
         !context.data.isNodeClosing
       );
-      if (!template) {
-        throw new Error("Failed to retrieve the template element");
-      }
+      assert(template);
       const style = contexts.find((context) =>
         context.type === ContextTypes.Node &&
         context.related.find((related) => related.source === "style") &&
         !context.data.isNodeClosing
       );
-      if (!style) {
-        throw new Error("Failed to retrieve the style element");
-      }
+      assert(style);
       const stylesheet = contexts.find((context) =>
         context.type === ContextTypes.StyleSheet
       );
-      if (!stylesheet) {
-        throw new Error("Failed to retrieve the stylesheet");
-      }
+      assert(stylesheet)
       const proto = contexts.find((context) =>
         context.type === ContextTypes.Node &&
         context.related.find((related) => related.source === "proto") &&
         !context.data.isNodeClosing
       );
-      if (!proto) {
-        throw new Error("Failed to retrieve the proto element");
-      }
+      assert(proto);
       const protocolCTX = contexts.find((context) =>
         context.type === ContextTypes.Protocol
       );

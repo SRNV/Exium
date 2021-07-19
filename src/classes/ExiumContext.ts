@@ -26,6 +26,7 @@ export class ExiumContext {
    */
   #_template?: ExiumContext;
   #_proto?: ExiumContext;
+  #_protocol?: ExiumContext;
   // #_styles?: ExiumContext[];
   /**
    * cache for value
@@ -142,6 +143,11 @@ export class ExiumContext {
         && context.name === 'proto'))
       : undefined;
   }
+  get protocol(): ExiumContext | undefined {
+    if (!this.proto) return;
+    return this.#_protocol
+      || (this.#_protocol = this.#getDeepElement((context) => context.type === ContextTypes.Protocol));
+  }
   /**
    * any data to pass to the ExiumContext
    */
@@ -161,7 +167,7 @@ export class ExiumContext {
    * @param search a function to use to retrieve a context, a basic find function
    * @returns the matching context
    */
-  #getDeepElement(search: (context?: ExiumContext, index?: number, obj?: ExiumContext[]) => unknown): ExiumContext | undefined {
+  #getDeepElement(search: (context: ExiumContext, index?: number, obj?: ExiumContext[]) => unknown): ExiumContext | undefined {
     let result = this.children.find(search);
     if (!result) {
       this.children.forEach((context) => {

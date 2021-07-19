@@ -115,6 +115,7 @@ export class ExiumDocument {
   }
   /**
    * @returns the protocol content inside the proto element
+   * @deprecated support single file poly components
    */
   get protocol(): ExiumContext | undefined {
     return this.#_protocol
@@ -241,7 +242,7 @@ export class ExiumDocument {
    * @param tagname the name of the component
    * @returns {ExiumContext}
    */
-  getComponent(tagname: string): ExiumContext | undefined {
+  getComponentName(tagname: string): ExiumContext | undefined {
     return this.components.find((context) => context.name === tagname);
   }
   /**
