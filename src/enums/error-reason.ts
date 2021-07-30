@@ -35,4 +35,5 @@ export enum Reason {
   StyleSheetPropertyListOpen = 3533,
   StyleSheetRulePropertyValueNotClosed = 3764,
   StyleSheetRuleSpreadNameMissing = 3923,
+  ComponentDeclarationNodeMissing = 4200,
 }

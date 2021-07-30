@@ -95,6 +95,22 @@ export class Exium extends ExiumStyleSheet {
       this.textnode_CTX,
     ],
     /**
+     * use this scope to parse deeper components
+     */
+     deeper: [
+      this.comment_CTX,
+      this.comment_block_CTX,
+      this.line_break_CTX,
+      this.multiple_spaces_CTX,
+      this.space_CTX,
+      this.string_single_quote_CTX,
+      this.string_double_quote_CTX,
+      this.import_ambient_CTX,
+      this.import_statements_CTX,
+      this.html_comment_CTX,
+      this.component_CTX,
+    ],
+    /**
      * use this scope to parse stylesheets (CSS and Typed-CSS)
      */
     stylesheet: [

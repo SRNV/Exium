@@ -15,6 +15,15 @@ import { Reason } from "../enums/error-reason.ts";
  */
 export class ExiumBase {
   private treePosition = 0;
+  protected supportedComponentTypes = [
+    'component',
+    'app',
+    'async',
+    'router',
+    'store',
+    'controller',
+    'gl',
+  ];
   protected readonly checkOnlyOptions: ContextReaderOptions = {
     checkOnly: true,
   };
@@ -700,6 +709,62 @@ export class ExiumBase {
     );
     return true;
   }
+  identifier_list_CTX(opts?: ContextReaderOptions): boolean | null {
+    this.debuggPosition('Identifier LIST CTX Start');
+    const { char, source } = this;
+    const isValid = char === '{';
+    if (!isValid) return false;
+    if (opts?.checkOnly) return true;
+    this.shift(1);
+    const { line, column, x } = this.cursor;
+    const readers: ContextReader[] = [
+      this.line_break_CTX,
+      this.space_CTX,
+      this.multiple_spaces_CTX,
+    ];
+    const children: ExiumContext[] = [];
+    let isComaNeeded = false;
+    let isUnexpected = false;
+    while (!this.isEOF) {
+      this.saveContextsTo(readers, children);
+      if ((!isComaNeeded) && this.identifier_CTX(this.checkOnlyOptions) && this.char !== ','){
+        const identified = this.identifier_CTX();
+        if (identified) {
+          const { lastContext } = this;
+          children.push(lastContext);
+          isComaNeeded = true;
+        }
+      }
+      if (isComaNeeded && this.char === ',') {
+        const identifiedComa = this.coma_CTX();
+        if (identifiedComa) {
+          const { lastContext } = this;
+          children.push(lastContext);
+          isComaNeeded = false;
+        }
+      }
+      if (!(this.char === '}' || this.isCharSpacing)) {
+        isUnexpected = true;
+      }
+      if (isUnexpected) {
+        this.onError(Reason.UnexpectedToken, this.cursor, this.unexpected);
+      }
+      if (this.char === '}') break;
+      this.isValidChar(opts?.unexpected);
+      this.shift(1);
+    }
+    // TODO continue here
+    const token = source.slice(x, this.cursor.x);
+    const context = new ExiumContext(ContextTypes.IdentifierList, token, {
+      start: x,
+      end: this.cursor.x,
+      line,
+      column,
+    });
+    this.currentContexts.push(context);
+    context.children.push(...children);
+    return true;
+  }
   space_CTX() {
     this.debuggPosition("\n\n\t\tSPACE START");
     const result = this.char === " " && this.next !== this.char;
@@ -1092,6 +1157,7 @@ export class ExiumBase {
       let isComponent = null;
       let fromStatement = null;
       const related: ExiumContext[] = [];
+      const children: ExiumContext[] = [];
       const otherImportStatements: ContextReader[] = [
         this.import_ambient_CTX,
       ];
@@ -1109,6 +1175,15 @@ export class ExiumBase {
       while (!this.isEOF) {
         if (!isComponent) {
           isComponent = this.saveToken('component', ContextTypes.ImportComponentStatement);
+        }
+        if (isComponent) {
+          this.saveStrictContextsTo([
+            this.space_CTX,
+            this.multiple_spaces_CTX,
+            this.identifier_list_CTX,
+            this.space_CTX,
+            this.multiple_spaces_CTX,
+          ], children);
         }
         fromStatement = this.saveToken('from', ContextTypes.ImportStatementFrom);
         if (fromStatement) {

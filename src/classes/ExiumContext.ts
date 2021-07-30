@@ -156,8 +156,8 @@ export class ExiumContext {
         && context.name === 'proto'))
       : undefined;
   }
-  get protocol(): ExiumContext | undefined {
-    if (!this.proto) return;
+  get protocol(): ExiumContext | null | undefined {
+    if (!this.proto) return null;
     return this.#_protocol
       || (this.#_protocol = this.#getDeepElement((context) => context.type === ContextTypes.Protocol));
   }
@@ -350,7 +350,6 @@ export class ExiumContext {
         && child.position.end <= this.nodeEnd
         && child.related.find((subchild) => subchild.type === ContextTypes.StyleSheetPropertyList
           && subchild.children.find((props) => {
-            console.warn(props);
             return props.type === ContextTypes.StyleSheetPseudoProperty
               && props.name === property
           }));

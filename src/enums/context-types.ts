@@ -5,6 +5,9 @@ export enum ContextTypes {
   Unexpected = "Unexpected",
   Space = "Space",
   Identifier = "Identifier",
+  // Identifier separated by a coma
+  IdentifierList = "IdentifierList",
+  IdentifierSemiColonList = "IdentifierSemiColonList",
   // @
   At = "At",
   SemiColon = "SemiColon",
@@ -24,6 +27,10 @@ export enum ContextTypes {
   Array = "Array",
   Parenthese = "Parenthese",
   Argument = "Argument",
+  // COMPONENT
+  ComponentTypeStatement = "ComponentTypeStatement",
+  ComponentDeclaration = "ComponentDeclaration",
+  // HTML
   HTMLComment = "HTMLComment",
   ImportAmbient = "ImportAmbient",
   ImportStatement = "ImportStatement",

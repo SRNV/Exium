@@ -36,6 +36,7 @@ export interface OgooneLexerParseOptions {
    */
   type:
     | "ogone"
+    | "deeper"
     | "lexer"
     | "custom"
     | "stylesheet"

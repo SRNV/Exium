@@ -9,8 +9,8 @@ import { SupportedStyleSheetCharset } from "../supports.ts";
  * all ContextReaders to read stylesheets
  */
 export class ExiumStyleSheet extends ExiumProtocol {
-  allowPseudoProperties: boolean = true;
-  isInPseudoProperty: boolean = false;
+  allowPseudoProperties = true;
+  isInPseudoProperty = false;
   get isEndOfStylesheetProperty(): boolean {
     const { char, isInPseudoProperty: p } = this;
     return p

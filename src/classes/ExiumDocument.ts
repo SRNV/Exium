@@ -371,7 +371,6 @@ export class ExiumDocument {
       return child.type === ContextTypes.StyleSheetSelectorList
         && child.related.find((subchild) => subchild.type === ContextTypes.StyleSheetPropertyList
           && subchild.children.find((props) => {
-            console.warn(props);
             return props.type === ContextTypes.StyleSheetPseudoProperty
               && props.name === property
           }));

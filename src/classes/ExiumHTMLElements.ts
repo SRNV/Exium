@@ -569,4 +569,72 @@ export class ExiumHTMLElements extends ExiumBase {
       throw err;
     }
   }
+  /**
+   * support for Deeper Language specififation
+   * this context allows to define a component with the following pattern:
+   * component <ComponentName>
+   *   ...
+   * </ComponentName>
+   */
+  component_CTX(opts?: ContextReaderOptions): boolean | null {
+    try {
+      const isValid = this.identifier_CTX(this.checkOnlyOptions);
+      if (!isValid) return false;
+      // save the identifier
+      const recognized = this.identifier_CTX();
+      if (!recognized) return false;
+      const { lastContext } = this;
+      if (!this.supportedComponentTypes.includes(lastContext.source)) return false;
+      if (opts?.checkOnly) return true;
+      const { line, column, x } = this.cursor;
+      const { source } = this;
+      lastContext.type = ContextTypes.ComponentTypeStatement;
+      let isNodeDefined = false;
+      const allSubContexts: ContextReader[] = [
+        this.line_break_CTX,
+        this.multiple_spaces_CTX,
+        this.space_CTX,
+        this.textnode_CTX,
+        this.node_CTX,
+        this.node_CTX,
+      ];
+      const children: ExiumContext[] = [];
+      while(!this.isEOF) {
+        this.saveContextsTo(allSubContexts, children);
+        const node = children.find((context) =>
+          // node with a closing tag
+          (context.type === ContextTypes.Node
+            && context.related.find((child) => child.type === ContextTypes.NodeClosing)
+            && !context.data.parentNode
+            && !context.data.isAutoClosing)
+          // or an auto closing tag
+        || (context.type === ContextTypes.Node
+            && context.data.isAutoClosing
+            && !context.data.parentNode));
+        if (node) {
+          isNodeDefined = true;
+          break;
+        }
+        this.shift(1);
+      }
+      const token = source.slice(x, this.cursor.x);
+      const context = new ExiumContext(ContextTypes.ComponentDeclaration, token, {
+        line,
+        column,
+        start: x,
+        end: this.cursor.x,
+      });
+      context.children.push(...children);
+      // declare type
+      Object.assign(context.data, {
+        type: lastContext.source,
+      })
+      if (!isNodeDefined) {
+        this.onError(Reason.ComponentDeclarationNodeMissing, this.cursor, context);
+      }
+      return true;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
