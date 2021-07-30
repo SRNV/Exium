@@ -2,6 +2,6 @@
   <img src="./public/exium-logo.svg" />
 </p>
 
-# Exium
+<h1 align=center> Exium </h1>
 
-Ogone's lexer - can parse HTML, CSS, Typed-CSS, etc
+a lexer that can parse HTML, CSS, Typed-CSS, etc
