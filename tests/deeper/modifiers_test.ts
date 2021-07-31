@@ -87,3 +87,26 @@ Deno.test("exium - is waiting for a character to make it a modifier", () => {
   lexer.readSync(content, { type: "deeper" });
   assert(!isFailing);
 });
+
+Deno.test("exium supports deeper language with complex example (spec: component.0.0.0.2021-4.7)", () => {
+  const lexer = new Exium((reason, _cursor, context) => {
+    throw new Error(
+      `${reason} ${context.position.line}:${context.position.column}`,
+    );
+  });
+  const content = `
+  export component <C
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: $\{this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C>
+  `;
+  lexer.readSync(content, { type: "deeper" });
+});

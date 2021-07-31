@@ -739,6 +739,9 @@ export class ExiumHTMLElements extends ExiumBase {
             isClosed = true;
             break;
           }
+          if (this.isCharSpacing) {
+            break;
+          }
         }
         const context = new ExiumContext(ContextTypes.ExportStatement, lastContext.source, {
           line,
