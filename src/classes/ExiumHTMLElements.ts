@@ -128,8 +128,9 @@ export class ExiumHTMLElements extends ExiumBase {
           this.space_CTX,
           this.multiple_spaces_CTX,
           this.flag_spread_CTX,
-          // this.attribute_boolean_CTX,
           this.attributes_CTX,
+          // TODO
+          this.attributes_modifiers_CTX,
           this.flag_CTX,
         ];
       const children: ExiumContext[] = [];
@@ -570,6 +571,77 @@ export class ExiumHTMLElements extends ExiumBase {
     }
   }
   /**
+   * support for Deeper's attribute modifiers
+   */
+  attributes_modifiers_CTX(opts?: ContextReaderOptions): boolean | null {
+    try {
+      const { char } = this;
+      const { x, line, column } = this.cursor;
+      const isValid = char === '@';
+      if (!isValid) return false;
+      if (opts?.checkOnly) return true;
+      this.shift(1);
+      if (!this.identifier_CTX(this.checkOnlyOptions)) {
+        this.shift(-1);
+        return false;
+      }
+      const { source, cursor } = this;
+      const attributes = [
+        ContextTypes.Attribute,
+        ContextTypes.AttributeBoolean,
+        ContextTypes.AttributeProperty,
+      ];
+      const exitChars = [" ", ">", "\n", "/", "@"];
+      let isIdentified = false;
+      let isCompleted = false;
+      const related: ExiumContext[] = [];
+      const children: ExiumContext[] = [];
+      const definitions: ContextReader[] = [
+        this.identifier_CTX,
+      ];
+      const allSubContexts: ContextReader[] = [
+        this.multiple_spaces_CTX,
+        this.space_CTX,
+        this.line_break_CTX,
+        this.attributes_CTX,
+      ];
+      while(!this.isEOF) {
+        if (!isIdentified) {
+          this.saveStrictContextsTo(definitions, related);
+          isIdentified = this.lastContext.type === ContextTypes.Identifier;
+        } else {
+          this.saveContextsTo(allSubContexts, children);
+          const attribute = children.find((context) => attributes.includes(context.type));
+          if (attribute) {
+            isCompleted = true;
+            break;
+          }
+          if (exitChars.includes(this.char) || this.isCharSpacing) {
+            break;
+          }
+        }
+        this.isValidChar(opts?.unexpected);
+        this.shift(1);
+      }
+      const token = source.slice(x, this.cursor.x);
+      const context = new ExiumContext(ContextTypes.AttributeModifier, token, {
+        line,
+        column,
+        start: x,
+        end: this.cursor.x,
+      });
+      context.related.push(...related);
+      context.children.push(...children);
+      this.currentContexts.push(context);
+      if (!isCompleted) {
+        this.onError(Reason.ModifierNotFinished, cursor, context);
+      }
+      return true;
+    } catch(err) {
+      throw err;
+    }
+  }
+  /**
    * support for Deeper Language specififation
    * this context allows to define a component with the following pattern:
    * component <ComponentName>
@@ -578,6 +650,7 @@ export class ExiumHTMLElements extends ExiumBase {
    */
   component_CTX(opts?: ContextReaderOptions): boolean | null {
     try {
+      const { line, column, x } = this.cursor;
       const isValid = this.identifier_CTX(this.checkOnlyOptions);
       if (!isValid) return false;
       // save the identifier
@@ -586,7 +659,6 @@ export class ExiumHTMLElements extends ExiumBase {
       const { lastContext } = this;
       if (!this.supportedComponentTypes.includes(lastContext.source)) return false;
       if (opts?.checkOnly) return true;
-      const { line, column, x } = this.cursor;
       const { source } = this;
       lastContext.type = ContextTypes.ComponentTypeStatement;
       let isNodeDefined = false;
@@ -629,6 +701,7 @@ export class ExiumHTMLElements extends ExiumBase {
       Object.assign(context.data, {
         type: lastContext.source,
       })
+      this.currentContexts.push(context);
       if (!isNodeDefined) {
         this.onError(Reason.ComponentDeclarationNodeMissing, this.cursor, context);
       }
@@ -637,4 +710,51 @@ export class ExiumHTMLElements extends ExiumBase {
       throw err;
     }
   }
+    /**
+   * support export statement for Deeper language
+   */
+     export_component_statements_CTX(): boolean | null {
+      try {
+        const isValid = this.identifier_CTX(this.checkOnlyOptions);
+        if (!isValid) return false;
+        const recognized = this.identifier_CTX();
+        if (!recognized) return false;
+        const { lastContext } = this;
+        const { x, line, column } = this.cursor;
+        if (lastContext.source !== 'export') {
+          this.shift(-lastContext.source.length);
+          return false;
+        }
+        let isClosed = false;
+        const allSubs: ContextReader[] = [
+          this.multiple_spaces_CTX,
+          this.space_CTX,
+          this.component_CTX,
+        ];
+        const children: ExiumContext[] = [];
+        while (!this.isEOF) {
+          this.saveStrictContextsTo(allSubs, children);
+          const foundComponent = children.find((context) => context.type === ContextTypes.ComponentDeclaration);
+          if (foundComponent) {
+            isClosed = true;
+            break;
+          }
+        }
+        const context = new ExiumContext(ContextTypes.ExportStatement, lastContext.source, {
+          line,
+          column,
+          start: x,
+          end: this.cursor.x,
+        });
+        context.related.push(lastContext);
+        context.children.push(...children);
+        this.currentContexts.push(context);
+        if (!isClosed) {
+          this.onError(Reason.UnexpectedToken, this.cursor, this.unexpected);
+        }
+        return true;
+      } catch (err) {
+        throw err;
+      }
+    }
 }

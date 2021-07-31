@@ -108,6 +108,7 @@ export class Exium extends ExiumStyleSheet {
       this.import_ambient_CTX,
       this.import_statements_CTX,
       this.html_comment_CTX,
+      this.export_component_statements_CTX,
       this.component_CTX,
     ],
     /**

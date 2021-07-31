@@ -345,7 +345,7 @@ export class ExiumBase {
     this.cursor.x += +movement;
     this.cursor.column += +movement;
     this.debugg(
-      `%c\t\t${movement} ${this.prev} ${">".repeat(movement)} ${this.char}`,
+      `%c\t\t${movement} ${this.prev} ${">".repeat(movement > 0 ? movement : 0)} ${this.char}`,
       "color:gray",
     );
   }
@@ -727,7 +727,7 @@ export class ExiumBase {
     let isUnexpected = false;
     while (!this.isEOF) {
       this.saveContextsTo(readers, children);
-      if ((!isComaNeeded) && this.identifier_CTX(this.checkOnlyOptions) && this.char !== ','){
+      if ((!isComaNeeded) && this.identifier_CTX(this.checkOnlyOptions) && this.char !== ',') {
         const identified = this.identifier_CTX();
         if (identified) {
           const { lastContext } = this;
@@ -1061,7 +1061,7 @@ export class ExiumBase {
   /**
    * should read all ambient import statements
    */
-   import_ambient_CTX(opts?: ContextReaderOptions): boolean {
+  import_ambient_CTX(opts?: ContextReaderOptions): boolean {
     try {
       const { x, line, column } = this.cursor;
       const { source } = this;
@@ -1125,6 +1125,31 @@ export class ExiumBase {
         this.onError(Reason.ImportAmbientStringMissing, this.cursor, context);
       }
       return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+  export_statements_CTX(): boolean | null {
+    try {
+      const isValid = this.identifier_CTX(this.checkOnlyOptions);
+      if (!isValid) return false;
+      const recognized = this.identifier_CTX();
+      if (!recognized) return false;
+      const { lastContext } = this;
+      const { x, line, column } = this.cursor;
+      if (lastContext.source !== 'export') {
+        this.shift(-lastContext.source.length);
+        return false;
+      }
+      const context = new ExiumContext(ContextTypes.ExportStatement, lastContext.source, {
+        line,
+        column,
+        start: x,
+        end: this.cursor.x,
+      });
+      context.related.push(lastContext);
+      this.currentContexts.push(context);
+      return true;
     } catch (err) {
       throw err;
     }
@@ -1251,45 +1276,45 @@ export class ExiumBase {
    */
   argument_CTX(opts?: ContextReaderOptions): boolean {
     try {
-    const {
-      char,
-      source
-    } = this;
-    const {
-      line,
-      column,
-      x,
-    } = this.cursor;
-    const startingChar = opts && opts.data?.argument_CTX_starts_with as string || ':';
-    const isValid = char === startingChar;
-    if (!isValid) return false;
-    this.shiftUntilEndOf(startingChar);
-    const related: ExiumContext[] = [];
-    const children: ExiumContext[] = [];
-    while(!this.isEOF) {
-      this.isValidChar(opts && opts?.unexpected);
-      Boolean(
-        this.identifier_CTX({
-          data: {
-            allowedIdentifierChars: ['-']
-          }
-        })
+      const {
+        char,
+        source
+      } = this;
+      const {
+        line,
+        column,
+        x,
+      } = this.cursor;
+      const startingChar = opts && opts.data?.argument_CTX_starts_with as string || ':';
+      const isValid = char === startingChar;
+      if (!isValid) return false;
+      this.shiftUntilEndOf(startingChar);
+      const related: ExiumContext[] = [];
+      const children: ExiumContext[] = [];
+      while (!this.isEOF) {
+        this.isValidChar(opts && opts?.unexpected);
+        Boolean(
+          this.identifier_CTX({
+            data: {
+              allowedIdentifierChars: ['-']
+            }
+          })
           && related.push(this.lastContext)
-      );
-      if (this.isCharPuntuation) break;
-      this.shift(1);
-    }
-    const token = source.slice(x, this.cursor.x);
-    const context = new ExiumContext(ContextTypes.Argument, token, {
-      start: x,
-      end: this.cursor.x,
-      line,
-      column,
-    });
-    context.related.push(...related);
-    context.children.push(...children);
-    this.currentContexts.push(context);
-    return true;
+        );
+        if (this.isCharPuntuation) break;
+        this.shift(1);
+      }
+      const token = source.slice(x, this.cursor.x);
+      const context = new ExiumContext(ContextTypes.Argument, token, {
+        start: x,
+        end: this.cursor.x,
+        line,
+        column,
+      });
+      context.related.push(...related);
+      context.children.push(...children);
+      this.currentContexts.push(context);
+      return true;
     } catch (err) {
       throw err;
     }

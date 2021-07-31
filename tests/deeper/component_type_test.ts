@@ -56,7 +56,6 @@ Deno.test("exium supports template definition in a deeper component", () => {
       `${reason} ${context.position.line}:${context.position.column}`,
     );
   });
-console.warn("FAILING")
   const content = `
 component <C>
   <template> aa </template>

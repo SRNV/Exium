@@ -36,4 +36,5 @@ export enum Reason {
   StyleSheetRulePropertyValueNotClosed = 3764,
   StyleSheetRuleSpreadNameMissing = 3923,
   ComponentDeclarationNodeMissing = 4200,
+  ModifierNotFinished = 4300,
 }
