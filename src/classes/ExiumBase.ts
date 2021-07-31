@@ -1254,6 +1254,7 @@ export class ExiumBase {
         context.related.push(fromStatement);
       }
       context.related.push(...related);
+      context.children.push(...children);
       this.currentContexts.push(context);
       if (!isClosed) {
         this.onError(Reason.ImportStatementNotFinish, this.cursor, context);

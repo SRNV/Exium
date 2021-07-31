@@ -92,6 +92,9 @@ export class ExiumDocument {
    * @returns styles declared in the document
    */
   get styles(): ExiumContext[] {
+    if (this.#_type === 'deeper') {
+      return [];
+    }
     return this.#_stylesheets
       || (this.#_stylesheets = this.contexts.filter((context) => context.type === ContextTypes.Node && context.name === 'style'));
   }
@@ -99,6 +102,9 @@ export class ExiumDocument {
    * @returns all css content inside the style elements
    */
   get stylesheets(): ExiumContext[] {
+    if (this.#_type === 'deeper') {
+      return [];
+    }
     return this.#_stylesheets
       || (this.#_stylesheets = this.contexts.filter((context) => context.type === ContextTypes.StyleSheet));
   }
@@ -107,6 +113,9 @@ export class ExiumDocument {
    * @deprecated support single file poly components
    */
   get proto(): ExiumContext | undefined {
+    if (this.#_type === 'deeper') {
+      return;
+    }
     return this.#_proto
       || (this.#_proto = this.contexts.find((context) => context.type === ContextTypes.Node
         && context.related.find((related) => related.source === "proto")
@@ -118,6 +127,9 @@ export class ExiumDocument {
    * @deprecated support single file poly components
    */
   get protocol(): ExiumContext | undefined {
+    if (this.#_type === 'deeper') {
+      return;
+    }
     return this.#_protocol
       || (this.#_protocol = this.contexts.find((context) => context.type === ContextTypes.Protocol));
   }
@@ -126,6 +138,9 @@ export class ExiumDocument {
    * @deprecated support single file poly components
    */
   get template(): ExiumContext | undefined {
+    if (this.#_type === 'deeper') {
+      return;
+    }
     return this.#_template
       || (this.#_template = this.contexts.find((context) => context.type === ContextTypes.Node
         && context.related.find((related) => related.source === "template")
@@ -139,6 +154,9 @@ export class ExiumDocument {
    * @deprecated support single file poly components
    */
   get head(): ExiumContext | undefined {
+    if (this.#_type === 'deeper') {
+      return;
+    }
     return this.#_head
       || (this.#_head = this.contexts.find((context) => context.type === ContextTypes.Node
         && context.related.find((related) => related.source === "head")
@@ -150,6 +168,9 @@ export class ExiumDocument {
    * retrieve top level components
    */
   get components(): ExiumContext[] {
+    if (this.#_type === 'deeper') {
+      return (this.contexts.filter((context) => context.type === ContextTypes.ComponentDeclaration));
+    }
     return this.#_components
       || (this.#_components = this.contexts.filter((context) => context.type === ContextTypes.Node
         && context.name
@@ -242,7 +263,7 @@ export class ExiumDocument {
    * @param tagname the name of the component
    * @returns {ExiumContext}
    */
-  getComponentName(tagname: string): ExiumContext | undefined {
+  getComponentByName(tagname: string): ExiumContext | undefined {
     return this.components.find((context) => context.name === tagname);
   }
   /**
@@ -259,6 +280,15 @@ export class ExiumDocument {
     };
   }
   getExternalComponentImports(tagname: string): ExiumContext[] {
+    if (this.#_type === 'deeper') {
+      return this.contexts.filter((context) => {
+        const result = context.type === ContextTypes.ImportStatement
+        && context.children.find((child) => child.type === ContextTypes.IdentifierList
+          && child.children.find((subchild) => subchild.source === tagname))
+        && context.data.isComponent;
+        return result;
+      })
+    }
     return this.contexts.filter((context) => context.type === ContextTypes.ImportStatement
       && context.source.includes(tagname)
       && context.data.isComponent
@@ -283,6 +313,7 @@ export class ExiumDocument {
    */
   getType(): string {
     switch (this.#_type) {
+      case 'deeper': return 'deeper';
       case 'stylesheet':
         return 'stylesheet';
       case 'protocol':

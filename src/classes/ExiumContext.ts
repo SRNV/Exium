@@ -143,7 +143,7 @@ export class ExiumContext {
    * if the context is a node
    */
   get template(): ExiumContext | undefined {
-    return !this.parentNode && this.nodeType === 1 ?
+    return !this.parentNode && this.nodeType === 1 || this.type === ContextTypes.ComponentDeclaration ?
       this.#_template || (this.#_template = this.children.find((context) => context.type === ContextTypes.Node
         && !context.data.isNodeClosing
         && context.name === 'template'))
