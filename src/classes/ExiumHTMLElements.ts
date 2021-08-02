@@ -598,6 +598,8 @@ export class ExiumHTMLElements extends ExiumBase {
       const children: ExiumContext[] = [];
       const definitions: ContextReader[] = [
         this.identifier_CTX,
+        this.argument_CTX,
+        this.array_CTX,
       ];
       const allSubContexts: ContextReader[] = [
         this.multiple_spaces_CTX,
@@ -609,6 +611,17 @@ export class ExiumHTMLElements extends ExiumBase {
         if (!isIdentified) {
           this.saveStrictContextsTo(definitions, related);
           isIdentified = this.lastContext.type === ContextTypes.Identifier;
+          // get the type part of the modifier: pattern = @modifier[type] attribute
+          const array = isIdentified && related.find((context) => context.type === ContextTypes.Array);
+          if (array) {
+            array.type = ContextTypes.AttributeModifierType;
+          }
+          // retrieve also the arguments
+          // and save to children
+          const argument = isIdentified && related.find((context) => context.type === ContextTypes.Argument);
+          if (argument) {
+            children.push(argument);
+          }
         } else {
           this.saveContextsTo(allSubContexts, children);
           const attribute = children.find((context) => attributes.includes(context.type));

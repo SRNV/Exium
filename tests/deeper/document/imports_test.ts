@@ -1,7 +1,6 @@
 import { ExiumDocument } from './../../../src/classes/ExiumDocument.ts';
 import {
   assert,
-  assertEquals,
 } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 Deno.test("exium - document can expose the component's template", () => {

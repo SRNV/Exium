@@ -114,7 +114,7 @@ export class ExiumDocument {
    */
   get proto(): ExiumContext | undefined {
     if (this.#_type === 'deeper') {
-      return;
+      return undefined;
     }
     return this.#_proto
       || (this.#_proto = this.contexts.find((context) => context.type === ContextTypes.Node
@@ -128,7 +128,7 @@ export class ExiumDocument {
    */
   get protocol(): ExiumContext | undefined {
     if (this.#_type === 'deeper') {
-      return;
+      return undefined;
     }
     return this.#_protocol
       || (this.#_protocol = this.contexts.find((context) => context.type === ContextTypes.Protocol));
@@ -139,7 +139,7 @@ export class ExiumDocument {
    */
   get template(): ExiumContext | undefined {
     if (this.#_type === 'deeper') {
-      return;
+      return undefined;
     }
     return this.#_template
       || (this.#_template = this.contexts.find((context) => context.type === ContextTypes.Node
@@ -155,7 +155,7 @@ export class ExiumDocument {
    */
   get head(): ExiumContext | undefined {
     if (this.#_type === 'deeper') {
-      return;
+      return undefined;
     }
     return this.#_head
       || (this.#_head = this.contexts.find((context) => context.type === ContextTypes.Node
@@ -242,7 +242,7 @@ export class ExiumDocument {
     if (!element || element.type !== ContextTypes.Node) throw new Error('first argument should be a Node');
     const retrievedFlag = element.children.find((context) => [ContextTypes.Flag, ContextTypes.FlagStruct].includes(context.type)
       && context.name === flag);
-    if (!retrievedFlag) return;
+    if (!retrievedFlag) return undefined;
     const flagValue = retrievedFlag.children.find((context) => [ContextTypes.Braces, ContextTypes.CurlyBrackets,].includes(context.type));
     if (!flagValue) return true;
     return flagValue.value as string;
@@ -294,6 +294,10 @@ export class ExiumDocument {
       && context.data.isComponent
     );
   }
+  /**
+   * @param importStatement an ImportStatement context
+   * @returns {URL} the URL instance
+   */
   getURLFromImport(importStatement: ExiumContext): URL {
     if (!importStatement
       || ![ContextTypes.ImportAmbient, ContextTypes.ImportStatement].includes(importStatement.type)) {
@@ -431,7 +435,7 @@ export class ExiumDocument {
    * @returns the context describing the constant
    */
   getStylesheetConstant(name: string): ExiumContext | undefined {
-    if (this.#_type !== 'stylesheet') return;
+    if (this.#_type !== 'stylesheet') return undefined;
     return this.contexts.find((context) => {
       return context.type === ContextTypes.StyleSheetAtRuleConst && context.name === name;
     });
@@ -440,11 +444,11 @@ export class ExiumDocument {
    * @returns the context describing the constant that is exported
    */
   getStylesheetExportedConstant(name: string): ExiumContext | undefined {
-    if (this.#_type !== 'stylesheet') return;
+    if (this.#_type !== 'stylesheet') return undefined;
     const exportCTX = this.contexts.find((context) => {
       return context.type === ContextTypes.StyleSheetAtRuleExport;
     });
-    if (!exportCTX) return;
+    if (!exportCTX) return undefined;
     return exportCTX.children.find((child) => child.type === ContextTypes.StyleSheetAtRuleConst
       && child.name === name);
   }

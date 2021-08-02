@@ -405,4 +405,19 @@ export class ExiumContext {
     return exportCTX.children.find((child) => child.type === ContextTypes.StyleSheetAtRuleConst
       && child.name === name);
   }
+  /**
+   * @returns a list of ExiumContext, empty if the curent context is not an ImportStatement
+   */
+  getImportedIdentifiers(): ExiumContext[] | null {
+    if (this.type !== ContextTypes.ImportStatement) return null;
+    const identifierList = this.children.find((context) => context.type === ContextTypes.IdentifierList);
+    if (identifierList) {
+      return identifierList.children.filter((context) => context.type === ContextTypes.Identifier);
+    }
+    const identifier = this.children.find((context) => context.type === ContextTypes.Identifier);
+    if (identifier) {
+      return [identifier];
+    }
+    return null;
+  }
 }

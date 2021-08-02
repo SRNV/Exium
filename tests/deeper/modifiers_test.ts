@@ -58,6 +58,43 @@ Deno.test("exium supports attribute modifiers on AttributeProperty", () => {
   assert(privateModifier.source === '@private isSupported={true}');
 });
 
+Deno.test("exium supports attribute modifiers with types", () => {
+  const lexer = new Exium((reason, _cursor, context) => {
+    throw new Error(
+      `${reason} ${context.position.line}:${context.position.column}`,
+    );
+  });
+  const content = `component <C @private[ boolean[] ] isSupported={true}> </C>`;
+  const contexts = lexer.readSync(content, { type: "deeper" });
+  const privateModifier = contexts.find((context) => context.type === ContextTypes.AttributeModifier);
+  assert(privateModifier);
+  assert(privateModifier.name === 'private');
+  assert(privateModifier.source === '@private[ boolean[] ] isSupported={true}');
+  const modifierType = privateModifier.related.find((context) => context.type === ContextTypes.AttributeModifierType);
+  assert(modifierType);
+  assert(modifierType.source === '[ boolean[] ]');
+});
+
+Deno.test("exium supports attribute modifiers with arguments", () => {
+  const lexer = new Exium((reason, _cursor, context) => {
+    throw new Error(
+      `${reason} ${context.position.line}:${context.position.column}`,
+    );
+  });
+  const content = `component <C @store:StoreMenu[ boolean[] ] isSupported={true}> </C>`;
+  const contexts = lexer.readSync(content, { type: "deeper" });
+  const privateModifier = contexts.find((context) => context.type === ContextTypes.AttributeModifier);
+  assert(privateModifier);
+  assert(privateModifier.name === 'store');
+  assert(privateModifier.source === '@store:StoreMenu[ boolean[] ] isSupported={true}');
+  const modifierType = privateModifier.related.find((context) => context.type === ContextTypes.AttributeModifierType);
+  assert(modifierType);
+  assert(modifierType.source === '[ boolean[] ]');
+  const argument = privateModifier.children.find((context) => context.type === ContextTypes.Argument);
+  assert(argument);
+  assert(argument.name === 'StoreMenu');
+});
+
 Deno.test("exium - throws if the modifiers is not associated with an attribute", () => {
   let isSucess = true;
   const lexer = new Exium((_reason, _cursor, _context) => {
@@ -96,17 +133,17 @@ Deno.test("exium supports deeper language with complex example (spec: component.
   });
   const content = `
   export component <C
-  value={0}
-  interval={undefined}
-  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
-  @void removeInterval={() => clearInterval(this.interval)}>
+    value={0}
+    interval={undefined}
+    @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+    @void removeInterval={() => clearInterval(this.interval)}>
 
-  count: $\{this.value}
-  <script>
-    case 'destroy': this.removeInterval(); break;
-    default: this.createInterval(); break;
-  </script>
-</C>
+    count: $\{this.value}
+    <script>
+      case 'destroy': this.removeInterval(); break;
+      default: this.createInterval(); break;
+    </script>
+  </C>
   `;
   lexer.readSync(content, { type: "deeper" });
 });

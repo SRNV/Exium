@@ -715,8 +715,8 @@ export class ExiumBase {
     const isValid = char === '{';
     if (!isValid) return false;
     if (opts?.checkOnly) return true;
-    this.shift(1);
     const { line, column, x } = this.cursor;
+    this.shift(1);
     const readers: ContextReader[] = [
       this.line_break_CTX,
       this.space_CTX,
@@ -749,11 +749,13 @@ export class ExiumBase {
       if (isUnexpected) {
         this.onError(Reason.UnexpectedToken, this.cursor, this.unexpected);
       }
-      if (this.char === '}') break;
+      if (this.char === '}') {
+        this.shift(1);
+        break;
+      }
       this.isValidChar(opts?.unexpected);
       this.shift(1);
     }
-    // TODO continue here
     const token = source.slice(x, this.cursor.x);
     const context = new ExiumContext(ContextTypes.IdentifierList, token, {
       start: x,
@@ -1206,6 +1208,7 @@ export class ExiumBase {
             this.space_CTX,
             this.multiple_spaces_CTX,
             this.identifier_list_CTX,
+            this.identifier_CTX,
             this.space_CTX,
             this.multiple_spaces_CTX,
           ], children);

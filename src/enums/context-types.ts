@@ -49,6 +49,7 @@ export enum ContextTypes {
   FlagSpread = "FlagSpread",
   Attribute = "Attribute",
   AttributeModifier = "AttributeModifier",
+  AttributeModifierType = "AttributeModifierType",
   AttributeProperty = "AttributeProperty",
   AttributeBoolean = "AttributeBoolean",
   AttributeValueQuoteSingle = "AttributeValueQuoteSingle",
