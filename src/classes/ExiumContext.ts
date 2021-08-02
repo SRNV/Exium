@@ -514,7 +514,7 @@ export class ExiumContext {
    * null if the operation is impossible.
    * no ExiumDocument required.
    */
-  getInnerTextWithSource(source: string): string | null {
+  getNodeInnerTextWithSource(source: string): string | null {
     const nodeEnd = this.related.find((context) =>
       context.type === ContextTypes.NodeClosing
     );
@@ -529,11 +529,11 @@ export class ExiumContext {
    * @returns the slice of the source between the node start and the node end.
    * null if the operation is impossible
    */
-  getInnerTextWithInternalDocument(): string | null {
+  getNodeInnerTextWithInternalDocument(): string | null {
     const { document } = this;
     if (!document) {
       throw new Error(
-        "cannot use getInnerTextWithInternalDocument because this context is not retrieved with an ExiumDocument.",
+        "cannot use getNodeInnerTextWithInternalDocument because this context is not retrieved with an ExiumDocument.",
       );
     }
     const source = document.getText();
@@ -551,10 +551,10 @@ export class ExiumContext {
    * @returns the slice of the source between the node start and the node end.
    * null if the operation is impossible
    */
-  getInnerTextWithExternalDocument(document: ExiumDocument): string | null {
+  getNodeInnerTextWithExternalDocument(document: ExiumDocument): string | null {
     if (!document || !(document instanceof ExiumDocument)) {
       throw new Error(
-        "missing first argument, getInnerTextWithExternalDocument is waiting for an ExiumDocument.",
+        "missing first argument, getNodeInnerTextWithExternalDocument is waiting for an ExiumDocument.",
       );
     }
     const source = document.getText();

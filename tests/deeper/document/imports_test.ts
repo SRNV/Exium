@@ -86,7 +86,7 @@ export router <Router
   try {
     const [script] = document.getElementsByTagName("script");
     assert(script);
-    const scriptCode = script.getInnerTextWithInternalDocument();
+    const scriptCode = script.getNodeInnerTextWithInternalDocument();
     assert(scriptCode);
     assert(code === scriptCode);
   } catch (err) {
