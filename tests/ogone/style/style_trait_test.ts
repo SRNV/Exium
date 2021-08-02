@@ -11,7 +11,7 @@ import {
  * by the end user
  */
 Deno.test("exium stylesheet supports type rule assignment", () => {
-  const content = /*css*/`
+  const content = /*css*/ `
     @<myTrait>  div {
       color: red;
     }`;
@@ -56,7 +56,7 @@ Deno.test("exium stylesheet supports type rule assignment", () => {
 });
 
 Deno.test("exium stylesheet supports type rule assignment (stylesheet)", () => {
-  const content = /*css*/`
+  const content = /*css*/ `
 <Test>
   <template>
     <style>
@@ -97,7 +97,7 @@ Deno.test("exium stylesheet supports type rule assignment (stylesheet)", () => {
       end: 49,
       line: 4,
       start: 40,
-      column: 7
+      column: 7,
     });
     assert(atRule.data.isTyped);
     assert(

@@ -36,7 +36,7 @@ Deno.test("exium can retrieve selectors with pseudo elements", () => {
       end: 55,
       line: 4,
       start: 44,
-      column: 9
+      column: 9,
     });
   } else {
     throw new Error(
@@ -50,10 +50,11 @@ Deno.test("exium supports all standard pseudo classes", () => {
   <Test>
     <template>
       <style>
-        ${SupportedStyleSheetPseudoElements.map((pseudoElement) =>
-    `\n::${pseudoElement}`
-  )
-    } {
+        ${
+    SupportedStyleSheetPseudoElements.map((pseudoElement) =>
+      `\n::${pseudoElement}`
+    )
+  } {
           color: blue;
         }
       </style>
@@ -88,10 +89,11 @@ Deno.test("exium supports all standard pseudo classes", () => {
 
 Deno.test("exium supports all standard pseudo classes (stylesheet)", () => {
   const content = `
-  ${SupportedStyleSheetPseudoElements.map((pseudoElement) =>
-    `\n::${pseudoElement}`
-  )
-    } {
+  ${
+    SupportedStyleSheetPseudoElements.map((pseudoElement) =>
+      `\n::${pseudoElement}`
+    )
+  } {
           color: blue;
         }`;
   const lexer = new Exium((reason, _cursor, context) => {

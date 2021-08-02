@@ -1,11 +1,11 @@
-import { Exium } from './../../mod.ts';
-import { ExiumContext } from './ExiumContext.ts';
-import { ContextTypes } from '../enums/context-types.ts';
+import { Exium } from "./../../mod.ts";
+import { ExiumContext } from "./ExiumContext.ts";
+import { ContextTypes } from "../enums/context-types.ts";
 export interface ExiumDocumentOptions {
-  url: URL,
+  url: URL;
   onError: ConstructorParameters<typeof Exium>[0];
-  source: Parameters<Exium['readSync']>[0];
-  options?: Parameters<Exium['readSync']>[1];
+  source: Parameters<Exium["readSync"]>[0];
+  options?: Parameters<Exium["readSync"]>[1];
   injections?: ExiumContext[];
 }
 export interface ExiumDocumentComponentDescriber {
@@ -70,83 +70,100 @@ export interface ExiumDocumentComponentDescriber {
  */
 export class ExiumDocument {
   public url: URL;
-  private injections: ExiumDocumentOptions['injections'];
+  private injections: ExiumDocumentOptions["injections"];
   private exium: Exium;
   public contexts: ExiumContext[];
+  private readonly text: string;
   #_stylesheets?: ExiumContext[];
   #_proto?: ExiumContext;
   #_head?: ExiumContext;
   #_protocol?: ExiumContext;
   #_template?: ExiumContext;
   #_components?: ExiumContext[];
-  #_type?: Parameters<Exium['readSync']>[1]['type'];
+  #_type?: Parameters<Exium["readSync"]>[1]["type"];
   constructor(opts: ExiumDocumentOptions) {
     this.exium = new Exium(opts.onError);
-    this.contexts = this.exium.readSync(opts.source, opts.options || { type: "ogone" });
+    this.contexts = this.exium.readSync(
+      opts.source,
+      opts.options || { type: "ogone" },
+    );
     this.url = opts.url;
-    this.#_type = opts.options?.type || 'ogone';
+    this.#_type = opts.options?.type || "ogone";
     this.injections = opts.injections;
+    this.text = opts.source;
     this.#onload();
+  }
+  getText() {
+    return this.text;
   }
   /**
    * @returns styles declared in the document
    */
   get styles(): ExiumContext[] {
-    if (this.#_type === 'deeper') {
+    if (this.#_type === "deeper") {
       return [];
     }
-    return this.#_stylesheets
-      || (this.#_stylesheets = this.contexts.filter((context) => context.type === ContextTypes.Node && context.name === 'style'));
+    return this.#_stylesheets ||
+      (this.#_stylesheets = this.contexts.filter((context) =>
+        context.type === ContextTypes.Node && context.name === "style"
+      ));
   }
   /**
    * @returns all css content inside the style elements
    */
   get stylesheets(): ExiumContext[] {
-    if (this.#_type === 'deeper') {
+    if (this.#_type === "deeper") {
       return [];
     }
-    return this.#_stylesheets
-      || (this.#_stylesheets = this.contexts.filter((context) => context.type === ContextTypes.StyleSheet));
+    return this.#_stylesheets ||
+      (this.#_stylesheets = this.contexts.filter((context) =>
+        context.type === ContextTypes.StyleSheet
+      ));
   }
   /**
    * @returns the proto element of the document
    * @deprecated support single file poly components
    */
   get proto(): ExiumContext | undefined {
-    if (this.#_type === 'deeper') {
+    if (this.#_type === "deeper") {
       return undefined;
     }
-    return this.#_proto
-      || (this.#_proto = this.contexts.find((context) => context.type === ContextTypes.Node
-        && context.related.find((related) => related.source === "proto")
-        && !context.data.parentNode
-        && !context.data.isNodeClosing));
+    return this.#_proto ||
+      (this.#_proto = this.contexts.find((context) =>
+        context.type === ContextTypes.Node &&
+        context.related.find((related) => related.source === "proto") &&
+        !context.data.parentNode &&
+        !context.data.isNodeClosing
+      ));
   }
   /**
    * @returns the protocol content inside the proto element
    * @deprecated support single file poly components
    */
   get protocol(): ExiumContext | undefined {
-    if (this.#_type === 'deeper') {
+    if (this.#_type === "deeper") {
       return undefined;
     }
-    return this.#_protocol
-      || (this.#_protocol = this.contexts.find((context) => context.type === ContextTypes.Protocol));
+    return this.#_protocol ||
+      (this.#_protocol = this.contexts.find((context) =>
+        context.type === ContextTypes.Protocol
+      ));
   }
   /**
    * @returns the template element of the document
    * @deprecated support single file poly components
    */
   get template(): ExiumContext | undefined {
-    if (this.#_type === 'deeper') {
+    if (this.#_type === "deeper") {
       return undefined;
     }
-    return this.#_template
-      || (this.#_template = this.contexts.find((context) => context.type === ContextTypes.Node
-        && context.related.find((related) => related.source === "template")
-        && context.data.parentNode
-        && !(context.data.parentNode as ExiumContext).data.parentNode
-        && !context.data.isNodeClosing
+    return this.#_template ||
+      (this.#_template = this.contexts.find((context) =>
+        context.type === ContextTypes.Node &&
+        context.related.find((related) => related.source === "template") &&
+        context.data.parentNode &&
+        !(context.data.parentNode as ExiumContext).data.parentNode &&
+        !context.data.isNodeClosing
       ));
   }
   /**
@@ -154,28 +171,33 @@ export class ExiumDocument {
    * @deprecated support single file poly components
    */
   get head(): ExiumContext | undefined {
-    if (this.#_type === 'deeper') {
+    if (this.#_type === "deeper") {
       return undefined;
     }
-    return this.#_head
-      || (this.#_head = this.contexts.find((context) => context.type === ContextTypes.Node
-        && context.related.find((related) => related.source === "head")
-        && !context.data.isNodeClosing
-        && context.data.parentNode === this.template
+    return this.#_head ||
+      (this.#_head = this.contexts.find((context) =>
+        context.type === ContextTypes.Node &&
+        context.related.find((related) => related.source === "head") &&
+        !context.data.isNodeClosing &&
+        context.data.parentNode === this.template
       ));
   }
   /**
    * retrieve top level components
    */
   get components(): ExiumContext[] {
-    if (this.#_type === 'deeper') {
-      return (this.contexts.filter((context) => context.type === ContextTypes.ComponentDeclaration));
+    if (this.#_type === "deeper") {
+      return (this.contexts.filter((context) =>
+        context.type === ContextTypes.ComponentDeclaration
+      ));
     }
-    return this.#_components
-      || (this.#_components = this.contexts.filter((context) => context.type === ContextTypes.Node
-        && context.name
-        && context.name[0] === context.name[0].toUpperCase()
-        && !context.data.parentNode));
+    return this.#_components ||
+      (this.#_components = this.contexts.filter((context) =>
+        context.type === ContextTypes.Node &&
+        context.name &&
+        context.name[0] === context.name[0].toUpperCase() &&
+        !context.data.parentNode
+      ));
   }
   /**
    * retrieve all the matching elements inside the document
@@ -184,9 +206,9 @@ export class ExiumDocument {
    */
   getElementsByTagName(tagname: string): ExiumContext[] {
     return this.contexts.filter((context) => {
-      return context.type === ContextTypes.Node
-        && context.related.find((related) => related.source === tagname)
-        && !context.data.isNodeClosing;
+      return context.type === ContextTypes.Node &&
+        context.related.find((related) => related.source === tagname) &&
+        !context.data.isNodeClosing;
     });
   }
   /**
@@ -194,20 +216,21 @@ export class ExiumDocument {
    */
   getElementsByClassName(className: string): ExiumContext[] {
     return this.contexts.filter((context) => {
-      return context.type === ContextTypes.Node
-        && context.children.find((child) => {
+      return context.type === ContextTypes.Node &&
+        context.children.find((child) => {
           const subChild = child.children[0];
-          return child.type === ContextTypes.Attribute
-            && child.related[0]?.source === 'class'
-            && (
+          return child.type === ContextTypes.Attribute &&
+            child.related[0]?.source === "class" &&
+            (
               subChild
-                ?.source === className
-              || typeof subChild.value === 'string'
-              && subChild.value
-                .split(' ')
-                .includes(className))
-        })
-        && !context.data.isNodeClosing
+                  ?.source === className ||
+              typeof subChild.value === "string" &&
+                subChild.value
+                  .split(" ")
+                  .includes(className)
+            );
+        }) &&
+        !context.data.isNodeClosing;
     });
   }
   /**
@@ -215,12 +238,14 @@ export class ExiumDocument {
    */
   getElementById(value: string): ExiumContext | undefined {
     return this.contexts.find((context) => {
-      return context.type === ContextTypes.Node
-        && context.children.find((child) => child.type === ContextTypes.Attribute
-          && child.related[0]?.source === 'id'
-          && (child.children[0]?.source === value
-            || child.children[0]?.value === value))
-        && !context.data.isNodeClosing
+      return context.type === ContextTypes.Node &&
+        context.children.find((child) =>
+          child.type === ContextTypes.Attribute &&
+          child.related[0]?.source === "id" &&
+          (child.children[0]?.source === value ||
+            child.children[0]?.value === value)
+        ) &&
+        !context.data.isNodeClosing;
     });
   }
   /**
@@ -228,22 +253,35 @@ export class ExiumDocument {
    */
   getElementsByFlag(flag: string): ExiumContext[] {
     return this.contexts.filter((context) => {
-      return context.type === ContextTypes.Node
-        && context.children.find((child) => [ContextTypes.Flag, ContextTypes.FlagStruct].includes(child.type)
-          && child.related.find((sub) => sub.type === ContextTypes.Identifier
-            && (sub.source === flag || sub.source.startsWith(`${flag}:`))))
-        && !context.data.isNodeClosing
+      return context.type === ContextTypes.Node &&
+        context.children.find((child) =>
+          [ContextTypes.Flag, ContextTypes.FlagStruct].includes(child.type) &&
+          child.related.find((sub) =>
+            sub.type === ContextTypes.Identifier &&
+            (sub.source === flag || sub.source.startsWith(`${flag}:`))
+          )
+        ) &&
+        !context.data.isNodeClosing;
     });
   }
   /**
    * @returns Flag.value
    */
-  getFlagValue(element: ExiumContext, flag: string): string | boolean | undefined {
-    if (!element || element.type !== ContextTypes.Node) throw new Error('first argument should be a Node');
-    const retrievedFlag = element.children.find((context) => [ContextTypes.Flag, ContextTypes.FlagStruct].includes(context.type)
-      && context.name === flag);
+  getFlagValue(
+    element: ExiumContext,
+    flag: string,
+  ): string | boolean | undefined {
+    if (!element || element.type !== ContextTypes.Node) {
+      throw new Error("first argument should be a Node");
+    }
+    const retrievedFlag = element.children.find((context) =>
+      [ContextTypes.Flag, ContextTypes.FlagStruct].includes(context.type) &&
+      context.name === flag
+    );
     if (!retrievedFlag) return undefined;
-    const flagValue = retrievedFlag.children.find((context) => [ContextTypes.Braces, ContextTypes.CurlyBrackets,].includes(context.type));
+    const flagValue = retrievedFlag.children.find((context) =>
+      [ContextTypes.Braces, ContextTypes.CurlyBrackets].includes(context.type)
+    );
     if (!flagValue) return true;
     return flagValue.value as string;
   }
@@ -253,10 +291,14 @@ export class ExiumDocument {
    * @returns an array of element {ExiumContext}
    */
   getElementsByAttribute(attribute: string) {
-    return this.contexts.filter((context) => context.type === ContextTypes.Node
-      && context.children.find((child) => child.type === ContextTypes.Attribute
-        && child.related[0]?.source === attribute)
-      && !context.data.isNodeClosing);
+    return this.contexts.filter((context) =>
+      context.type === ContextTypes.Node &&
+      context.children.find((child) =>
+        child.type === ContextTypes.Attribute &&
+        child.related[0]?.source === attribute
+      ) &&
+      !context.data.isNodeClosing
+    );
   }
   /**
    * retrieve local component
@@ -271,7 +313,9 @@ export class ExiumDocument {
    * @param tagname the name of the component
    * @returns {ExiumDocumentComponentDescriber}
    */
-  getExternalComponentByName(tagname: string): ExiumDocumentComponentDescriber | null {
+  getExternalComponentByName(
+    tagname: string,
+  ): ExiumDocumentComponentDescriber | null {
     const imports = this.getExternalComponentImports(tagname);
     if (!imports.length) return null;
     return {
@@ -280,18 +324,21 @@ export class ExiumDocument {
     };
   }
   getExternalComponentImports(tagname: string): ExiumContext[] {
-    if (this.#_type === 'deeper') {
+    if (this.#_type === "deeper") {
       return this.contexts.filter((context) => {
-        const result = context.type === ContextTypes.ImportStatement
-        && context.children.find((child) => child.type === ContextTypes.IdentifierList
-          && child.children.find((subchild) => subchild.source === tagname))
-        && context.data.isComponent;
+        const result = context.type === ContextTypes.ImportStatement &&
+          context.children.find((child) =>
+            child.type === ContextTypes.IdentifierList &&
+            child.children.find((subchild) => subchild.source === tagname)
+          ) &&
+          context.data.isComponent;
         return result;
-      })
+      });
     }
-    return this.contexts.filter((context) => context.type === ContextTypes.ImportStatement
-      && context.source.includes(tagname)
-      && context.data.isComponent
+    return this.contexts.filter((context) =>
+      context.type === ContextTypes.ImportStatement &&
+      context.source.includes(tagname) &&
+      context.data.isComponent
     );
   }
   /**
@@ -299,15 +346,21 @@ export class ExiumDocument {
    * @returns {URL} the URL instance
    */
   getURLFromImport(importStatement: ExiumContext): URL {
-    if (!importStatement
-      || ![ContextTypes.ImportAmbient, ContextTypes.ImportStatement].includes(importStatement.type)) {
-      throw new Error('Unexpected in getURLFromImport: first argument should be an import context');
+    if (
+      !importStatement ||
+      ![ContextTypes.ImportAmbient, ContextTypes.ImportStatement].includes(
+        importStatement.type,
+      )
+    ) {
+      throw new Error(
+        "Unexpected in getURLFromImport: first argument should be an import context",
+      );
     }
     const path = importStatement.data.path as ExiumContext;
     if (!path) {
-      throw new Error('path field is not exposed from the ImportStatement');
+      throw new Error("path field is not exposed from the ImportStatement");
     }
-    return new URL(path.source.replace(/(^['"]|['"]$)/gi, ''), this.url);
+    return new URL(path.source.replace(/(^['"]|['"]$)/gi, ""), this.url);
   }
   /**
    *
@@ -317,105 +370,122 @@ export class ExiumDocument {
    */
   getType(): string {
     switch (this.#_type) {
-      case 'deeper': return 'deeper';
-      case 'stylesheet':
-        return 'stylesheet';
-      case 'protocol':
-        return 'protocol';
-      case 'ogone': {
+      case "deeper":
+        return "deeper";
+      case "stylesheet":
+        return "stylesheet";
+      case "protocol":
+        return "protocol";
+      case "ogone": {
         const [component] = this.components;
         const { proto } = component;
-        if (!proto) return 'component';
-        const type = proto.getAttribute('type');
-        return type && type.length ? type : 'component';
+        if (!proto) return "component";
+        const type = proto.getAttribute("type");
+        return type && type.length ? type : "component";
       }
     }
-    return 'component';
+    return "component";
   }
   /**
    * retrieve the stylesheet's rules that apply on an element
    */
   getStylesheetRulesByTagName(tagname: string): ExiumContext[] {
-    if (this.#_type !== 'stylesheet') return [];
+    if (this.#_type !== "stylesheet") return [];
     return this.contexts.filter((child) => {
-      return child.type === ContextTypes.StyleSheetSelectorList
-        && child.children.find((subchild) => subchild.type === ContextTypes.StyleSheetSelectorHTMLElement
-          && subchild.source === tagname);
-    })
+      return child.type === ContextTypes.StyleSheetSelectorList &&
+        child.children.find((subchild) =>
+          subchild.type === ContextTypes.StyleSheetSelectorHTMLElement &&
+          subchild.source === tagname
+        );
+    });
   }
   /**
    * retrieve the stylesheet's rules that apply on a class
    */
   getStylesheetRulesByClassName(className: string): ExiumContext[] {
-    if (this.#_type !== 'stylesheet') return [];
+    if (this.#_type !== "stylesheet") return [];
     return this.contexts.filter((child) => {
-      return child.type === ContextTypes.StyleSheetSelectorList
-        && child.children.find((subchild) => subchild.type === ContextTypes.StyleSheetSelectorClass
-          && subchild.source === `.${className}`);
-    })
+      return child.type === ContextTypes.StyleSheetSelectorList &&
+        child.children.find((subchild) =>
+          subchild.type === ContextTypes.StyleSheetSelectorClass &&
+          subchild.source === `.${className}`
+        );
+    });
   }
   /**
    * retrieve the stylesheet's rules that apply on an id
    */
   getStylesheetRulesById(id: string): ExiumContext[] {
-    if (this.#_type !== 'stylesheet') return [];
+    if (this.#_type !== "stylesheet") return [];
     return this.contexts.filter((child) => {
-      return child.type === ContextTypes.StyleSheetSelectorList
-        && child.children.find((subchild) => subchild.type === ContextTypes.StyleSheetSelectorId
-          && subchild.source === `#${id}`);
-    })
+      return child.type === ContextTypes.StyleSheetSelectorList &&
+        child.children.find((subchild) =>
+          subchild.type === ContextTypes.StyleSheetSelectorId &&
+          subchild.source === `#${id}`
+        );
+    });
   }
   /**
    * retrieve the stylesheet's rules that apply on an attribute
    */
   getStylesheetRulesByAttribute(attr: string): ExiumContext[] {
-    if (this.#_type !== 'stylesheet') return [];
+    if (this.#_type !== "stylesheet") return [];
     return this.contexts.filter((child) => {
-      return child.type === ContextTypes.StyleSheetSelectorList
-        && child.children.find((subchild) => subchild.type === ContextTypes.StyleSheetSelectorAttribute
-          && subchild.name === attr);
-    })
+      return child.type === ContextTypes.StyleSheetSelectorList &&
+        child.children.find((subchild) =>
+          subchild.type === ContextTypes.StyleSheetSelectorAttribute &&
+          subchild.name === attr
+        );
+    });
   }
   /**
    * retrieve the stylesheet's rules that are using a property
    */
-  getStylesheetRulesByProperty(property: string, value?: string): ExiumContext[] {
-    if (this.#_type !== 'stylesheet') return [];
+  getStylesheetRulesByProperty(
+    property: string,
+    value?: string,
+  ): ExiumContext[] {
+    if (this.#_type !== "stylesheet") return [];
     return this.contexts.filter((child) => {
-      return child.type === ContextTypes.StyleSheetSelectorList
-        && child.related.find((subchild) => subchild.type === ContextTypes.StyleSheetPropertyList
-          && subchild.children.find((props) =>
-            (!value
-              && props.type === ContextTypes.StyleSheetProperty
-              && props.name === property)
-            || (value
-              && props.type === ContextTypes.StyleSheetProperty
-              && props.name === property
-              && props.related.find((propValue) =>
-                propValue.type === ContextTypes.StyleSheetPropertyValue
-                && propValue.source.trim() === value))
-          ));
-    })
+      return child.type === ContextTypes.StyleSheetSelectorList &&
+        child.related.find((subchild) =>
+          subchild.type === ContextTypes.StyleSheetPropertyList &&
+          subchild.children.find((props) =>
+            (!value &&
+              props.type === ContextTypes.StyleSheetProperty &&
+              props.name === property) ||
+            (value &&
+              props.type === ContextTypes.StyleSheetProperty &&
+              props.name === property &&
+              props.related.find((propValue) =>
+                propValue.type === ContextTypes.StyleSheetPropertyValue &&
+                propValue.source.trim() === value
+              ))
+          )
+        );
+    });
   }
   /**
    * retrieve the stylesheet's rules that are using a pseudo-property
    */
   getStylesheetRulesByPseudoProperty(property: string): ExiumContext[] {
-    if (this.#_type !== 'stylesheet') return [];
+    if (this.#_type !== "stylesheet") return [];
     return this.contexts.filter((child) => {
-      return child.type === ContextTypes.StyleSheetSelectorList
-        && child.related.find((subchild) => subchild.type === ContextTypes.StyleSheetPropertyList
-          && subchild.children.find((props) => {
-            return props.type === ContextTypes.StyleSheetPseudoProperty
-              && props.name === property
-          }));
-    })
+      return child.type === ContextTypes.StyleSheetSelectorList &&
+        child.related.find((subchild) =>
+          subchild.type === ContextTypes.StyleSheetPropertyList &&
+          subchild.children.find((props) => {
+            return props.type === ContextTypes.StyleSheetPseudoProperty &&
+              props.name === property;
+          })
+        );
+    });
   }
   /**
    * @returns returns all the stylesheets constants
    */
   getStylesheetConstants(): ExiumContext[] {
-    if (this.#_type !== 'stylesheet') return [];
+    if (this.#_type !== "stylesheet") return [];
     return this.contexts.filter((context) => {
       return context.type === ContextTypes.StyleSheetAtRuleConst;
     });
@@ -424,33 +494,44 @@ export class ExiumDocument {
    * @returns all the exported stylesheets constants
    */
   getStylesheetExportedConstants(): ExiumContext[] {
-    if (this.#_type !== 'stylesheet') return [];
+    if (this.#_type !== "stylesheet") return [];
     const exports = this.contexts.filter((context) => {
       return context.type === ContextTypes.StyleSheetAtRuleExport;
     });
-    const isConst = exports.filter((exp) => exp.children.find((child) => child.type === ContextTypes.StyleSheetAtRuleConst))
-    return isConst.map((exp) => exp.children.find((child) => child.type === ContextTypes.StyleSheetAtRuleConst)!);
+    const isConst = exports.filter((exp) =>
+      exp.children.find((child) =>
+        child.type === ContextTypes.StyleSheetAtRuleConst
+      )
+    );
+    return isConst.map((exp) =>
+      exp.children.find((child) =>
+        child.type === ContextTypes.StyleSheetAtRuleConst
+      )!
+    );
   }
   /**
    * @returns the context describing the constant
    */
   getStylesheetConstant(name: string): ExiumContext | undefined {
-    if (this.#_type !== 'stylesheet') return undefined;
+    if (this.#_type !== "stylesheet") return undefined;
     return this.contexts.find((context) => {
-      return context.type === ContextTypes.StyleSheetAtRuleConst && context.name === name;
+      return context.type === ContextTypes.StyleSheetAtRuleConst &&
+        context.name === name;
     });
   }
   /**
    * @returns the context describing the constant that is exported
    */
   getStylesheetExportedConstant(name: string): ExiumContext | undefined {
-    if (this.#_type !== 'stylesheet') return undefined;
+    if (this.#_type !== "stylesheet") return undefined;
     const exportCTX = this.contexts.find((context) => {
       return context.type === ContextTypes.StyleSheetAtRuleExport;
     });
     if (!exportCTX) return undefined;
-    return exportCTX.children.find((child) => child.type === ContextTypes.StyleSheetAtRuleConst
-      && child.name === name);
+    return exportCTX.children.find((child) =>
+      child.type === ContextTypes.StyleSheetAtRuleConst &&
+      child.name === name
+    );
   }
   /**
    * when the document is ready, update the node contexts, set the context's document.

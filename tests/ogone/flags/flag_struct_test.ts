@@ -1,7 +1,10 @@
 import { Exium } from "./../../../mod.ts";
 import { ContextTypes } from "../../../src/enums/context-types.ts";
-import { assertEquals, assert } from "https://deno.land/std@0.95.0/testing/asserts.ts";
-import { ExiumDocument } from '../../../src/classes/ExiumDocument.ts';
+import {
+  assert,
+  assertEquals,
+} from "https://deno.land/std@0.95.0/testing/asserts.ts";
+import { ExiumDocument } from "../../../src/classes/ExiumDocument.ts";
 
 Deno.test("exium can retrieve node flags", () => {
   const lexer = new Exium((reason, _cursor, context) => {
@@ -10,17 +13,20 @@ Deno.test("exium can retrieve node flags", () => {
     );
   });
   const structures = [
-    ['for', '', 'item of this.items'],
-    ['click', '',`() => console.warn('yup')`],
-    ['on', ':eventName',`this.eval(item)`],
-    ['if', '',`item`],
-    ['else-if', '',`item.id`],
+    ["for", "", "item of this.items"],
+    ["click", "", `() => console.warn('yup')`],
+    ["on", ":eventName", `this.eval(item)`],
+    ["if", "", `item`],
+    ["else-if", "", `item.id`],
   ];
   const content = `
 <Component>
   <template>
     <div
-  ${structures.map((struct) => `    --${struct[0]}${struct[1]}(${struct[2]})`).join('\n')}
+  ${
+    structures.map((struct) => `    --${struct[0]}${struct[1]}(${struct[2]})`)
+      .join("\n")
+  }
     >
     </div>
   </template>
@@ -29,7 +35,9 @@ Deno.test("exium can retrieve node flags", () => {
   const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
-      const retrievedStructures = contexts.filter((context) => context.type === ContextTypes.FlagStruct);
+      const retrievedStructures = contexts.filter((context) =>
+        context.type === ContextTypes.FlagStruct
+      );
       assert(retrievedStructures.length);
       structures.forEach((struct) => {
         const [name, , source] = struct;
@@ -37,7 +45,9 @@ Deno.test("exium can retrieve node flags", () => {
           return context.name === name;
         });
         assert(flagStruct);
-        const braces = flagStruct.children.find((ctx) => ctx.type === ContextTypes.Braces);
+        const braces = flagStruct.children.find((ctx) =>
+          ctx.type === ContextTypes.Braces
+        );
         assert(braces);
         assertEquals(source, braces.value);
       });
@@ -52,13 +62,16 @@ Deno.test("exium can retrieve node flags", () => {
 Deno.test("exium document can retrieve flag value", () => {
   const clickSource = `() => console.warn('yup')`;
   const structures = [
-    ['click', '', clickSource],
+    ["click", "", clickSource],
   ];
   const content = `
 <Component>
   <template>
   <div
-${structures.map((struct) => `    --${struct[0]}${struct[1]}(${struct[2]})`).join('\n')}
+${
+    structures.map((struct) => `    --${struct[0]}${struct[1]}(${struct[2]})`)
+      .join("\n")
+  }
   >
   </div>
 </template>
@@ -74,13 +87,13 @@ ${structures.map((struct) => `    --${struct[0]}${struct[1]}(${struct[2]})`).joi
     source: content,
     options: {
       type: "ogone",
-    }
+    },
   });
   if (document) {
     try {
-      const [div] = document.getElementsByFlag('click');
+      const [div] = document.getElementsByFlag("click");
       assert(div);
-      const flagValue = document.getFlagValue(div, 'click');
+      const flagValue = document.getFlagValue(div, "click");
       assert(flagValue);
       assertEquals(clickSource, flagValue);
     } catch (err) {
@@ -94,13 +107,16 @@ ${structures.map((struct) => `    --${struct[0]}${struct[1]}(${struct[2]})`).joi
 Deno.test("exium document can retrieve flag value (using value)", () => {
   const clickSource = `() => console.warn('yup')`;
   const structures = [
-    ['click', '', clickSource],
+    ["click", "", clickSource],
   ];
   const content = `
 <Component>
   <template>
     <div
-  ${structures.map((struct) => `    --${struct[0]}${struct[1]}(${struct[2]})`).join('\n')}
+  ${
+    structures.map((struct) => `    --${struct[0]}${struct[1]}(${struct[2]})`)
+      .join("\n")
+  }
     >
     </div>
   </template>
@@ -116,13 +132,13 @@ Deno.test("exium document can retrieve flag value (using value)", () => {
     source: content,
     options: {
       type: "ogone",
-    }
+    },
   });
   if (document) {
     try {
-      const [div] = document.getElementsByFlag('click');
+      const [div] = document.getElementsByFlag("click");
       assert(div);
-      const flag = div.getFlagContext('click');
+      const flag = div.getFlagContext("click");
       assert(flag);
       const flagValue = flag.value;
       assert(flagValue);

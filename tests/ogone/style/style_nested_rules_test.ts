@@ -1,4 +1,4 @@
-import { ExiumDocument } from './../../../src/classes/ExiumDocument.ts';
+import { ExiumDocument } from "./../../../src/classes/ExiumDocument.ts";
 import {
   assert,
   assertEquals,
@@ -23,24 +23,26 @@ Deno.test("exium - support for nested rules in stylesheet", () => {
     },
     source: content,
     options: {
-      type: 'stylesheet',
-    }
+      type: "stylesheet",
+    },
   });
   try {
-    const rulesDiv = document.getStylesheetRulesByTagName('div');
-    const rulesP = document.getStylesheetRulesByTagName('p');
+    const rulesDiv = document.getStylesheetRulesByTagName("div");
+    const rulesP = document.getStylesheetRulesByTagName("p");
     assert(rulesDiv.length);
     assert(rulesP.length);
     const [rule1WithDiv] = rulesDiv;
     const [rule1WithP] = rulesP;
-    const divBackgroundContext = rule1WithDiv.getPropertyContexts('background');
-    const pBackgroundContext = rule1WithP.getPropertyContexts('background');
+    const divBackgroundContext = rule1WithDiv.getPropertyContexts("background");
+    const pBackgroundContext = rule1WithP.getPropertyContexts("background");
     assert(divBackgroundContext);
     assert(pBackgroundContext);
-    assert(document.getStylesheetRulesByProperty('color', 'purple').length);
-    assert(document.getStylesheetRulesByProperty('background', 'red').length);
-    assert(document.getStylesheetRulesByProperty('background', 'blue').length);
-    divBackgroundContext.forEach((prop) => assertEquals((prop.value as string).trim(), 'blue'));
+    assert(document.getStylesheetRulesByProperty("color", "purple").length);
+    assert(document.getStylesheetRulesByProperty("background", "red").length);
+    assert(document.getStylesheetRulesByProperty("background", "blue").length);
+    divBackgroundContext.forEach((prop) =>
+      assertEquals((prop.value as string).trim(), "blue")
+    );
   } catch (err) {
     throw err;
   }
@@ -94,13 +96,13 @@ Deno.test("exium - support for nested rules in stylesheet", () => {
     },
     source: stylesheet,
     options: {
-      type: 'stylesheet',
-    }
+      type: "stylesheet",
+    },
   });
   try {
-    assert(document.getStylesheetRulesByClassName('slide-out-right').length);
-    assert(document.getStylesheetRulesByClassName('slide-in-right').length);
-    assert(document.getStylesheetRulesByClassName('container').length);
+    assert(document.getStylesheetRulesByClassName("slide-out-right").length);
+    assert(document.getStylesheetRulesByClassName("slide-in-right").length);
+    assert(document.getStylesheetRulesByClassName("container").length);
   } catch (err) {
     throw err;
   }

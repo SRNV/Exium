@@ -46,7 +46,7 @@ Deno.test("exium supports spread feature", () => {
 });
 
 Deno.test("exium supports spread feature (stylesheet)", () => {
-  const content = /*css*/`
+  const content = /*css*/ `
   div {
     ...rule;
   }
@@ -73,18 +73,18 @@ Deno.test("exium supports spread feature (stylesheet)", () => {
 
 Deno.test("exium supports multiple spreads", () => {
   const items = [
-    'rule',
-    'another',
-    'something',
-    'last',
+    "rule",
+    "another",
+    "something",
+    "last",
   ];
   const content = `
   div {
-    ${items.map((prop) => `...${prop};`).join('')}
+    ${items.map((prop) => `...${prop};`).join("")}
   }
   `;
   const lexer = new Exium((reason, _cursor, context) => {
-    console.warn(context, _cursor, content)
+    console.warn(context, _cursor, content);
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );

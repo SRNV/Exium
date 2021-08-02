@@ -12,7 +12,7 @@ Deno.test("exium can retrieve selectors", () => {
     "li",
     "p",
   ];
-  const content = /*css*/`
+  const content = /*css*/ `
   ${elements} {
     color: blue;
   }
@@ -45,7 +45,7 @@ Deno.test("exium can retrieve selectors", () => {
 });
 
 Deno.test("exium can retrieve classes", () => {
-  const content = /*css*/`
+  const content = /*css*/ `
   .COMPLEX,.v{}.container.b .c {
     color: blue;
   }
@@ -94,7 +94,7 @@ Deno.test("exium can retrieve classes", () => {
 });
 
 Deno.test("exium can retrieve ids", () => {
-  const content = /*css*/`
+  const content = /*css*/ `
   #test,.v {}#anId#myOtherID {
     color: blue;
   }
@@ -151,7 +151,7 @@ Deno.test("exium can retrieve ids", () => {
 });
 
 Deno.test("exium can retrieve attribute", () => {
-  const content = /*css*/`
+  const content = /*css*/ `
   [attribute] {
     color: blue;
   }
@@ -186,7 +186,7 @@ Deno.test("exium can retrieve multiple attributes", () => {
     "[ e]",
     "[ f  ]",
   ];
-  const content = /*css*/`
+  const content = /*css*/ `
   ${attrs.map((attr) => `${attr}`)} {
     color: blue;
   }
@@ -219,7 +219,7 @@ Deno.test("exium can retrieve multiple attributes", () => {
 });
 
 Deno.test("exium can retrieve attribute with value 1", () => {
-  const content = /*css*/`
+  const content = /*css*/ `
   [attribute=value] {
     color: blue;
   }
@@ -258,7 +258,7 @@ Deno.test("exium can retrieve attribute with value 1", () => {
 });
 
 Deno.test("exium can retrieve attribute with value 2", () => {
-  const content = /*css*/`
+  const content = /*css*/ `
   [attribute*=value] {
     color: blue;
   }
@@ -297,7 +297,7 @@ Deno.test("exium can retrieve attribute with value 2", () => {
 });
 
 Deno.test("exium can retrieve attribute with value 3", () => {
-  const content = /*css*/`
+  const content = /*css*/ `
   [attribute^=value] {
     color: blue;
   }
@@ -336,7 +336,7 @@ Deno.test("exium can retrieve attribute with value 3", () => {
 });
 
 Deno.test("exium can retrieve attribute with value 4", () => {
-  const content = /*css*/`
+  const content = /*css*/ `
   [attribute|=value] {
     color: blue;
   }
@@ -375,7 +375,7 @@ Deno.test("exium can retrieve attribute with value 4", () => {
 });
 
 Deno.test("exium can retrieve attribute with value 5", () => {
-  const content = /*css*/`
+  const content = /*css*/ `
   [attribute$=value] {
     color: blue;
   }
@@ -414,7 +414,7 @@ Deno.test("exium can retrieve attribute with value 5", () => {
 });
 
 Deno.test("exium can retrieve attribute with value 6", () => {
-  const content = /*css*/`
+  const content = /*css*/ `
   [attribute="value"] {
     color: blue;
   }

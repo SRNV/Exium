@@ -1,4 +1,4 @@
-import { ExiumDocument } from './../../../src/classes/ExiumDocument.ts';
+import { ExiumDocument } from "./../../../src/classes/ExiumDocument.ts";
 import {
   assert,
   assertEquals,
@@ -28,7 +28,7 @@ Deno.test("exium - document can retrieve the component type", () => {
     assert(component);
     const { proto } = component;
     assert(proto);
-    assertEquals(document.getType(), 'app');
+    assertEquals(document.getType(), "app");
   } catch (err) {
     throw err;
   }
@@ -58,7 +58,7 @@ Deno.test("exium - document can retrieve the component type (unquoted)", () => {
     assert(component);
     const { proto } = component;
     assert(proto);
-    assertEquals(document.getType(), 'app');
+    assertEquals(document.getType(), "app");
   } catch (err) {
     throw err;
   }

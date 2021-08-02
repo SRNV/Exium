@@ -16,18 +16,22 @@ export component <C>
   `;
   const contexts = lexer.readSync(content, { type: "deeper" });
   assert(contexts.length);
-  const exportStatement = contexts.find(context => context.type === ContextTypes.ExportStatement);
+  const exportStatement = contexts.find((context) =>
+    context.type === ContextTypes.ExportStatement
+  );
   assert(exportStatement);
-  const component = exportStatement.children.find((context) => context.type === ContextTypes.ComponentDeclaration);
+  const component = exportStatement.children.find((context) =>
+    context.type === ContextTypes.ComponentDeclaration
+  );
   assert(component);
 });
 
 Deno.test("exium throws if their is an unsupported exported type of component", () => {
-    let isSucess = true;
-    const lexer = new Exium((_reason, _cursor, _context) => {
-      isSucess = false;
-    });
-    const content = `export foo <A></A>`;
-    lexer.readSync(content, { type: "deeper" });
-    assert(!isSucess);
+  let isSucess = true;
+  const lexer = new Exium((_reason, _cursor, _context) => {
+    isSucess = false;
   });
+  const content = `export foo <A></A>`;
+  lexer.readSync(content, { type: "deeper" });
+  assert(!isSucess);
+});

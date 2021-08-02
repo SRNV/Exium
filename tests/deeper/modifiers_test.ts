@@ -10,10 +10,12 @@ Deno.test("exium supports attribute modifiers (auto closing tag)", () => {
   });
   const content = `component <C @private name=World />`;
   const contexts = lexer.readSync(content, { type: "deeper" });
-  const privateModifier = contexts.find((context) => context.type === ContextTypes.AttributeModifier);
+  const privateModifier = contexts.find((context) =>
+    context.type === ContextTypes.AttributeModifier
+  );
   assert(privateModifier);
-  assert(privateModifier.name === 'private');
-  assert(privateModifier.source === '@private name=World');
+  assert(privateModifier.name === "private");
+  assert(privateModifier.source === "@private name=World");
 });
 
 Deno.test("exium supports attribute modifiers", () => {
@@ -24,10 +26,12 @@ Deno.test("exium supports attribute modifiers", () => {
   });
   const content = `component <C @private name=World> </C>`;
   const contexts = lexer.readSync(content, { type: "deeper" });
-  const privateModifier = contexts.find((context) => context.type === ContextTypes.AttributeModifier);
+  const privateModifier = contexts.find((context) =>
+    context.type === ContextTypes.AttributeModifier
+  );
   assert(privateModifier);
-  assert(privateModifier.name === 'private');
-  assert(privateModifier.source === '@private name=World');
+  assert(privateModifier.name === "private");
+  assert(privateModifier.source === "@private name=World");
 });
 
 Deno.test("exium supports attribute modifiers on AttributeBoolean", () => {
@@ -38,10 +42,12 @@ Deno.test("exium supports attribute modifiers on AttributeBoolean", () => {
   });
   const content = `component <C @private isSupported> </C>`;
   const contexts = lexer.readSync(content, { type: "deeper" });
-  const privateModifier = contexts.find((context) => context.type === ContextTypes.AttributeModifier);
+  const privateModifier = contexts.find((context) =>
+    context.type === ContextTypes.AttributeModifier
+  );
   assert(privateModifier);
-  assert(privateModifier.name === 'private');
-  assert(privateModifier.source === '@private isSupported');
+  assert(privateModifier.name === "private");
+  assert(privateModifier.source === "@private isSupported");
 });
 
 Deno.test("exium supports attribute modifiers on AttributeProperty", () => {
@@ -52,10 +58,12 @@ Deno.test("exium supports attribute modifiers on AttributeProperty", () => {
   });
   const content = `component <C @private isSupported={true}> </C>`;
   const contexts = lexer.readSync(content, { type: "deeper" });
-  const privateModifier = contexts.find((context) => context.type === ContextTypes.AttributeModifier);
+  const privateModifier = contexts.find((context) =>
+    context.type === ContextTypes.AttributeModifier
+  );
   assert(privateModifier);
-  assert(privateModifier.name === 'private');
-  assert(privateModifier.source === '@private isSupported={true}');
+  assert(privateModifier.name === "private");
+  assert(privateModifier.source === "@private isSupported={true}");
 });
 
 Deno.test("exium supports attribute modifiers with types", () => {
@@ -66,13 +74,17 @@ Deno.test("exium supports attribute modifiers with types", () => {
   });
   const content = `component <C @private[ boolean[] ] isSupported={true}> </C>`;
   const contexts = lexer.readSync(content, { type: "deeper" });
-  const privateModifier = contexts.find((context) => context.type === ContextTypes.AttributeModifier);
+  const privateModifier = contexts.find((context) =>
+    context.type === ContextTypes.AttributeModifier
+  );
   assert(privateModifier);
-  assert(privateModifier.name === 'private');
-  assert(privateModifier.source === '@private[ boolean[] ] isSupported={true}');
-  const modifierType = privateModifier.related.find((context) => context.type === ContextTypes.AttributeModifierType);
+  assert(privateModifier.name === "private");
+  assert(privateModifier.source === "@private[ boolean[] ] isSupported={true}");
+  const modifierType = privateModifier.related.find((context) =>
+    context.type === ContextTypes.AttributeModifierType
+  );
   assert(modifierType);
-  assert(modifierType.source === '[ boolean[] ]');
+  assert(modifierType.source === "[ boolean[] ]");
 });
 
 Deno.test("exium supports attribute modifiers with arguments", () => {
@@ -81,18 +93,28 @@ Deno.test("exium supports attribute modifiers with arguments", () => {
       `${reason} ${context.position.line}:${context.position.column}`,
     );
   });
-  const content = `component <C @store:StoreMenu[ boolean[] ] isSupported={true}> </C>`;
+  const content =
+    `component <C @store:StoreMenu[ boolean[] ] isSupported={true}> </C>`;
   const contexts = lexer.readSync(content, { type: "deeper" });
-  const privateModifier = contexts.find((context) => context.type === ContextTypes.AttributeModifier);
+  const privateModifier = contexts.find((context) =>
+    context.type === ContextTypes.AttributeModifier
+  );
   assert(privateModifier);
-  assert(privateModifier.name === 'store');
-  assert(privateModifier.source === '@store:StoreMenu[ boolean[] ] isSupported={true}');
-  const modifierType = privateModifier.related.find((context) => context.type === ContextTypes.AttributeModifierType);
+  assert(privateModifier.name === "store");
+  assert(
+    privateModifier.source ===
+      "@store:StoreMenu[ boolean[] ] isSupported={true}",
+  );
+  const modifierType = privateModifier.related.find((context) =>
+    context.type === ContextTypes.AttributeModifierType
+  );
   assert(modifierType);
-  assert(modifierType.source === '[ boolean[] ]');
-  const argument = privateModifier.children.find((context) => context.type === ContextTypes.Argument);
+  assert(modifierType.source === "[ boolean[] ]");
+  const argument = privateModifier.children.find((context) =>
+    context.type === ContextTypes.Argument
+  );
   assert(argument);
-  assert(argument.name === 'StoreMenu');
+  assert(argument.name === "StoreMenu");
 });
 
 Deno.test("exium - throws if the modifiers is not associated with an attribute", () => {

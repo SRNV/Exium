@@ -1,4 +1,4 @@
-import { ExiumDocument } from './../../../src/classes/ExiumDocument.ts';
+import { ExiumDocument } from "./../../../src/classes/ExiumDocument.ts";
 import {
   assert,
   assertEquals,
@@ -29,7 +29,7 @@ Deno.test("exium - document can expose the component's styles", () => {
 });
 
 Deno.test("exium - document can select rules with component (div, .className, #id, attribute) and properties", () => {
-  const content = /*css*/`
+  const content = /*css*/ `
 <Component>
   <template>
     <style>
@@ -73,12 +73,14 @@ Deno.test("exium - document can select rules with component (div, .className, #i
     assert(document.stylesheets.length);
     const [component] = document.components;
     assert(component);
-    assert(component.getStylesheetRulesByTagName('div').length === 1);
-    assert(component.getStylesheetRulesByClassName('className').length === 1);
-    assert(component.getStylesheetRulesById('id').length === 2);
-    assert(component.getStylesheetRulesByAttribute('attr').length === 2);
-    assert(component.getStylesheetRulesByProperty('color').length === 5);
-    assert(component.getStylesheetRulesByProperty('color', 'brown').length === 1);
+    assert(component.getStylesheetRulesByTagName("div").length === 1);
+    assert(component.getStylesheetRulesByClassName("className").length === 1);
+    assert(component.getStylesheetRulesById("id").length === 2);
+    assert(component.getStylesheetRulesByAttribute("attr").length === 2);
+    assert(component.getStylesheetRulesByProperty("color").length === 5);
+    assert(
+      component.getStylesheetRulesByProperty("color", "brown").length === 1,
+    );
   } catch (err) {
     throw err;
   }
@@ -115,11 +117,11 @@ Deno.test("exium - document can get stylesheet constants", () => {
     assert(document.styles.length);
     assert(document.stylesheets.length);
     const [component] = document.components;
-    assert(component)
+    assert(component);
     assert(component.getStylesheetConstants().length === 1);
     assert(component.getStylesheetExportedConstants().length === 1);
-    assert(component.getStylesheetConstant('prop'));
-    assert(component.getStylesheetExportedConstant('prop'));
+    assert(component.getStylesheetConstant("prop"));
+    assert(component.getStylesheetExportedConstant("prop"));
     // TODO get constant with type
     // TODO get constant's type
   } catch (err) {

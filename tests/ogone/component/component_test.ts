@@ -52,7 +52,7 @@ import component A from './b.o3';
       const stylesheet = contexts.find((context) =>
         context.type === ContextTypes.StyleSheet
       );
-      assert(stylesheet)
+      assert(stylesheet);
       const proto = contexts.find((context) =>
         context.type === ContextTypes.Node &&
         context.related.find((related) => related.source === "proto") &&
@@ -136,13 +136,14 @@ Deno.test("exium supports props to component", () => {
   if (contexts && contexts.length) {
     try {
       const property = contexts.find((context) =>
-        context.type === ContextTypes.AttributeProperty
-        && !context.source.endsWith('/'));
+        context.type === ContextTypes.AttributeProperty &&
+        !context.source.endsWith("/")
+      );
       assert(property);
-      assertEquals(property.source, 'prop={ 0}');
+      assertEquals(property.source, "prop={ 0}");
       const [name] = property.related;
       assert(name);
-      assertEquals(name.source, 'prop');
+      assertEquals(name.source, "prop");
       assertEquals(name.position, {
         column: 17,
         end: 73,
@@ -172,13 +173,14 @@ Deno.test("exium supports functions into props", () => {
   if (contexts && contexts.length) {
     try {
       const property = contexts.find((context) =>
-        context.type === ContextTypes.AttributeProperty
-        && !context.source.endsWith('/'));
+        context.type === ContextTypes.AttributeProperty &&
+        !context.source.endsWith("/")
+      );
       assert(property);
-      assertEquals(property.source, 'prop={() => 0}');
+      assertEquals(property.source, "prop={() => 0}");
       const [name] = property.related;
       assert(name);
-      assertEquals(name.source, 'prop');
+      assertEquals(name.source, "prop");
       assertEquals(name.position, {
         column: 17,
         end: 72,

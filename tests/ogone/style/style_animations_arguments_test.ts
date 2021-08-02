@@ -1,10 +1,8 @@
-import { ExiumDocument } from './../../../src/classes/ExiumDocument.ts';
-import {
-  assert,
-} from "https://deno.land/std@0.95.0/testing/asserts.ts";
+import { ExiumDocument } from "./../../../src/classes/ExiumDocument.ts";
+import { assert } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 Deno.test("exium - support for animations arguments", () => {
-  const stylesheet = /*css*/`
+  const stylesheet = /*css*/ `
     .slide-out-right {
       right::anim(
         time: 1s;
@@ -24,11 +22,11 @@ Deno.test("exium - support for animations arguments", () => {
     },
     source: stylesheet,
     options: {
-      type: 'stylesheet',
-    }
+      type: "stylesheet",
+    },
   });
   try {
-    assert(document.getStylesheetRulesByProperty('right').length);
+    assert(document.getStylesheetRulesByProperty("right").length);
   } catch (err) {
     throw err;
   }

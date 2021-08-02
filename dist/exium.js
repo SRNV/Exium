@@ -2137,9 +2137,7 @@ class ExiumStyleSheet extends ExiumProtocol {
             },
           });
           isNamed = Boolean(
-            related.find((context) =>
-              context.type === ContextTypes.Identifier
-            ),
+            related.find((context) => context.type === ContextTypes.Identifier),
           );
         } else {
           this.saveContextsTo(allSubContexts, children);

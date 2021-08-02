@@ -48,7 +48,7 @@ Deno.test("exium flag name is accessible through related", () => {
       }
       const [flagName] = flag.related;
       assertEquals(flagName.type, ContextTypes.Identifier);
-      assertEquals(flagName.source, 'then');
+      assertEquals(flagName.source, "then");
     } catch (err) {
       throw err;
     }
@@ -93,7 +93,7 @@ Deno.test("exium can retrieve flags value", () => {
       assertEquals(target.position, flag.position);
       assertEquals(target.source, flag.source);
       assertEquals(target.type, flag.type);
-      assertEquals(flag.name, 'if');
+      assertEquals(flag.name, "if");
     } catch (err) {
       throw err;
     }

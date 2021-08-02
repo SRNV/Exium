@@ -17,7 +17,7 @@ export class ExiumHTMLElements extends ExiumBase {
   protected get isEndOfStylesheet(): boolean {
     const { nextPart } = this;
     return this.isStartingNode() &&
-      nextPart.startsWith("</style") ||
+        nextPart.startsWith("</style") ||
       this.isEOF ||
       /\s*(\<\/style)/i.test(nextPart);
   }
@@ -41,17 +41,17 @@ export class ExiumHTMLElements extends ExiumBase {
       const { source } = this;
       const lastIsANode = Boolean(
         lastContext &&
-        [
-          ContextTypes.Node,
-          ContextTypes.NodeClosing,
-          ContextTypes.HTMLComment,
-        ].includes(lastContext.type),
+          [
+            ContextTypes.Node,
+            ContextTypes.NodeClosing,
+            ContextTypes.HTMLComment,
+          ].includes(lastContext.type),
       );
       const isValid = prev && [">"].includes(prev) && lastIsANode ||
         char !== "<" &&
-        !this.import_statements_CTX(this.checkOnlyOptions) &&
-        !this.node_CTX(this.checkOnlyOptions) &&
-        !this.comment_CTX(this.checkOnlyOptions);
+          !this.import_statements_CTX(this.checkOnlyOptions) &&
+          !this.node_CTX(this.checkOnlyOptions) &&
+          !this.comment_CTX(this.checkOnlyOptions);
       if (!isValid || !this.nodeContextStarted) return false;
       if (opts?.checkOnly) return true;
       const result = true;
@@ -103,7 +103,7 @@ export class ExiumHTMLElements extends ExiumBase {
       ) {
         return false;
       }
-      this.debuggPosition('NODE CTX START');
+      this.debuggPosition("NODE CTX START");
       if (opts?.checkOnly) return true;
       this.shift(1);
       const result = true;
@@ -139,8 +139,8 @@ export class ExiumHTMLElements extends ExiumBase {
        * start rendering the nodes
        */
       while (!this.isEOF) {
-        this.debuggPosition('NODE CTX');
-        this.debugg({ isNodeClosing, isNamed })
+        this.debuggPosition("NODE CTX");
+        this.debugg({ isNodeClosing, isNamed });
         this.isValidChar(
           opts?.unexpected || [
             // shouldn't start a new node
@@ -167,9 +167,11 @@ export class ExiumHTMLElements extends ExiumBase {
          * should ensure that after the tagname
          * there's nothing else than spaces, line breaks, or >
          */
-        if (isNodeClosing
-          && isNamed
-          && !([" ", ">", "\n"].includes(this.char))) {
+        if (
+          isNodeClosing &&
+          isNamed &&
+          !([" ", ">", "\n"].includes(this.char))
+        ) {
           const token = source.slice(x, this.cursor.x);
           const context = new ExiumContext(ContextTypes.Unexpected, token, {
             start: x,
@@ -336,16 +338,16 @@ export class ExiumHTMLElements extends ExiumBase {
         this.braces_CTX,
       ];
       const exitChars = [" ", ">", "\n", "/"];
-      const argumentChar = ':';
+      const argumentChar = ":";
       while (!this.isEOF) {
         if (!isNamed) {
           isNamed = Boolean(
             this.identifier_CTX({
               data: {
-                allowedIdentifierChars: ['-'],
-              }
+                allowedIdentifierChars: ["-"],
+              },
             }) &&
-            related.push(this.lastContext),
+              related.push(this.lastContext),
           );
         }
         // the name of the flag is retrieved
@@ -357,11 +359,13 @@ export class ExiumHTMLElements extends ExiumBase {
         }
         this.saveContextsTo(allSubContexts, children, {
           data: {
-            argument_CTX_starts_with: argumentChar
-          }
+            argument_CTX_starts_with: argumentChar,
+          },
         });
         if (isNamed && usingStructure && !isStructure) {
-          isStructure = Boolean(children.find((context) => context.type === ContextTypes.Braces));
+          isStructure = Boolean(
+            children.find((context) => context.type === ContextTypes.Braces),
+          );
         }
         if (exitChars.includes(this.char)) {
           isClosed = true;
@@ -373,19 +377,19 @@ export class ExiumHTMLElements extends ExiumBase {
         this.isValidChar(opts?.unexpected);
       }
       const token = source.slice(x, this.cursor.x);
-      const context = new ExiumContext(isStructure ?
-        ContextTypes.FlagStruct :
-        ContextTypes.Flag,
+      const context = new ExiumContext(
+        isStructure ? ContextTypes.FlagStruct : ContextTypes.Flag,
         token,
-      {
-        start: x,
-        end: this.cursor.x,
-        line,
-        column,
-      });
+        {
+          start: x,
+          end: this.cursor.x,
+          line,
+          column,
+        },
+      );
       Object.assign(context.data, {
         isStructure,
-      })
+      });
       context.children.push(...children);
       context.related.push(...related);
       this.currentContexts.push(context);
@@ -450,12 +454,13 @@ export class ExiumHTMLElements extends ExiumBase {
       const { char } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
-      if (char &&
+      if (
+        char &&
         !(/[a-zA-Z0-9\$\_]/i.test(char))
       ) {
         return false;
       }
-      this.debuggPosition('ATTRIBUTES CTX START');
+      this.debuggPosition("ATTRIBUTES CTX START");
       if (opts?.checkOnly) return true;
       const result = true;
       let isClosed = false;
@@ -474,19 +479,23 @@ export class ExiumHTMLElements extends ExiumBase {
       if (!isNamed) {
         isNamed = Boolean(
           this.identifier_CTX() &&
-          related.push(this.lastContext),
+            related.push(this.lastContext),
         );
       }
       const exitChars = [" ", ">", "\n", "/"];
       while (!this.isEOF) {
-        this.debuggPosition('ATTRIBUTES CTX');
+        this.debuggPosition("ATTRIBUTES CTX");
         this.isValidChar(opts?.unexpected);
         if (isBoolean) {
-          isBoolean = this.char !== '=';
+          isBoolean = this.char !== "=";
         }
         this.saveContextsTo(allSubContexts, children);
         if (!isProp && !isBoolean) {
-          isProp = Boolean(children.find((context) => context.type === ContextTypes.CurlyBrackets))
+          isProp = Boolean(
+            children.find((context) =>
+              context.type === ContextTypes.CurlyBrackets
+            ),
+          );
         }
         if (exitChars.includes(this.char)) {
           isClosed = true;
@@ -496,18 +505,18 @@ export class ExiumHTMLElements extends ExiumBase {
       }
       const token = source.slice(x, this.cursor.x);
       const context = new ExiumContext(
-        isBoolean ?
-          ContextTypes.AttributeBoolean :
-          isProp ?
-            ContextTypes.AttributeProperty :
-            ContextTypes.Attribute,
+        isBoolean
+          ? ContextTypes.AttributeBoolean
+          : isProp
+          ? ContextTypes.AttributeProperty
+          : ContextTypes.Attribute,
         token,
         {
           start: x,
           end: this.cursor.x,
           line,
           column,
-        }
+        },
       );
       context.children.push(...children);
       context.related.push(...related);
@@ -577,7 +586,7 @@ export class ExiumHTMLElements extends ExiumBase {
     try {
       const { char } = this;
       const { x, line, column } = this.cursor;
-      const isValid = char === '@';
+      const isValid = char === "@";
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
       this.shift(1);
@@ -607,24 +616,28 @@ export class ExiumHTMLElements extends ExiumBase {
         this.line_break_CTX,
         this.attributes_CTX,
       ];
-      while(!this.isEOF) {
+      while (!this.isEOF) {
         if (!isIdentified) {
           this.saveStrictContextsTo(definitions, related);
           isIdentified = this.lastContext.type === ContextTypes.Identifier;
           // get the type part of the modifier: pattern = @modifier[type] attribute
-          const array = isIdentified && related.find((context) => context.type === ContextTypes.Array);
+          const array = isIdentified &&
+            related.find((context) => context.type === ContextTypes.Array);
           if (array) {
             array.type = ContextTypes.AttributeModifierType;
           }
           // retrieve also the arguments
           // and save to children
-          const argument = isIdentified && related.find((context) => context.type === ContextTypes.Argument);
+          const argument = isIdentified &&
+            related.find((context) => context.type === ContextTypes.Argument);
           if (argument) {
             children.push(argument);
           }
         } else {
           this.saveContextsTo(allSubContexts, children);
-          const attribute = children.find((context) => attributes.includes(context.type));
+          const attribute = children.find((context) =>
+            attributes.includes(context.type)
+          );
           if (attribute) {
             isCompleted = true;
             break;
@@ -650,7 +663,7 @@ export class ExiumHTMLElements extends ExiumBase {
         this.onError(Reason.ModifierNotFinished, cursor, context);
       }
       return true;
-    } catch(err) {
+    } catch (err) {
       throw err;
     }
   }
@@ -670,7 +683,9 @@ export class ExiumHTMLElements extends ExiumBase {
       const recognized = this.identifier_CTX();
       if (!recognized) return false;
       const { lastContext } = this;
-      if (!this.supportedComponentTypes.includes(lastContext.source)) return false;
+      if (!this.supportedComponentTypes.includes(lastContext.source)) {
+        return false;
+      }
       if (opts?.checkOnly) return true;
       const { source } = this;
       lastContext.type = ContextTypes.ComponentTypeStatement;
@@ -684,18 +699,21 @@ export class ExiumHTMLElements extends ExiumBase {
         this.node_CTX,
       ];
       const children: ExiumContext[] = [];
-      while(!this.isEOF) {
+      while (!this.isEOF) {
         this.saveContextsTo(allSubContexts, children);
         const node = children.find((context) =>
           // node with a closing tag
-          (context.type === ContextTypes.Node
-            && context.related.find((child) => child.type === ContextTypes.NodeClosing)
-            && !context.data.parentNode
-            && !context.data.isAutoClosing)
+          (context.type === ContextTypes.Node &&
+            context.related.find((child) =>
+              child.type === ContextTypes.NodeClosing
+            ) &&
+            !context.data.parentNode &&
+            !context.data.isAutoClosing) ||
           // or an auto closing tag
-        || (context.type === ContextTypes.Node
-            && context.data.isAutoClosing
-            && !context.data.parentNode));
+          (context.type === ContextTypes.Node &&
+            context.data.isAutoClosing &&
+            !context.data.parentNode)
+        );
         if (node) {
           isNodeDefined = true;
           break;
@@ -703,74 +721,88 @@ export class ExiumHTMLElements extends ExiumBase {
         this.shift(1);
       }
       const token = source.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.ComponentDeclaration, token, {
-        line,
-        column,
-        start: x,
-        end: this.cursor.x,
-      });
+      const context = new ExiumContext(
+        ContextTypes.ComponentDeclaration,
+        token,
+        {
+          line,
+          column,
+          start: x,
+          end: this.cursor.x,
+        },
+      );
       context.children.push(...children);
       // declare type
       Object.assign(context.data, {
         type: lastContext.source,
-      })
+      });
       this.currentContexts.push(context);
       if (!isNodeDefined) {
-        this.onError(Reason.ComponentDeclarationNodeMissing, this.cursor, context);
+        this.onError(
+          Reason.ComponentDeclarationNodeMissing,
+          this.cursor,
+          context,
+        );
       }
       return true;
     } catch (err) {
       throw err;
     }
   }
-    /**
+  /**
    * support export statement for Deeper language
    */
-     export_component_statements_CTX(): boolean | null {
-      try {
-        const isValid = this.identifier_CTX(this.checkOnlyOptions);
-        if (!isValid) return false;
-        const recognized = this.identifier_CTX();
-        if (!recognized) return false;
-        const { lastContext } = this;
-        const { x, line, column } = this.cursor;
-        if (lastContext.source !== 'export') {
-          this.shift(-lastContext.source.length);
-          return false;
+  export_component_statements_CTX(): boolean | null {
+    try {
+      const isValid = this.identifier_CTX(this.checkOnlyOptions);
+      if (!isValid) return false;
+      const recognized = this.identifier_CTX();
+      if (!recognized) return false;
+      const { lastContext } = this;
+      const { x, line, column } = this.cursor;
+      if (lastContext.source !== "export") {
+        this.shift(-lastContext.source.length);
+        return false;
+      }
+      let isClosed = false;
+      const allSubs: ContextReader[] = [
+        this.multiple_spaces_CTX,
+        this.space_CTX,
+        this.component_CTX,
+      ];
+      const children: ExiumContext[] = [];
+      while (!this.isEOF) {
+        this.saveStrictContextsTo(allSubs, children);
+        const foundComponent = children.find((context) =>
+          context.type === ContextTypes.ComponentDeclaration
+        );
+        if (foundComponent) {
+          isClosed = true;
+          break;
         }
-        let isClosed = false;
-        const allSubs: ContextReader[] = [
-          this.multiple_spaces_CTX,
-          this.space_CTX,
-          this.component_CTX,
-        ];
-        const children: ExiumContext[] = [];
-        while (!this.isEOF) {
-          this.saveStrictContextsTo(allSubs, children);
-          const foundComponent = children.find((context) => context.type === ContextTypes.ComponentDeclaration);
-          if (foundComponent) {
-            isClosed = true;
-            break;
-          }
-          if (this.isCharSpacing) {
-            break;
-          }
+        if (this.isCharSpacing) {
+          break;
         }
-        const context = new ExiumContext(ContextTypes.ExportStatement, lastContext.source, {
+      }
+      const context = new ExiumContext(
+        ContextTypes.ExportStatement,
+        lastContext.source,
+        {
           line,
           column,
           start: x,
           end: this.cursor.x,
-        });
-        context.related.push(lastContext);
-        context.children.push(...children);
-        this.currentContexts.push(context);
-        if (!isClosed) {
-          this.onError(Reason.UnexpectedToken, this.cursor, this.unexpected);
-        }
-        return true;
-      } catch (err) {
-        throw err;
+        },
+      );
+      context.related.push(lastContext);
+      context.children.push(...children);
+      this.currentContexts.push(context);
+      if (!isClosed) {
+        this.onError(Reason.UnexpectedToken, this.cursor, this.unexpected);
       }
+      return true;
+    } catch (err) {
+      throw err;
     }
+  }
 }

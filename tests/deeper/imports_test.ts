@@ -12,12 +12,18 @@ Deno.test("exium supports ImportComponentStatement with a list of identifier", (
     A,
     B } from './A.deeper';`;
   const contexts = lexer.readSync(content, { type: "deeper" });
-  const identifiers = contexts.find((context) => context.type === ContextTypes.IdentifierList);
+  const identifiers = contexts.find((context) =>
+    context.type === ContextTypes.IdentifierList
+  );
   assert(identifiers);
-  assert(identifiers.source === '{\n    A,\n    B }');
-  const ComponentA = identifiers.children.find((context) => context.source === 'A' && context.type === ContextTypes.Identifier);
+  assert(identifiers.source === "{\n    A,\n    B }");
+  const ComponentA = identifiers.children.find((context) =>
+    context.source === "A" && context.type === ContextTypes.Identifier
+  );
   assert(ComponentA);
-  const ComponentB = identifiers.children.find((context) => context.source === 'B' && context.type === ContextTypes.Identifier);
+  const ComponentB = identifiers.children.find((context) =>
+    context.source === "B" && context.type === ContextTypes.Identifier
+  );
   assert(ComponentB);
 });
 

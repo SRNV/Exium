@@ -97,7 +97,7 @@ export class Exium extends ExiumStyleSheet {
     /**
      * use this scope to parse deeper components
      */
-     deeper: [
+    deeper: [
       this.comment_CTX,
       this.comment_block_CTX,
       this.line_break_CTX,

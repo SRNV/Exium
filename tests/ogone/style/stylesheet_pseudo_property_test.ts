@@ -6,7 +6,7 @@ import {
 } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 Deno.test("exium can retrieve pseudo properties", () => {
-  const content = /*css*/`
+  const content = /*css*/ `
     div:hover {
       color::media(
         default: blue;
@@ -22,10 +22,12 @@ Deno.test("exium can retrieve pseudo properties", () => {
   });
   const contexts = lexer.readSync(content, { type: "stylesheet" });
   if (contexts && contexts.length) {
-    const pseudo = contexts.find((context) => context.type === ContextTypes.StyleSheetPseudoProperty);
+    const pseudo = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetPseudoProperty
+    );
     // can find pseudo property
     assert(pseudo);
-    assertEquals(pseudo.name, 'media');
+    assertEquals(pseudo.name, "media");
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorPseudoClass} context`,
@@ -34,7 +36,7 @@ Deno.test("exium can retrieve pseudo properties", () => {
 });
 
 Deno.test("exium can retrieve pseudo properties (ogone)", () => {
-  const content = /*css*/`
+  const content = /*css*/ `
 <Test>
 <template>
   <style>
@@ -56,10 +58,12 @@ Deno.test("exium can retrieve pseudo properties (ogone)", () => {
   });
   const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
-    const pseudo = contexts.find((context) => context.type === ContextTypes.StyleSheetPseudoProperty);
+    const pseudo = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetPseudoProperty
+    );
     // can find pseudo property
     assert(pseudo);
-    assertEquals(pseudo.name, 'media');
+    assertEquals(pseudo.name, "media");
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorPseudoClass} context`,
@@ -68,7 +72,7 @@ Deno.test("exium can retrieve pseudo properties (ogone)", () => {
 });
 
 Deno.test("exium can retrieve pseudo properties (media-min-width)", () => {
-  const content = /*css*/`
+  const content = /*css*/ `
 <Test>
   <template>
     <style>
@@ -90,10 +94,12 @@ Deno.test("exium can retrieve pseudo properties (media-min-width)", () => {
   });
   const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
-    const pseudo = contexts.find((context) => context.type === ContextTypes.StyleSheetPseudoProperty);
+    const pseudo = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetPseudoProperty
+    );
     // can find pseudo property
     assert(pseudo);
-    assertEquals(pseudo.name, 'media-min-width');
+    assertEquals(pseudo.name, "media-min-width");
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorPseudoClass} context`,
@@ -102,7 +108,7 @@ Deno.test("exium can retrieve pseudo properties (media-min-width)", () => {
 });
 
 Deno.test("exium can retrieve pseudo properties (keyframes)", () => {
-  const content = /*css*/`
+  const content = /*css*/ `
 <Test>
 <template>
   <style>
@@ -127,17 +133,19 @@ Deno.test("exium can retrieve pseudo properties (keyframes)", () => {
 </Test>
   `;
   const lexer = new Exium((reason, _cursor, context) => {
-    console.warn(_cursor, context)
+    console.warn(_cursor, context);
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );
   });
   const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
-    const pseudo = contexts.find((context) => context.type === ContextTypes.StyleSheetPseudoProperty);
+    const pseudo = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetPseudoProperty
+    );
     // can find pseudo property
     assert(pseudo);
-    assertEquals(pseudo.name, 'anim');
+    assertEquals(pseudo.name, "anim");
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorPseudoClass} context`,

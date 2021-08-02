@@ -16,13 +16,13 @@ import { Reason } from "../enums/error-reason.ts";
 export class ExiumBase {
   private treePosition = 0;
   protected supportedComponentTypes = [
-    'component',
-    'app',
-    'async',
-    'router',
-    'store',
-    'controller',
-    'gl',
+    "component",
+    "app",
+    "async",
+    "router",
+    "store",
+    "controller",
+    "gl",
   ];
   protected readonly checkOnlyOptions: ContextReaderOptions = {
     checkOnly: true,
@@ -83,10 +83,10 @@ export class ExiumBase {
    */
   get isCharSpacing(): boolean {
     const code = this.charCode;
-    return code === 9
-      || code === 10
-      || code === 13
-      || code === 32;
+    return code === 9 ||
+      code === 10 ||
+      code === 13 ||
+      code === 32;
   }
   /**
    * if the current character is a letter
@@ -94,12 +94,12 @@ export class ExiumBase {
   get isCharIdentifier(): boolean {
     if (this.isCharSpacing) return false;
     const code = this.charCode;
-    return code >= 65
-      && code <= 90
-      || code === 36
-      || code === 95
-      || code >= 97
-      && code <= 122;
+    return code >= 65 &&
+        code <= 90 ||
+      code === 36 ||
+      code === 95 ||
+      code >= 97 &&
+        code <= 122;
   }
   /**
    * if the current character is a number
@@ -114,14 +114,14 @@ export class ExiumBase {
    */
   get isCharPuntuation(): boolean {
     const code = this.charCode;
-    return code >= 123
-      && code <= 124
-      || code >= 91
-      && code <= 96
-      || code >= 58
-      && code <= 64
-      || code >= 32
-      && code <= 47;
+    return code >= 123 &&
+        code <= 124 ||
+      code >= 91 &&
+        code <= 96 ||
+      code >= 58 &&
+        code <= 64 ||
+      code >= 32 &&
+        code <= 47;
   }
   /**
   * the next character
@@ -237,7 +237,7 @@ export class ExiumBase {
       cursor: CursorDescriber,
       context: ExiumContext,
     ) => void,
-  ) { }
+  ) {}
   /**
    * should validate if the character is accepted inside the current context
    * if it's not the ogone lexer will use the error function passed into the constructor
@@ -345,7 +345,9 @@ export class ExiumBase {
     this.cursor.x += +movement;
     this.cursor.column += +movement;
     this.debugg(
-      `%c\t\t${movement} ${this.prev} ${">".repeat(movement > 0 ? movement : 0)} ${this.char}`,
+      `%c\t\t${movement} ${this.prev} ${
+        ">".repeat(movement > 0 ? movement : 0)
+      } ${this.char}`,
       "color:gray",
     );
   }
@@ -687,15 +689,24 @@ export class ExiumBase {
   identifier_CTX(opts?: ContextReaderOptions) {
     this.debuggPosition("Identifier CTX START");
     const { line, column, x } = this.cursor;
-    if (!this.isCharIdentifier
-      && (!opts?.data?.allowDigit && !this.isCharDigit)) return false;
+    if (
+      !this.isCharIdentifier &&
+      (!opts?.data?.allowDigit && !this.isCharDigit)
+    ) {
+      return false;
+    }
     if (opts?.checkOnly) return true;
     const allowedIdentifierChars = [
-      ...(opts?.data?.allowedIdentifierChars as string[] || [])
+      ...(opts?.data?.allowedIdentifierChars as string[] || []),
     ];
     this.shift(1);
     while (!this.isEOF) {
-      if ((this.isCharPuntuation || this.isCharSpacing) && !allowedIdentifierChars.includes(this.char)) break;
+      if (
+        (this.isCharPuntuation || this.isCharSpacing) &&
+        !allowedIdentifierChars.includes(this.char)
+      ) {
+        break;
+      }
       this.shift(1);
     }
     const token = this.source.slice(x, this.cursor.x);
@@ -710,9 +721,9 @@ export class ExiumBase {
     return true;
   }
   identifier_list_CTX(opts?: ContextReaderOptions): boolean | null {
-    this.debuggPosition('Identifier LIST CTX Start');
+    this.debuggPosition("Identifier LIST CTX Start");
     const { char, source } = this;
-    const isValid = char === '{';
+    const isValid = char === "{";
     if (!isValid) return false;
     if (opts?.checkOnly) return true;
     const { line, column, x } = this.cursor;
@@ -727,7 +738,10 @@ export class ExiumBase {
     let isUnexpected = false;
     while (!this.isEOF) {
       this.saveContextsTo(readers, children);
-      if ((!isComaNeeded) && this.identifier_CTX(this.checkOnlyOptions) && this.char !== ',') {
+      if (
+        (!isComaNeeded) && this.identifier_CTX(this.checkOnlyOptions) &&
+        this.char !== ","
+      ) {
         const identified = this.identifier_CTX();
         if (identified) {
           const { lastContext } = this;
@@ -735,7 +749,7 @@ export class ExiumBase {
           isComaNeeded = true;
         }
       }
-      if (isComaNeeded && this.char === ',') {
+      if (isComaNeeded && this.char === ",") {
         const identifiedComa = this.coma_CTX();
         if (identifiedComa) {
           const { lastContext } = this;
@@ -743,13 +757,13 @@ export class ExiumBase {
           isComaNeeded = false;
         }
       }
-      if (!(this.char === '}' || this.isCharSpacing)) {
+      if (!(this.char === "}" || this.isCharSpacing)) {
         isUnexpected = true;
       }
       if (isUnexpected) {
         this.onError(Reason.UnexpectedToken, this.cursor, this.unexpected);
       }
-      if (this.char === '}') {
+      if (this.char === "}") {
         this.shift(1);
         break;
       }
@@ -876,7 +890,7 @@ export class ExiumBase {
    */
   braces_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      this.debuggPosition('BRACES_CTX START');
+      this.debuggPosition("BRACES_CTX START");
       const { char } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
@@ -894,7 +908,7 @@ export class ExiumBase {
       ];
       const children: ExiumContext[] = [];
       while (!this.isEOF) {
-        this.debuggPosition('BRACES_CTX');
+        this.debuggPosition("BRACES_CTX");
         this.isValidChar(opts?.unexpected);
         this.saveContextsTo(allSubContexts, children);
         if (this.char === ")") {
@@ -1103,13 +1117,12 @@ export class ExiumBase {
         ].includes(context.type)
       );
       isClosed = Boolean(
-        str
-        &&
-        related.find((context) =>
-          [
-            ContextTypes.SemiColon,
-          ].includes(context.type)
-        ),
+        str &&
+          related.find((context) =>
+            [
+              ContextTypes.SemiColon,
+            ].includes(context.type)
+          ),
       );
       const token = source.slice(x, this.cursor.x);
       const context = new ExiumContext(ContextTypes.ImportAmbient, token, {
@@ -1119,7 +1132,7 @@ export class ExiumBase {
         column,
       });
       Object.assign(context.data, {
-        path: str
+        path: str,
       });
       context.related.push(...related);
       this.currentContexts.push(context);
@@ -1139,16 +1152,20 @@ export class ExiumBase {
       if (!recognized) return false;
       const { lastContext } = this;
       const { x, line, column } = this.cursor;
-      if (lastContext.source !== 'export') {
+      if (lastContext.source !== "export") {
         this.shift(-lastContext.source.length);
         return false;
       }
-      const context = new ExiumContext(ContextTypes.ExportStatement, lastContext.source, {
-        line,
-        column,
-        start: x,
-        end: this.cursor.x,
-      });
+      const context = new ExiumContext(
+        ContextTypes.ExportStatement,
+        lastContext.source,
+        {
+          line,
+          column,
+          start: x,
+          end: this.cursor.x,
+        },
+      );
       context.related.push(lastContext);
       this.currentContexts.push(context);
       return true;
@@ -1201,7 +1218,10 @@ export class ExiumBase {
       otherImportStatements.forEach((reader) => reader.apply(this, []));
       while (!this.isEOF) {
         if (!isComponent) {
-          isComponent = this.saveToken('component', ContextTypes.ImportComponentStatement);
+          isComponent = this.saveToken(
+            "component",
+            ContextTypes.ImportComponentStatement,
+          );
         }
         if (isComponent) {
           this.saveStrictContextsTo([
@@ -1213,7 +1233,10 @@ export class ExiumBase {
             this.multiple_spaces_CTX,
           ], children);
         }
-        fromStatement = this.saveToken('from', ContextTypes.ImportStatementFrom);
+        fromStatement = this.saveToken(
+          "from",
+          ContextTypes.ImportStatementFrom,
+        );
         if (fromStatement) {
           break;
         }
@@ -1234,13 +1257,13 @@ export class ExiumBase {
         ].includes(context.type)
       );
       isClosed = Boolean(
-        fromStatement
-        && str
-        && related.find((context) =>
-          [
-            ContextTypes.SemiColon,
-          ].includes(context.type)
-        ),
+        fromStatement &&
+          str &&
+          related.find((context) =>
+            [
+              ContextTypes.SemiColon,
+            ].includes(context.type)
+          ),
       );
       const token = source.slice(x, this.cursor.x);
       const context = new ExiumContext(ContextTypes.ImportStatement, token, {
@@ -1282,14 +1305,15 @@ export class ExiumBase {
     try {
       const {
         char,
-        source
+        source,
       } = this;
       const {
         line,
         column,
         x,
       } = this.cursor;
-      const startingChar = opts && opts.data?.argument_CTX_starts_with as string || ':';
+      const startingChar =
+        opts && opts.data?.argument_CTX_starts_with as string || ":";
       const isValid = char === startingChar;
       if (!isValid) return false;
       this.shiftUntilEndOf(startingChar);
@@ -1300,10 +1324,10 @@ export class ExiumBase {
         Boolean(
           this.identifier_CTX({
             data: {
-              allowedIdentifierChars: ['-']
-            }
-          })
-          && related.push(this.lastContext)
+              allowedIdentifierChars: ["-"],
+            },
+          }) &&
+            related.push(this.lastContext),
         );
         if (this.isCharPuntuation) break;
         this.shift(1);
