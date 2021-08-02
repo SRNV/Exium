@@ -1,0 +1,2185 @@
+export app <Hello name=World>
+  Hello ${this.name}
+</Hello>
+export component <C value={0} />
+export component <D name=Rudy />
+export component <E boolean />
+export component <F @public props={undefined} />
+export component <G @void method={() => {...}} />
+export component <C>
+  <template>
+    <div> textnode here </div>
+    textnode here
+  </template>
+  forbidden textnode here
+</C>
+export component <A value={0}>
+  count: ${this.value}
+</A>
+export component <B value={0}>
+  count: ${this.value}
+  <script>
+    ...
+  </script>
+</B>
+export component <D>
+  <template>
+    <!-- scoped by default -->
+    <style></style>
+  </template>
+</D>
+
+export app <E>
+  <template>
+    <head>
+        <!-- set as global -->
+        <style>
+        </style>
+    </head>
+    <!-- scoped by default -->
+    <style>
+    </style>
+  </template>
+</E>
+
+export component <F value={0}>
+  count: ${this.value}
+  <script>
+    default: setInterval(() => this.value++, 100);
+        break;
+  </script>
+</F>
+
+export component <G
+  value={0}
+  interval={undefined}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': clearInterval(this.interval); break;
+    default: this.interval = setInterval(() => this.value++, 100);
+        break;
+  </script>
+</G>
+export component <C2
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C2>
+export component <C3
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  <template>
+    count: ${this.value}
+    <button --click(this.removeInterval())> Remove Interval </button>
+  </template>
+  <script>
+    case 'click:destroy':
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C3>
+export app <Hello name=World>
+  Hello ${this.name}
+</Hello>
+export component <C value={0} />
+export component <D name=Rudy />
+export component <E boolean />
+export component <F @public props={undefined} />
+export component <G @void method={() => {...}} />
+export component <C>
+  <template>
+    <div> textnode here </div>
+    textnode here
+  </template>
+  forbidden textnode here
+</C>
+export component <A value={0}>
+  count: ${this.value}
+</A>
+export component <B value={0}>
+  count: ${this.value}
+  <script>
+    ...
+  </script>
+</B>
+export component <D>
+  <template>
+    <!-- scoped by default -->
+    <style></style>
+  </template>
+</D>
+
+export app <E>
+  <template>
+    <head>
+        <!-- set as global -->
+        <style>
+        </style>
+    </head>
+    <!-- scoped by default -->
+    <style>
+    </style>
+  </template>
+</E>
+
+export component <F value={0}>
+  count: ${this.value}
+  <script>
+    default: setInterval(() => this.value++, 100);
+        break;
+  </script>
+</F>
+
+export component <G
+  value={0}
+  interval={undefined}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': clearInterval(this.interval); break;
+    default: this.interval = setInterval(() => this.value++, 100);
+        break;
+  </script>
+</G>
+export component <C2
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C2>
+export component <C3
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  <template>
+    count: ${this.value}
+    <button --click(this.removeInterval())> Remove Interval </button>
+  </template>
+  <script>
+    case 'click:destroy':
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C3>
+export app <Hello name=World>
+  Hello ${this.name}
+</Hello>
+export component <C value={0} />
+export component <D name=Rudy />
+export component <E boolean />
+export component <F @public props={undefined} />
+export component <G @void method={() => {...}} />
+export component <C>
+  <template>
+    <div> textnode here </div>
+    textnode here
+  </template>
+  forbidden textnode here
+</C>
+export component <A value={0}>
+  count: ${this.value}
+</A>
+export component <B value={0}>
+  count: ${this.value}
+  <script>
+    ...
+  </script>
+</B>
+export component <D>
+  <template>
+    <!-- scoped by default -->
+    <style></style>
+  </template>
+</D>
+
+export app <E>
+  <template>
+    <head>
+        <!-- set as global -->
+        <style>
+        </style>
+    </head>
+    <!-- scoped by default -->
+    <style>
+    </style>
+  </template>
+</E>
+
+export component <F value={0}>
+  count: ${this.value}
+  <script>
+    default: setInterval(() => this.value++, 100);
+        break;
+  </script>
+</F>
+
+export component <G
+  value={0}
+  interval={undefined}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': clearInterval(this.interval); break;
+    default: this.interval = setInterval(() => this.value++, 100);
+        break;
+  </script>
+</G>
+export component <C2
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C2>
+export component <C3
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  <template>
+    count: ${this.value}
+    <button --click(this.removeInterval())> Remove Interval </button>
+  </template>
+  <script>
+    case 'click:destroy':
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C3>
+export app <Hello name=World>
+  Hello ${this.name}
+</Hello>
+export component <C value={0} />
+export component <D name=Rudy />
+export component <E boolean />
+export component <F @public props={undefined} />
+export component <G @void method={() => {...}} />
+export component <C>
+  <template>
+    <div> textnode here </div>
+    textnode here
+  </template>
+  forbidden textnode here
+</C>
+export component <A value={0}>
+  count: ${this.value}
+</A>
+export component <B value={0}>
+  count: ${this.value}
+  <script>
+    ...
+  </script>
+</B>
+export component <D>
+  <template>
+    <!-- scoped by default -->
+    <style></style>
+  </template>
+</D>
+
+export app <E>
+  <template>
+    <head>
+        <!-- set as global -->
+        <style>
+        </style>
+    </head>
+    <!-- scoped by default -->
+    <style>
+    </style>
+  </template>
+</E>
+
+export component <F value={0}>
+  count: ${this.value}
+  <script>
+    default: setInterval(() => this.value++, 100);
+        break;
+  </script>
+</F>
+
+export component <G
+  value={0}
+  interval={undefined}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': clearInterval(this.interval); break;
+    default: this.interval = setInterval(() => this.value++, 100);
+        break;
+  </script>
+</G>
+export component <C2
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C2>
+export component <C3
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  <template>
+    count: ${this.value}
+    <button --click(this.removeInterval())> Remove Interval </button>
+  </template>
+  <script>
+    case 'click:destroy':
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C3>
+export app <Hello name=World>
+  Hello ${this.name}
+</Hello>
+export component <C value={0} />
+export component <D name=Rudy />
+export component <E boolean />
+export component <F @public props={undefined} />
+export component <G @void method={() => {...}} />
+export component <C>
+  <template>
+    <div> textnode here </div>
+    textnode here
+  </template>
+  forbidden textnode here
+</C>
+export component <A value={0}>
+  count: ${this.value}
+</A>
+export component <B value={0}>
+  count: ${this.value}
+  <script>
+    ...
+  </script>
+</B>
+export component <D>
+  <template>
+    <!-- scoped by default -->
+    <style></style>
+  </template>
+</D>
+
+export app <E>
+  <template>
+    <head>
+        <!-- set as global -->
+        <style>
+        </style>
+    </head>
+    <!-- scoped by default -->
+    <style>
+    </style>
+  </template>
+</E>
+
+export component <F value={0}>
+  count: ${this.value}
+  <script>
+    default: setInterval(() => this.value++, 100);
+        break;
+  </script>
+</F>
+
+export component <G
+  value={0}
+  interval={undefined}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': clearInterval(this.interval); break;
+    default: this.interval = setInterval(() => this.value++, 100);
+        break;
+  </script>
+</G>
+export component <C2
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C2>
+export component <C3
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  <template>
+    count: ${this.value}
+    <button --click(this.removeInterval())> Remove Interval </button>
+  </template>
+  <script>
+    case 'click:destroy':
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C3>
+export app <Hello name=World>
+  Hello ${this.name}
+</Hello>
+export component <C value={0} />
+export component <D name=Rudy />
+export component <E boolean />
+export component <F @public props={undefined} />
+export component <G @void method={() => {...}} />
+export component <C>
+  <template>
+    <div> textnode here </div>
+    textnode here
+  </template>
+  forbidden textnode here
+</C>
+export component <A value={0}>
+  count: ${this.value}
+</A>
+export component <B value={0}>
+  count: ${this.value}
+  <script>
+    ...
+  </script>
+</B>
+export component <D>
+  <template>
+    <!-- scoped by default -->
+    <style></style>
+  </template>
+</D>
+
+export app <E>
+  <template>
+    <head>
+        <!-- set as global -->
+        <style>
+        </style>
+    </head>
+    <!-- scoped by default -->
+    <style>
+    </style>
+  </template>
+</E>
+
+export component <F value={0}>
+  count: ${this.value}
+  <script>
+    default: setInterval(() => this.value++, 100);
+        break;
+  </script>
+</F>
+
+export component <G
+  value={0}
+  interval={undefined}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': clearInterval(this.interval); break;
+    default: this.interval = setInterval(() => this.value++, 100);
+        break;
+  </script>
+</G>
+export component <C2
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C2>
+export component <C3
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  <template>
+    count: ${this.value}
+    <button --click(this.removeInterval())> Remove Interval </button>
+  </template>
+  <script>
+    case 'click:destroy':
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C3>
+export app <Hello name=World>
+  Hello ${this.name}
+</Hello>
+export component <C value={0} />
+export component <D name=Rudy />
+export component <E boolean />
+export component <F @public props={undefined} />
+export component <G @void method={() => {...}} />
+export component <C>
+  <template>
+    <div> textnode here </div>
+    textnode here
+  </template>
+  forbidden textnode here
+</C>
+export component <A value={0}>
+  count: ${this.value}
+</A>
+export component <B value={0}>
+  count: ${this.value}
+  <script>
+    ...
+  </script>
+</B>
+export component <D>
+  <template>
+    <!-- scoped by default -->
+    <style></style>
+  </template>
+</D>
+
+export app <E>
+  <template>
+    <head>
+        <!-- set as global -->
+        <style>
+        </style>
+    </head>
+    <!-- scoped by default -->
+    <style>
+    </style>
+  </template>
+</E>
+
+export component <F value={0}>
+  count: ${this.value}
+  <script>
+    default: setInterval(() => this.value++, 100);
+        break;
+  </script>
+</F>
+
+export component <G
+  value={0}
+  interval={undefined}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': clearInterval(this.interval); break;
+    default: this.interval = setInterval(() => this.value++, 100);
+        break;
+  </script>
+</G>
+export component <C2
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C2>
+export component <C3
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  <template>
+    count: ${this.value}
+    <button --click(this.removeInterval())> Remove Interval </button>
+  </template>
+  <script>
+    case 'click:destroy':
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C3>
+export app <Hello name=World>
+  Hello ${this.name}
+</Hello>
+export component <C value={0} />
+export component <D name=Rudy />
+export component <E boolean />
+export component <F @public props={undefined} />
+export component <G @void method={() => {...}} />
+export component <C>
+  <template>
+    <div> textnode here </div>
+    textnode here
+  </template>
+  forbidden textnode here
+</C>
+export component <A value={0}>
+  count: ${this.value}
+</A>
+export component <B value={0}>
+  count: ${this.value}
+  <script>
+    ...
+  </script>
+</B>
+export component <D>
+  <template>
+    <!-- scoped by default -->
+    <style></style>
+  </template>
+</D>
+
+export app <E>
+  <template>
+    <head>
+        <!-- set as global -->
+        <style>
+        </style>
+    </head>
+    <!-- scoped by default -->
+    <style>
+    </style>
+  </template>
+</E>
+
+export component <F value={0}>
+  count: ${this.value}
+  <script>
+    default: setInterval(() => this.value++, 100);
+        break;
+  </script>
+</F>
+
+export component <G
+  value={0}
+  interval={undefined}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': clearInterval(this.interval); break;
+    default: this.interval = setInterval(() => this.value++, 100);
+        break;
+  </script>
+</G>
+export component <C2
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C2>
+export component <C3
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  <template>
+    count: ${this.value}
+    <button --click(this.removeInterval())> Remove Interval </button>
+  </template>
+  <script>
+    case 'click:destroy':
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C3>
+export app <Hello name=World>
+  Hello ${this.name}
+</Hello>
+export component <C value={0} />
+export component <D name=Rudy />
+export component <E boolean />
+export component <F @public props={undefined} />
+export component <G @void method={() => {...}} />
+export component <C>
+  <template>
+    <div> textnode here </div>
+    textnode here
+  </template>
+  forbidden textnode here
+</C>
+export component <A value={0}>
+  count: ${this.value}
+</A>
+export component <B value={0}>
+  count: ${this.value}
+  <script>
+    ...
+  </script>
+</B>
+export component <D>
+  <template>
+    <!-- scoped by default -->
+    <style></style>
+  </template>
+</D>
+
+export app <E>
+  <template>
+    <head>
+        <!-- set as global -->
+        <style>
+        </style>
+    </head>
+    <!-- scoped by default -->
+    <style>
+    </style>
+  </template>
+</E>
+
+export component <F value={0}>
+  count: ${this.value}
+  <script>
+    default: setInterval(() => this.value++, 100);
+        break;
+  </script>
+</F>
+
+export component <G
+  value={0}
+  interval={undefined}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': clearInterval(this.interval); break;
+    default: this.interval = setInterval(() => this.value++, 100);
+        break;
+  </script>
+</G>
+export component <C2
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C2>
+export component <C3
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  <template>
+    count: ${this.value}
+    <button --click(this.removeInterval())> Remove Interval </button>
+  </template>
+  <script>
+    case 'click:destroy':
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C3>
+export app <Hello name=World>
+  Hello ${this.name}
+</Hello>
+export component <C value={0} />
+export component <D name=Rudy />
+export component <E boolean />
+export component <F @public props={undefined} />
+export component <G @void method={() => {...}} />
+export component <C>
+  <template>
+    <div> textnode here </div>
+    textnode here
+  </template>
+  forbidden textnode here
+</C>
+export component <A value={0}>
+  count: ${this.value}
+</A>
+export component <B value={0}>
+  count: ${this.value}
+  <script>
+    ...
+  </script>
+</B>
+export component <D>
+  <template>
+    <!-- scoped by default -->
+    <style></style>
+  </template>
+</D>
+
+export app <E>
+  <template>
+    <head>
+        <!-- set as global -->
+        <style>
+        </style>
+    </head>
+    <!-- scoped by default -->
+    <style>
+    </style>
+  </template>
+</E>
+
+export component <F value={0}>
+  count: ${this.value}
+  <script>
+    default: setInterval(() => this.value++, 100);
+        break;
+  </script>
+</F>
+
+export component <G
+  value={0}
+  interval={undefined}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': clearInterval(this.interval); break;
+    default: this.interval = setInterval(() => this.value++, 100);
+        break;
+  </script>
+</G>
+export component <C2
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C2>
+export component <C3
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  <template>
+    count: ${this.value}
+    <button --click(this.removeInterval())> Remove Interval </button>
+  </template>
+  <script>
+    case 'click:destroy':
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C3>
+export app <Hello name=World>
+  Hello ${this.name}
+</Hello>
+export component <C value={0} />
+export component <D name=Rudy />
+export component <E boolean />
+export component <F @public props={undefined} />
+export component <G @void method={() => {...}} />
+export component <C>
+  <template>
+    <div> textnode here </div>
+    textnode here
+  </template>
+  forbidden textnode here
+</C>
+export component <A value={0}>
+  count: ${this.value}
+</A>
+export component <B value={0}>
+  count: ${this.value}
+  <script>
+    ...
+  </script>
+</B>
+export component <D>
+  <template>
+    <!-- scoped by default -->
+    <style></style>
+  </template>
+</D>
+
+export app <E>
+  <template>
+    <head>
+        <!-- set as global -->
+        <style>
+        </style>
+    </head>
+    <!-- scoped by default -->
+    <style>
+    </style>
+  </template>
+</E>
+
+export component <F value={0}>
+  count: ${this.value}
+  <script>
+    default: setInterval(() => this.value++, 100);
+        break;
+  </script>
+</F>
+
+export component <G
+  value={0}
+  interval={undefined}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': clearInterval(this.interval); break;
+    default: this.interval = setInterval(() => this.value++, 100);
+        break;
+  </script>
+</G>
+export component <C2
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C2>
+export component <C3
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  <template>
+    count: ${this.value}
+    <button --click(this.removeInterval())> Remove Interval </button>
+  </template>
+  <script>
+    case 'click:destroy':
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C3>
+export app <Hello name=World>
+  Hello ${this.name}
+</Hello>
+export component <C value={0} />
+export component <D name=Rudy />
+export component <E boolean />
+export component <F @public props={undefined} />
+export component <G @void method={() => {...}} />
+export component <C>
+  <template>
+    <div> textnode here </div>
+    textnode here
+  </template>
+  forbidden textnode here
+</C>
+export component <A value={0}>
+  count: ${this.value}
+</A>
+export component <B value={0}>
+  count: ${this.value}
+  <script>
+    ...
+  </script>
+</B>
+export component <D>
+  <template>
+    <!-- scoped by default -->
+    <style></style>
+  </template>
+</D>
+
+export app <E>
+  <template>
+    <head>
+        <!-- set as global -->
+        <style>
+        </style>
+    </head>
+    <!-- scoped by default -->
+    <style>
+    </style>
+  </template>
+</E>
+
+export component <F value={0}>
+  count: ${this.value}
+  <script>
+    default: setInterval(() => this.value++, 100);
+        break;
+  </script>
+</F>
+
+export component <G
+  value={0}
+  interval={undefined}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': clearInterval(this.interval); break;
+    default: this.interval = setInterval(() => this.value++, 100);
+        break;
+  </script>
+</G>
+export component <C2
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C2>
+export component <C3
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  <template>
+    count: ${this.value}
+    <button --click(this.removeInterval())> Remove Interval </button>
+  </template>
+  <script>
+    case 'click:destroy':
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C3>
+
+export app <Hello name=World>
+  Hello ${this.name}
+</Hello>
+export component <C value={0} />
+export component <D name=Rudy />
+export component <E boolean />
+export component <F @public props={undefined} />
+export component <G @void method={() => {...}} />
+export component <C>
+  <template>
+    <div> textnode here </div>
+    textnode here
+  </template>
+  forbidden textnode here
+</C>
+export component <A value={0}>
+  count: ${this.value}
+</A>
+export component <B value={0}>
+  count: ${this.value}
+  <script>
+    ...
+  </script>
+</B>
+export component <D>
+  <template>
+    <!-- scoped by default -->
+    <style></style>
+  </template>
+</D>
+
+export app <E>
+  <template>
+    <head>
+        <!-- set as global -->
+        <style>
+        </style>
+    </head>
+    <!-- scoped by default -->
+    <style>
+    </style>
+  </template>
+</E>
+
+export component <F value={0}>
+  count: ${this.value}
+  <script>
+    default: setInterval(() => this.value++, 100);
+        break;
+  </script>
+</F>
+
+export component <G
+  value={0}
+  interval={undefined}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': clearInterval(this.interval); break;
+    default: this.interval = setInterval(() => this.value++, 100);
+        break;
+  </script>
+</G>
+export component <C2
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C2>
+export component <C3
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  <template>
+    count: ${this.value}
+    <button --click(this.removeInterval())> Remove Interval </button>
+  </template>
+  <script>
+    case 'click:destroy':
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C3>
+export app <Hello name=World>
+  Hello ${this.name}
+</Hello>
+export component <C value={0} />
+export component <D name=Rudy />
+export component <E boolean />
+export component <F @public props={undefined} />
+export component <G @void method={() => {...}} />
+export component <C>
+  <template>
+    <div> textnode here </div>
+    textnode here
+  </template>
+  forbidden textnode here
+</C>
+export component <A value={0}>
+  count: ${this.value}
+</A>
+export component <B value={0}>
+  count: ${this.value}
+  <script>
+    ...
+  </script>
+</B>
+export component <D>
+  <template>
+    <!-- scoped by default -->
+    <style></style>
+  </template>
+</D>
+
+export app <E>
+  <template>
+    <head>
+        <!-- set as global -->
+        <style>
+        </style>
+    </head>
+    <!-- scoped by default -->
+    <style>
+    </style>
+  </template>
+</E>
+
+export component <F value={0}>
+  count: ${this.value}
+  <script>
+    default: setInterval(() => this.value++, 100);
+        break;
+  </script>
+</F>
+
+export component <G
+  value={0}
+  interval={undefined}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': clearInterval(this.interval); break;
+    default: this.interval = setInterval(() => this.value++, 100);
+        break;
+  </script>
+</G>
+export component <C2
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C2>
+export component <C3
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  <template>
+    count: ${this.value}
+    <button --click(this.removeInterval())> Remove Interval </button>
+  </template>
+  <script>
+    case 'click:destroy':
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C3>
+export app <Hello name=World>
+  Hello ${this.name}
+</Hello>
+export component <C value={0} />
+export component <D name=Rudy />
+export component <E boolean />
+export component <F @public props={undefined} />
+export component <G @void method={() => {...}} />
+export component <C>
+  <template>
+    <div> textnode here </div>
+    textnode here
+  </template>
+  forbidden textnode here
+</C>
+export component <A value={0}>
+  count: ${this.value}
+</A>
+export component <B value={0}>
+  count: ${this.value}
+  <script>
+    ...
+  </script>
+</B>
+export component <D>
+  <template>
+    <!-- scoped by default -->
+    <style></style>
+  </template>
+</D>
+
+export app <E>
+  <template>
+    <head>
+        <!-- set as global -->
+        <style>
+        </style>
+    </head>
+    <!-- scoped by default -->
+    <style>
+    </style>
+  </template>
+</E>
+
+export component <F value={0}>
+  count: ${this.value}
+  <script>
+    default: setInterval(() => this.value++, 100);
+        break;
+  </script>
+</F>
+
+export component <G
+  value={0}
+  interval={undefined}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': clearInterval(this.interval); break;
+    default: this.interval = setInterval(() => this.value++, 100);
+        break;
+  </script>
+</G>
+export component <C2
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C2>
+export component <C3
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  <template>
+    count: ${this.value}
+    <button --click(this.removeInterval())> Remove Interval </button>
+  </template>
+  <script>
+    case 'click:destroy':
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C3>
+export app <Hello name=World>
+  Hello ${this.name}
+</Hello>
+export component <C value={0} />
+export component <D name=Rudy />
+export component <E boolean />
+export component <F @public props={undefined} />
+export component <G @void method={() => {...}} />
+export component <C>
+  <template>
+    <div> textnode here </div>
+    textnode here
+  </template>
+  forbidden textnode here
+</C>
+export component <A value={0}>
+  count: ${this.value}
+</A>
+export component <B value={0}>
+  count: ${this.value}
+  <script>
+    ...
+  </script>
+</B>
+export component <D>
+  <template>
+    <!-- scoped by default -->
+    <style></style>
+  </template>
+</D>
+
+export app <E>
+  <template>
+    <head>
+        <!-- set as global -->
+        <style>
+        </style>
+    </head>
+    <!-- scoped by default -->
+    <style>
+    </style>
+  </template>
+</E>
+
+export component <F value={0}>
+  count: ${this.value}
+  <script>
+    default: setInterval(() => this.value++, 100);
+        break;
+  </script>
+</F>
+
+export component <G
+  value={0}
+  interval={undefined}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': clearInterval(this.interval); break;
+    default: this.interval = setInterval(() => this.value++, 100);
+        break;
+  </script>
+</G>
+export component <C2
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C2>
+export component <C3
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  <template>
+    count: ${this.value}
+    <button --click(this.removeInterval())> Remove Interval </button>
+  </template>
+  <script>
+    case 'click:destroy':
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C3>
+export app <Hello name=World>
+  Hello ${this.name}
+</Hello>
+export component <C value={0} />
+export component <D name=Rudy />
+export component <E boolean />
+export component <F @public props={undefined} />
+export component <G @void method={() => {...}} />
+export component <C>
+  <template>
+    <div> textnode here </div>
+    textnode here
+  </template>
+  forbidden textnode here
+</C>
+export component <A value={0}>
+  count: ${this.value}
+</A>
+export component <B value={0}>
+  count: ${this.value}
+  <script>
+    ...
+  </script>
+</B>
+export component <D>
+  <template>
+    <!-- scoped by default -->
+    <style></style>
+  </template>
+</D>
+
+export app <E>
+  <template>
+    <head>
+        <!-- set as global -->
+        <style>
+        </style>
+    </head>
+    <!-- scoped by default -->
+    <style>
+    </style>
+  </template>
+</E>
+
+export component <F value={0}>
+  count: ${this.value}
+  <script>
+    default: setInterval(() => this.value++, 100);
+        break;
+  </script>
+</F>
+
+export component <G
+  value={0}
+  interval={undefined}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': clearInterval(this.interval); break;
+    default: this.interval = setInterval(() => this.value++, 100);
+        break;
+  </script>
+</G>
+export component <C2
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C2>
+export component <C3
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  <template>
+    count: ${this.value}
+    <button --click(this.removeInterval())> Remove Interval </button>
+  </template>
+  <script>
+    case 'click:destroy':
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C3>
+export app <Hello name=World>
+  Hello ${this.name}
+</Hello>
+export component <C value={0} />
+export component <D name=Rudy />
+export component <E boolean />
+export component <F @public props={undefined} />
+export component <G @void method={() => {...}} />
+export component <C>
+  <template>
+    <div> textnode here </div>
+    textnode here
+  </template>
+  forbidden textnode here
+</C>
+export component <A value={0}>
+  count: ${this.value}
+</A>
+export component <B value={0}>
+  count: ${this.value}
+  <script>
+    ...
+  </script>
+</B>
+export component <D>
+  <template>
+    <!-- scoped by default -->
+    <style></style>
+  </template>
+</D>
+
+export app <E>
+  <template>
+    <head>
+        <!-- set as global -->
+        <style>
+        </style>
+    </head>
+    <!-- scoped by default -->
+    <style>
+    </style>
+  </template>
+</E>
+
+export component <F value={0}>
+  count: ${this.value}
+  <script>
+    default: setInterval(() => this.value++, 100);
+        break;
+  </script>
+</F>
+
+export component <G
+  value={0}
+  interval={undefined}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': clearInterval(this.interval); break;
+    default: this.interval = setInterval(() => this.value++, 100);
+        break;
+  </script>
+</G>
+export component <C2
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C2>
+export component <C3
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  <template>
+    count: ${this.value}
+    <button --click(this.removeInterval())> Remove Interval </button>
+  </template>
+  <script>
+    case 'click:destroy':
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C3>
+export app <Hello name=World>
+  Hello ${this.name}
+</Hello>
+export component <C value={0} />
+export component <D name=Rudy />
+export component <E boolean />
+export component <F @public props={undefined} />
+export component <G @void method={() => {...}} />
+export component <C>
+  <template>
+    <div> textnode here </div>
+    textnode here
+  </template>
+  forbidden textnode here
+</C>
+export component <A value={0}>
+  count: ${this.value}
+</A>
+export component <B value={0}>
+  count: ${this.value}
+  <script>
+    ...
+  </script>
+</B>
+export component <D>
+  <template>
+    <!-- scoped by default -->
+    <style></style>
+  </template>
+</D>
+
+export app <E>
+  <template>
+    <head>
+        <!-- set as global -->
+        <style>
+        </style>
+    </head>
+    <!-- scoped by default -->
+    <style>
+    </style>
+  </template>
+</E>
+
+export component <F value={0}>
+  count: ${this.value}
+  <script>
+    default: setInterval(() => this.value++, 100);
+        break;
+  </script>
+</F>
+
+export component <G
+  value={0}
+  interval={undefined}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': clearInterval(this.interval); break;
+    default: this.interval = setInterval(() => this.value++, 100);
+        break;
+  </script>
+</G>
+export component <C2
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C2>
+export component <C3
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  <template>
+    count: ${this.value}
+    <button --click(this.removeInterval())> Remove Interval </button>
+  </template>
+  <script>
+    case 'click:destroy':
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C3>
+export app <Hello name=World>
+  Hello ${this.name}
+</Hello>
+export component <C value={0} />
+export component <D name=Rudy />
+export component <E boolean />
+export component <F @public props={undefined} />
+export component <G @void method={() => {...}} />
+export component <C>
+  <template>
+    <div> textnode here </div>
+    textnode here
+  </template>
+  forbidden textnode here
+</C>
+export component <A value={0}>
+  count: ${this.value}
+</A>
+export component <B value={0}>
+  count: ${this.value}
+  <script>
+    ...
+  </script>
+</B>
+export component <D>
+  <template>
+    <!-- scoped by default -->
+    <style></style>
+  </template>
+</D>
+
+export app <E>
+  <template>
+    <head>
+        <!-- set as global -->
+        <style>
+        </style>
+    </head>
+    <!-- scoped by default -->
+    <style>
+    </style>
+  </template>
+</E>
+
+export component <F value={0}>
+  count: ${this.value}
+  <script>
+    default: setInterval(() => this.value++, 100);
+        break;
+  </script>
+</F>
+
+export component <G
+  value={0}
+  interval={undefined}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': clearInterval(this.interval); break;
+    default: this.interval = setInterval(() => this.value++, 100);
+        break;
+  </script>
+</G>
+export component <C2
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C2>
+export component <C3
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  <template>
+    count: ${this.value}
+    <button --click(this.removeInterval())> Remove Interval </button>
+  </template>
+  <script>
+    case 'click:destroy':
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C3>
+export app <Hello name=World>
+  Hello ${this.name}
+</Hello>
+export component <C value={0} />
+export component <D name=Rudy />
+export component <E boolean />
+export component <F @public props={undefined} />
+export component <G @void method={() => {...}} />
+export component <C>
+  <template>
+    <div> textnode here </div>
+    textnode here
+  </template>
+  forbidden textnode here
+</C>
+export component <A value={0}>
+  count: ${this.value}
+</A>
+export component <B value={0}>
+  count: ${this.value}
+  <script>
+    ...
+  </script>
+</B>
+export component <D>
+  <template>
+    <!-- scoped by default -->
+    <style></style>
+  </template>
+</D>
+
+export app <E>
+  <template>
+    <head>
+        <!-- set as global -->
+        <style>
+        </style>
+    </head>
+    <!-- scoped by default -->
+    <style>
+    </style>
+  </template>
+</E>
+
+export component <F value={0}>
+  count: ${this.value}
+  <script>
+    default: setInterval(() => this.value++, 100);
+        break;
+  </script>
+</F>
+
+export component <G
+  value={0}
+  interval={undefined}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': clearInterval(this.interval); break;
+    default: this.interval = setInterval(() => this.value++, 100);
+        break;
+  </script>
+</G>
+export component <C2
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C2>
+export component <C3
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  <template>
+    count: ${this.value}
+    <button --click(this.removeInterval())> Remove Interval </button>
+  </template>
+  <script>
+    case 'click:destroy':
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C3>
+export app <Hello name=World>
+  Hello ${this.name}
+</Hello>
+export component <C value={0} />
+export component <D name=Rudy />
+export component <E boolean />
+export component <F @public props={undefined} />
+export component <G @void method={() => {...}} />
+export component <C>
+  <template>
+    <div> textnode here </div>
+    textnode here
+  </template>
+  forbidden textnode here
+</C>
+export component <A value={0}>
+  count: ${this.value}
+</A>
+export component <B value={0}>
+  count: ${this.value}
+  <script>
+    ...
+  </script>
+</B>
+export component <D>
+  <template>
+    <!-- scoped by default -->
+    <style></style>
+  </template>
+</D>
+
+export app <E>
+  <template>
+    <head>
+        <!-- set as global -->
+        <style>
+        </style>
+    </head>
+    <!-- scoped by default -->
+    <style>
+    </style>
+  </template>
+</E>
+
+export component <F value={0}>
+  count: ${this.value}
+  <script>
+    default: setInterval(() => this.value++, 100);
+        break;
+  </script>
+</F>
+
+export component <G
+  value={0}
+  interval={undefined}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': clearInterval(this.interval); break;
+    default: this.interval = setInterval(() => this.value++, 100);
+        break;
+  </script>
+</G>
+export component <C2
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C2>
+export component <C3
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  <template>
+    count: ${this.value}
+    <button --click(this.removeInterval())> Remove Interval </button>
+  </template>
+  <script>
+    case 'click:destroy':
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C3>
+export app <Hello name=World>
+  Hello ${this.name}
+</Hello>
+export component <C value={0} />
+export component <D name=Rudy />
+export component <E boolean />
+export component <F @public props={undefined} />
+export component <G @void method={() => {...}} />
+export component <C>
+  <template>
+    <div> textnode here </div>
+    textnode here
+  </template>
+  forbidden textnode here
+</C>
+export component <A value={0}>
+  count: ${this.value}
+</A>
+export component <B value={0}>
+  count: ${this.value}
+  <script>
+    ...
+  </script>
+</B>
+export component <D>
+  <template>
+    <!-- scoped by default -->
+    <style></style>
+  </template>
+</D>
+
+export app <E>
+  <template>
+    <head>
+        <!-- set as global -->
+        <style>
+        </style>
+    </head>
+    <!-- scoped by default -->
+    <style>
+    </style>
+  </template>
+</E>
+
+export component <F value={0}>
+  count: ${this.value}
+  <script>
+    default: setInterval(() => this.value++, 100);
+        break;
+  </script>
+</F>
+
+export component <G
+  value={0}
+  interval={undefined}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': clearInterval(this.interval); break;
+    default: this.interval = setInterval(() => this.value++, 100);
+        break;
+  </script>
+</G>
+export component <C2
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C2>
+export component <C3
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  <template>
+    count: ${this.value}
+    <button --click(this.removeInterval())> Remove Interval </button>
+  </template>
+  <script>
+    case 'click:destroy':
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C3>
+export app <Hello name=World>
+  Hello ${this.name}
+</Hello>
+export component <C value={0} />
+export component <D name=Rudy />
+export component <E boolean />
+export component <F @public props={undefined} />
+export component <G @void method={() => {...}} />
+export component <C>
+  <template>
+    <div> textnode here </div>
+    textnode here
+  </template>
+  forbidden textnode here
+</C>
+export component <A value={0}>
+  count: ${this.value}
+</A>
+export component <B value={0}>
+  count: ${this.value}
+  <script>
+    ...
+  </script>
+</B>
+export component <D>
+  <template>
+    <!-- scoped by default -->
+    <style></style>
+  </template>
+</D>
+
+export app <E>
+  <template>
+    <head>
+        <!-- set as global -->
+        <style>
+        </style>
+    </head>
+    <!-- scoped by default -->
+    <style>
+    </style>
+  </template>
+</E>
+
+export component <F value={0}>
+  count: ${this.value}
+  <script>
+    default: setInterval(() => this.value++, 100);
+        break;
+  </script>
+</F>
+
+export component <G
+  value={0}
+  interval={undefined}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': clearInterval(this.interval); break;
+    default: this.interval = setInterval(() => this.value++, 100);
+        break;
+  </script>
+</G>
+export component <C2
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  count: ${this.value}
+  <script>
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C2>
+export component <C3
+  value={0}
+  interval={undefined}
+  @void createInterval={() => (this.interval = setInterval(() => this.value++, 100))}
+  @void removeInterval={() => clearInterval(this.interval)}>
+
+  <template>
+    count: ${this.value}
+    <button --click(this.removeInterval())> Remove Interval </button>
+  </template>
+  <script>
+    case 'click:destroy':
+    case 'destroy': this.removeInterval(); break;
+    default: this.createInterval(); break;
+  </script>
+</C3>
