@@ -34,7 +34,7 @@ jobs:
           deno-version: "v1.x"
 
       - name: Run Tests
-        run: deno test --fail-fast
+        run: deno test --fail-fast--allow-read
 
       - name: Lint
         run: deno lint --unstable --ignore=dist/ --quiet
