@@ -104,6 +104,12 @@ export class ExiumContext {
    */
   get name(): string | undefined {
     if (this.#_name) return this.#_name;
+    if (this.type === ContextTypes.ComponentDeclaration) {
+      const ctx = this.children.find((ctx) =>
+        ctx.type === ContextTypes.Node
+      );
+      return (this.#_name = ctx?.name);
+    }
     const ctx = this.related.find((ctx) =>
       ctx.type === ContextTypes.Identifier
     );

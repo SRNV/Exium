@@ -778,6 +778,8 @@ export class ExiumHTMLElements extends ExiumBase {
         );
         if (foundComponent) {
           isClosed = true;
+          // important to differentiate between the local and exported components
+          foundComponent.data.isExported = true;
           break;
         }
         if (this.isCharSpacing) {
