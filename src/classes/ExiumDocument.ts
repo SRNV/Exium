@@ -74,6 +74,7 @@ export class ExiumDocument {
   private exium: Exium;
   public contexts: ExiumContext[];
   private readonly text: string;
+  private idProvider: { [k: string]: number } = {};
   #_stylesheets?: ExiumContext[];
   #_proto?: ExiumContext;
   #_head?: ExiumContext;
@@ -581,14 +582,34 @@ export class ExiumDocument {
       child.name === name
     );
   }
+  prepareTheIdProvider() {
+    Object.assign(this.idProvider, {
+      node: 0,
+      textnode: 0,
+      styleRule: 0,
+    });
+  }
   /**
    * when the document is ready, update the node contexts, set the context's document.
    * basically save the node contexts into their parent
    */
   #onload() {
+    this.prepareTheIdProvider();
     this.contexts.forEach((context) => {
-      if (context.type === ContextTypes.Node) {
-        context.parentNode?.children.push(context);
+      switch (context.type) {
+        case ContextTypes.Node:
+          context.parentNode?.children.push(context);
+          context.id = this.idProvider.node;
+          this.idProvider.node++;
+          break;
+        case ContextTypes.TextNode:
+          context.id = this.idProvider.textnode;
+          this.idProvider.textnode++;
+          break;
+        case ContextTypes.StyleSheetRule:
+          context.id = this.idProvider.stylerule;
+          this.idProvider.stylerule++;
+          break;
       }
       /**
        * save the document to allow global actions/search from the context
