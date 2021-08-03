@@ -11,9 +11,17 @@ import type {
   ContextReader,
   OgooneLexerParseOptions,
 } from "./src/types/main.d.ts";
-import { Reason } from "./src/enums/error-reason.ts";
-import { ExiumContext } from "./src/classes/ExiumContext.ts";
 import { ExiumStyleSheet } from "./src/classes/ExiumStyleSheet.ts";
+import { Reason } from "./src/enums/error-reason.ts";
+import { ContextTypes } from "./src/enums/context-types.ts";
+import { ExiumContext } from "./src/classes/ExiumContext.ts";
+import { ExiumDocument } from "./src/classes/ExiumDocument.ts";
+export {
+  Reason,
+  ExiumContext,
+  ExiumDocument,
+  ContextTypes,
+};
 
 /**
  * @README
