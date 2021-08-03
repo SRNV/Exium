@@ -133,7 +133,6 @@ Deno.test("exium can retrieve pseudo properties (keyframes)", () => {
 </Test>
   `;
   const lexer = new Exium((reason, _cursor, context) => {
-    console.warn(_cursor, context);
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );

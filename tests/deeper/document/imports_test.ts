@@ -31,7 +31,6 @@ export router <Router
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
-      console.warn(context);
       throw new Error(
         `${reason} ${context.position.line}:${context.position.column}`,
       );
@@ -78,7 +77,6 @@ export router <Router
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
-      console.warn(context);
       throw new Error(
         `${reason} ${context.position.line}:${context.position.column}`,
       );
@@ -122,7 +120,6 @@ ${localComponents.map(([type, name]) => `${type} <${name} />`).join('\n')}
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
-      console.warn(context);
       throw new Error(
         `${reason} ${context.position.line}:${context.position.column}`,
       );

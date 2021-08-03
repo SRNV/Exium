@@ -140,7 +140,6 @@ export class ExiumHTMLElements extends ExiumBase {
        */
       while (!this.isEOF) {
         this.debuggPosition("NODE CTX");
-        this.debugg({ isNodeClosing, isNamed });
         this.isValidChar(
           opts?.unexpected || [
             // shouldn't start a new node

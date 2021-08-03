@@ -84,7 +84,6 @@ Deno.test("exium supports multiple spreads", () => {
   }
   `;
   const lexer = new Exium((reason, _cursor, context) => {
-    console.warn(context, _cursor, content);
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );

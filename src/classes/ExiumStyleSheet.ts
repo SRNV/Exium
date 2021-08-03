@@ -523,6 +523,7 @@ export class ExiumStyleSheet extends ExiumProtocol {
         this.stylesheet_selector_pseudo_class_CTX,
         this.stylesheet_selector_id_CTX,
         this.stylesheet_selector_class_CTX,
+        this.stylesheet_parent_ref_CTX, // TODO
         // should be the last one because it accepts everything
         this.stylesheet_selector_element_CTX,
       ];
@@ -563,6 +564,37 @@ export class ExiumStyleSheet extends ExiumProtocol {
       context.children.push(...children);
       this.currentContexts.push(context);
       return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+  stylesheet_parent_ref_CTX(opts?: ContextReaderOptions): boolean {
+    try {
+      const {
+        char,
+        next,
+        prev,
+        cursor,
+        source
+      } = this;
+      const { x, line, column } = cursor;
+      const isValid = char === '&' && next !== '&' && prev !== '&';
+      if (!isValid) return false;
+      if (opts?.checkOnly) return true;
+      this.shift(1);
+      const token = source.slice(x, this.cursor.x);
+      const context = new ExiumContext(
+        ContextTypes.StyleSheetParentRef,
+        token,
+        {
+          start: x,
+          end: this.cursor.x,
+          line,
+          column,
+        },
+      );
+      this.currentContexts.push(context);
+      return true;
     } catch (err) {
       throw err;
     }
