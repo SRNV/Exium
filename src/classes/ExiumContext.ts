@@ -251,6 +251,23 @@ export class ExiumContext {
     return result;
   }
   /**
+   * the path of an import statement or null if the current context is not an ImportStatement
+   * @returns the path of an ImportStatementContext
+   */
+  getPath(): string | null {
+    switch (this.type) {
+      case ContextTypes.ImportStatement:
+        const str = this.children.find((context) => [
+          ContextTypes.StringDoubleQuote,
+          ContextTypes.StringSingleQuote
+        ].includes(context.type));
+        if (str) return str.value;
+        break;
+      default: return null;
+    }
+    return null;
+  }
+  /**
    * @returns the value of the attribute or undefined
    * @usage
    * ```typescript
