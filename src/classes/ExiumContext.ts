@@ -23,7 +23,7 @@ export class ExiumContext {
   /**
    * id to differentiate the contexts
    */
-  id: number = 0;
+  id = 0;
   /**
    * the exium document that is using this context
    */
