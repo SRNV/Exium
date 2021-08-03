@@ -3,6 +3,7 @@ import {
   assert,
   assertEquals,
 } from "https://deno.land/std@0.95.0/testing/asserts.ts";
+import { ContextTypes } from '../../../src/enums/context-types.ts'
 
 Deno.test("exium - deeper-document can expose the component's template", () => {
   const content = `
@@ -146,3 +147,25 @@ ${localComponents.map(([type, name]) => `${type} <${name} />`).join('\n')}
     throw err;
   }
 });
+Deno.test('exium - use getImportPath to get the path to the dependency', () => {
+  const content = `import component { Dep } from './Dep.deeper';`
+  const document = new ExiumDocument({
+    url: new URL(import.meta.url),
+    onError: (reason, _cursor, context) => {
+      throw new Error(
+        `${reason} ${context.position.line}:${context.position.column}`,
+      );
+    },
+    source: content,
+    options: { type: "deeper" },
+  });
+  try {
+    const context = document.contexts.find((context) => context.type === ContextTypes.ImportStatement);
+    assert(context);
+    const path = context.getImportPath();
+    assert(path);
+    assert(path === './Dep.deeper');
+  } catch (err) {
+    throw err;
+  }
+})

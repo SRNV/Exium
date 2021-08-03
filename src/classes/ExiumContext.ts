@@ -254,10 +254,10 @@ export class ExiumContext {
    * the path of an import statement or null if the current context is not an ImportStatement
    * @returns the path of an ImportStatementContext
    */
-  getPath(): string | null {
+  getImportPath(): string | null {
     switch (this.type) {
       case ContextTypes.ImportStatement:
-        const str = this.children.find((context) => [
+        const str = this.related.find((context) => [
           ContextTypes.StringDoubleQuote,
           ContextTypes.StringSingleQuote
         ].includes(context.type));
