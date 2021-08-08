@@ -575,10 +575,10 @@ export class ExiumStyleSheet extends ExiumProtocol {
         next,
         prev,
         cursor,
-        source
+        source,
       } = this;
       const { x, line, column } = cursor;
-      const isValid = char === '&' && next !== '&' && prev !== '&';
+      const isValid = char === "&" && next !== "&" && prev !== "&";
       if (!isValid) return false;
       if (opts?.checkOnly) return true;
       this.shift(1);

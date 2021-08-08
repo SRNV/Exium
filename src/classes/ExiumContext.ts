@@ -109,9 +109,7 @@ export class ExiumContext {
   get name(): string | undefined {
     if (this.#_name) return this.#_name;
     if (this.type === ContextTypes.ComponentDeclaration) {
-      const ctx = this.children.find((ctx) =>
-        ctx.type === ContextTypes.Node
-      );
+      const ctx = this.children.find((ctx) => ctx.type === ContextTypes.Node);
       return (this.#_name = ctx?.name);
     }
     const ctx = this.related.find((ctx) =>
@@ -173,23 +171,23 @@ export class ExiumContext {
    */
   get template(): ExiumContext | undefined {
     return !this.parentNode && this.nodeType === 1 ||
-      this.type === ContextTypes.ComponentDeclaration
+        this.type === ContextTypes.ComponentDeclaration
       ? this.#_template ||
-      (this.#_template = this.children.find((context) =>
-        context.type === ContextTypes.Node &&
-        !context.data.isNodeClosing &&
-        context.name === "template"
-      ))
+        (this.#_template = this.children.find((context) =>
+          context.type === ContextTypes.Node &&
+          !context.data.isNodeClosing &&
+          context.name === "template"
+        ))
       : undefined;
   }
   get proto(): ExiumContext | undefined {
     return !this.parentNode && this.nodeType === 1
       ? this.#_proto ||
-      (this.#_proto = this.children.find((context) =>
-        context.type === ContextTypes.Node &&
-        !context.data.isNodeClosing &&
-        context.name === "proto"
-      ))
+        (this.#_proto = this.children.find((context) =>
+          context.type === ContextTypes.Node &&
+          !context.data.isNodeClosing &&
+          context.name === "proto"
+        ))
       : undefined;
   }
   get protocol(): ExiumContext | null | undefined {
@@ -212,7 +210,7 @@ export class ExiumContext {
       line: number;
       column: number;
     },
-  ) { }
+  ) {}
   /**
    * recursive function
    * @param search a function to use to retrieve a context, a basic find function
@@ -256,14 +254,17 @@ export class ExiumContext {
    */
   getImportPath(): string | null {
     switch (this.type) {
-      case ContextTypes.ImportStatement: {
-        const str = this.related.find((context) => [
-          ContextTypes.StringDoubleQuote,
-          ContextTypes.StringSingleQuote
-        ].includes(context.type));
-        if (str) return str.value;
-      }
-      break;
+      case ContextTypes.ImportStatement:
+        {
+          const str = this.related.find((context) =>
+            [
+              ContextTypes.StringDoubleQuote,
+              ContextTypes.StringSingleQuote,
+            ].includes(context.type)
+          );
+          if (str) return str.value;
+        }
+        break;
       default: {
         return null;
       }

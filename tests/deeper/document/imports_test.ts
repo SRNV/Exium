@@ -3,7 +3,7 @@ import {
   assert,
   assertEquals,
 } from "https://deno.land/std@0.95.0/testing/asserts.ts";
-import { ContextTypes } from '../../../src/enums/context-types.ts'
+import { ContextTypes } from "../../../src/enums/context-types.ts";
 
 Deno.test("exium - deeper-document can expose the component's template", () => {
   const content = `
@@ -98,25 +98,28 @@ export router <Router
 
 Deno.test("exium - deeper-document can split local, external and exported components with different methods", () => {
   const localComponents: string[][] = [
-    ['router', 'Router'],
-    ['component', 'BasicComponent'],
-    ['async', 'AsyncComponent'],
-    ['store', 'StoreComponent'],
-    ['app', 'App'],
-    ['controller', 'ControllerComponent'],
+    ["router", "Router"],
+    ["component", "BasicComponent"],
+    ["async", "AsyncComponent"],
+    ["store", "StoreComponent"],
+    ["app", "App"],
+    ["controller", "ControllerComponent"],
   ];
   const exportedLocalComponents: string[][] = [
-    ['router', 'RouterExported'],
-    ['component', 'BasicComponent2'],
-    ['app', 'AppExported'],
-    ['controller', 'ControllerComponentExported'],
+    ["router", "RouterExported"],
+    ["component", "BasicComponent2"],
+    ["app", "AppExported"],
+    ["controller", "ControllerComponentExported"],
   ];
   const content = `
 import component { Counter } from './Counter.deeper';
 import component { Route404 } from './404.deeper';
 
-${exportedLocalComponents.map(([type, name]) => `export ${type} <${name} />`).join('\n')}
-${localComponents.map(([type, name]) => `${type} <${name} />`).join('\n')}
+${
+    exportedLocalComponents.map(([type, name]) => `export ${type} <${name} />`)
+      .join("\n")
+  }
+${localComponents.map(([type, name]) => `${type} <${name} />`).join("\n")}
   `;
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
@@ -147,8 +150,8 @@ ${localComponents.map(([type, name]) => `${type} <${name} />`).join('\n')}
     throw err;
   }
 });
-Deno.test('exium - use getImportPath to get the path to the dependency', () => {
-  const content = `import component { Dep } from './Dep.deeper';`
+Deno.test("exium - use getImportPath to get the path to the dependency", () => {
+  const content = `import component { Dep } from './Dep.deeper';`;
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
@@ -160,12 +163,14 @@ Deno.test('exium - use getImportPath to get the path to the dependency', () => {
     options: { type: "deeper" },
   });
   try {
-    const context = document.contexts.find((context) => context.type === ContextTypes.ImportStatement);
+    const context = document.contexts.find((context) =>
+      context.type === ContextTypes.ImportStatement
+    );
     assert(context);
     const path = context.getImportPath();
     assert(path);
-    assert(path === './Dep.deeper');
+    assert(path === "./Dep.deeper");
   } catch (err) {
     throw err;
   }
-})
+});

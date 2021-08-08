@@ -224,11 +224,11 @@ export class ExiumDocument {
             child.related[0]?.source === "class" &&
             (
               subChild
-                ?.source === className ||
+                  ?.source === className ||
               typeof subChild.value === "string" &&
-              subChild.value
-                .split(" ")
-                .includes(className)
+                subChild.value
+                  .split(" ")
+                  .includes(className)
             );
         }) &&
         !context.data.isNodeClosing;
@@ -349,13 +349,24 @@ export class ExiumDocument {
   getIdentifiersOfExternalComponents(): ExiumContext[] {
     const accumulated: ExiumContext[] = [];
     this.contexts.forEach((context) => {
-      if (context.type !== ContextTypes.ImportStatement || !context.data.isComponent) return;
-      const identifierList: ExiumContext | undefined = context.children.find((child) =>
-        child.type === ContextTypes.IdentifierList
+      if (
+        context.type !== ContextTypes.ImportStatement ||
+        !context.data.isComponent
+      ) {
+        return;
+      }
+      const identifierList: ExiumContext | undefined = context.children.find((
+        child,
+      ) => child.type === ContextTypes.IdentifierList);
+      const identifier = context.children.find((child) =>
+        child.type === ContextTypes.Identifier
       );
-      const identifier = context.children.find((child) => child.type === ContextTypes.Identifier);
       if (identifierList) {
-        accumulated.push(...identifierList.children.filter((context) => context.type === ContextTypes.Identifier))
+        accumulated.push(
+          ...identifierList.children.filter((context) =>
+            context.type === ContextTypes.Identifier
+          ),
+        );
       }
       if (identifier) {
         accumulated.push(identifier);
@@ -371,7 +382,10 @@ export class ExiumDocument {
     const accumulated: ExiumContext[] = [];
     this.contexts.forEach((context) => {
       if (context.type !== ContextTypes.ExportStatement) return;
-      const componentDeclaration = context.children.find(child => child.type === ContextTypes.ComponentDeclaration && child.data.isExported);
+      const componentDeclaration = context.children.find((child) =>
+        child.type === ContextTypes.ComponentDeclaration &&
+        child.data.isExported
+      );
       if (componentDeclaration) {
         accumulated.push(componentDeclaration);
       }
@@ -385,7 +399,12 @@ export class ExiumDocument {
   getLocalComponents(): ExiumContext[] {
     const accumulated: ExiumContext[] = [];
     this.contexts.forEach((context) => {
-      if (context.type !== ContextTypes.ComponentDeclaration || context.data.isExported) return;
+      if (
+        context.type !== ContextTypes.ComponentDeclaration ||
+        context.data.isExported
+      ) {
+        return;
+      }
       accumulated.push(context);
     });
     return accumulated;

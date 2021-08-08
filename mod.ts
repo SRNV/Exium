@@ -16,12 +16,7 @@ import { Reason } from "./src/enums/error-reason.ts";
 import { ContextTypes } from "./src/enums/context-types.ts";
 import { ExiumContext } from "./src/classes/ExiumContext.ts";
 import { ExiumDocument } from "./src/classes/ExiumDocument.ts";
-export {
-  Reason,
-  ExiumContext,
-  ExiumDocument,
-  ContextTypes,
-};
+export { ContextTypes, ExiumContext, ExiumDocument, Reason };
 
 /**
  * @README

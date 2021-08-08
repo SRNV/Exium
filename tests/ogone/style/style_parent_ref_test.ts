@@ -24,9 +24,11 @@ Deno.test("exium - supports StyleSheetSelectorParentRef (& token)", () => {
   });
   try {
     const contexts = lexer.readSync(content, { type: "stylesheet" });
-    const parentRef = contexts.find((context) => context.type === ContextTypes.StyleSheetParentRef);
+    const parentRef = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetParentRef
+    );
     assert(parentRef);
-    assertEquals(parentRef.source, '&');
+    assertEquals(parentRef.source, "&");
   } catch (err) {
     throw err;
   }
@@ -54,7 +56,9 @@ Deno.test("exium - no parent Ref parsed", () => {
   });
   try {
     const contexts = lexer.readSync(content, { type: "stylesheet" });
-    const parentRef = contexts.find((context) => context.type === ContextTypes.StyleSheetParentRef);
+    const parentRef = contexts.find((context) =>
+      context.type === ContextTypes.StyleSheetParentRef
+    );
     assert(!parentRef);
   } catch (err) {
     throw err;
