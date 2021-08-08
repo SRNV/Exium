@@ -868,19 +868,22 @@ export class ExiumBase {
   }
   line_break_CTX() {
     this.debuggPosition("\n\n\t\tLINEBREAK START");
-    const result = this.char === "\n";
+    const { x, line, column } = this.cursor;
+    const isChariot = this.char === "\r" && this.next === "\n";
+    const result = this.char === "\n" || isChariot;
     if (result) {
+      if (isChariot) this.shift(2);
+      else this.shift(1);
       this.currentContexts.push(
         new ExiumContext(ContextTypes.LineBreak, this.char, {
-          start: this.cursor.x,
-          end: this.cursor.x + 1,
-          line: this.cursor.line,
-          column: this.cursor.column,
+          start: x,
+          end: this.cursor.x,
+          line: line,
+          column: column,
         }),
       );
       this.cursor.column = 0;
       this.cursor.line++;
-      this.cursor.x++;
     }
     this.debuggPosition("\n\n\t\tLINEBREAK END");
     return result;

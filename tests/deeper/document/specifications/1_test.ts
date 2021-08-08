@@ -14,7 +14,7 @@ Deno.test("exium - deeper-document can expose the component's template", () => {
           `${reason} ${context.position.line}:${context.position.column}`,
         );
       },
-      source: content.replace(/\r\n/gi, "\n"),
+      source: content,
       options: { type: "deeper" },
     });
     assert(document);
