@@ -268,6 +268,7 @@ export class ExiumContext {
         return null;
       }
     }
+    return null;
   }
   /**
    * @returns the value of the attribute or undefined
