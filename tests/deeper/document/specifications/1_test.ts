@@ -9,6 +9,7 @@ Deno.test("exium - deeper-document can expose the component's template", () => {
     const document = new ExiumDocument({
       url: new URL(import.meta.url),
       onError: (reason, _cursor, context) => {
+        console.log(reason, _cursor, context);
         throw new Error(
           `${reason} ${context.position.line}:${context.position.column}`,
         );
