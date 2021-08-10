@@ -1305,6 +1305,7 @@ export class ExiumBase {
           this.identifier_list_CTX,
           this.identifier_CTX,
           this.multiple_spaces_CTX,
+          this.coma_CTX,
           this.space_CTX,
         ], children, isComponent ? undefined : {
           data: {
