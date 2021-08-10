@@ -8,9 +8,10 @@ import { ExiumContext } from "./ExiumContext.ts";
 import { ContextTypes } from "../enums/context-types.ts";
 import { Reason } from "../enums/error-reason.ts";
 
-const regImportStart = /import\s+$/;
 const importRegExp = /^import\b/i;
 const importComponentRegExp = /^import\s+component\b/i;
+const asRegExp = /^\s+as/i;
+
 /**
  * final class of Exium
  * all basic methods or properties
@@ -724,7 +725,7 @@ export class ExiumBase {
       return false;
     }
     if (opts?.checkOnly) return true;
-    const allowAliases = opts?.data?.identifer_allow_alias;
+    const allowAliases = opts?.data?.identifier_allow_alias;
     const allowedIdentifierChars = [
       ...(opts?.data?.allowedIdentifierChars as string[] || []),
     ];
@@ -732,11 +733,16 @@ export class ExiumBase {
     let isAliased = false;
     const related: ExiumContext[] = [];
     while (!this.isEOF) {
-      if (!isAliased && allowAliases) {
-        const recognized = this.identifier_alias_CTX();
+      const { nextPart } = this;
+      if (!isAliased && allowAliases && asRegExp.test(nextPart)) {
+        this.saveContextsTo([
+          this.multiple_spaces_CTX,
+          this.space_CTX,
+          this.identifier_alias_CTX,
+        ], related);
+        const recognized = related.find((context) => context.type === ContextTypes.IdentifierAsStatement)
         if (recognized) {
-          const { lastContext } = this;
-          related.push(lastContext);
+          related.push(recognized);
           isAliased = true;
         }
       }
@@ -749,14 +755,16 @@ export class ExiumBase {
       this.shift(1);
     }
     const token = this.source.slice(x, this.cursor.x);
+    const context = new ExiumContext(ContextTypes.Identifier, token, {
+      start: x,
+      end: this.cursor.x,
+      line,
+      column,
+    });
     this.currentContexts.push(
-      new ExiumContext(ContextTypes.Identifier, token, {
-        start: x,
-        end: this.cursor.x,
-        line,
-        column,
-      }),
+      context,
     );
+    context.related.push(...related);
     return true;
   }
   identifier_list_CTX(opts?: ContextReaderOptions): boolean | null {
@@ -857,6 +865,9 @@ export class ExiumBase {
     });
     this.currentContexts.push(context);
     context.children.push(...children);
+    if (!isIdentified) {
+      this.onError(Reason.AsStatementMissingIdentifier, this.cursor, context);
+    }
     return true;
   }
   space_CTX() {
@@ -1297,7 +1308,7 @@ export class ExiumBase {
           this.space_CTX,
         ], children, isComponent ? undefined : {
           data: {
-            identifer_allow_alias: true,
+            identifier_allow_alias: true,
           }
         });
         fromStatement = this.saveToken(
