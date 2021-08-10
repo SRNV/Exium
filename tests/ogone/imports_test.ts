@@ -21,7 +21,7 @@ Deno.test("exium supports all import statements", () => {
     );
   });
   const content = `
-    import * as name from "name-module";
+    import * as some from 'aaaa';
     import exportParDefaut from "name-module";
     import { export } from "name-module";
     import { export as alias } from "name-module";

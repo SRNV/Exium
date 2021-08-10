@@ -5,6 +5,10 @@ export enum ContextTypes {
   Unexpected = "Unexpected",
   Space = "Space",
   Identifier = "Identifier",
+  AsStatement = "AsStatement",
+  // *
+  Asterix = "Asterix",
+  IdentifierAsStatement = "IdentifierAsStatement",
   // Identifier separated by a coma
   IdentifierList = "IdentifierList",
   IdentifierSemiColonList = "IdentifierSemiColonList",
@@ -37,6 +41,7 @@ export enum ContextTypes {
   ExportStatement = "ExportStatement",
   ImportComponentStatement = "ImportComponentStatement",
   ImportStatementFrom = "ImportStatementFrom",
+  ImportAllAlias = "ImportAllAlias",
   InjectAmbient = "InjectAmbient",
   TextNode = "TextNode",
   Node = "Node",

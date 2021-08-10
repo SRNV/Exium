@@ -8,6 +8,9 @@ import { ExiumContext } from "./ExiumContext.ts";
 import { ContextTypes } from "../enums/context-types.ts";
 import { Reason } from "../enums/error-reason.ts";
 
+const regImportStart = /import\s+$/;
+const importRegExp = /^import\b/i;
+const importComponentRegExp = /^import\s+component\b/i;
 /**
  * final class of Exium
  * all basic methods or properties
@@ -95,11 +98,11 @@ export class ExiumBase {
     if (this.isCharSpacing) return false;
     const code = this.charCode;
     return code >= 65 &&
-        code <= 90 ||
+      code <= 90 ||
       code === 36 ||
       code === 95 ||
       code >= 97 &&
-        code <= 122;
+      code <= 122;
   }
   /**
    * if the current character is a number
@@ -115,13 +118,13 @@ export class ExiumBase {
   get isCharPuntuation(): boolean {
     const code = this.charCode;
     return code >= 123 &&
-        code <= 124 ||
+      code <= 124 ||
       code >= 91 &&
-        code <= 96 ||
+      code <= 96 ||
       code >= 58 &&
-        code <= 64 ||
+      code <= 64 ||
       code >= 32 &&
-        code <= 47;
+      code <= 47;
   }
   /**
   * the next character
@@ -237,7 +240,7 @@ export class ExiumBase {
       cursor: CursorDescriber,
       context: ExiumContext,
     ) => void,
-  ) {}
+  ) { }
   /**
    * should validate if the character is accepted inside the current context
    * if it's not the ogone lexer will use the error function passed into the constructor
@@ -345,8 +348,7 @@ export class ExiumBase {
     this.cursor.x += +movement;
     this.cursor.column += +movement;
     this.debugg(
-      `%c\t\t${movement} ${this.prev} ${
-        ">".repeat(movement > 0 ? movement : 0)
+      `%c\t\t${movement} ${this.prev} ${">".repeat(movement > 0 ? movement : 0)
       } ${this.char}`,
       "color:gray",
     );
@@ -686,6 +688,32 @@ export class ExiumBase {
       throw err;
     }
   }
+  identifier_asterix_CTX(opts?: ContextReaderOptions): boolean | null {
+    this.debuggPosition("ASTERIX CTX START");
+    const { line, column, x } = this.cursor;
+    const { char, source } = this;
+    const isValid = char === '*';
+    if (!isValid) return false;
+    if (opts?.checkOnly) return true;
+    this.shift(1);
+    const related: ExiumContext[] = [];
+    this.saveStrictContextsTo([
+      this.multiple_spaces_CTX,
+      this.space_CTX,
+      this.identifier_alias_CTX,
+    ], related);
+    const isGlobalAlias = related.find((context) => context.type === ContextTypes.IdentifierAsStatement);
+    const token = source.slice(x, this.cursor.x);
+    const context = new ExiumContext(!!isGlobalAlias ? ContextTypes.ImportAllAlias : ContextTypes.Asterix, token, {
+      line,
+      column,
+      start: x,
+      end: this.cursor.x,
+    });
+    this.currentContexts.push(context);
+    this.debuggPosition("ASTERIX CTX END");
+    return true;
+  }
   identifier_CTX(opts?: ContextReaderOptions) {
     this.debuggPosition("Identifier CTX START");
     const { line, column, x } = this.cursor;
@@ -696,11 +724,22 @@ export class ExiumBase {
       return false;
     }
     if (opts?.checkOnly) return true;
+    const allowAliases = opts?.data?.identifer_allow_alias;
     const allowedIdentifierChars = [
       ...(opts?.data?.allowedIdentifierChars as string[] || []),
     ];
     this.shift(1);
+    let isAliased = false;
+    const related: ExiumContext[] = [];
     while (!this.isEOF) {
+      if (!isAliased && allowAliases) {
+        const recognized = this.identifier_alias_CTX();
+        if (recognized) {
+          const { lastContext } = this;
+          related.push(lastContext);
+          isAliased = true;
+        }
+      }
       if (
         (this.isCharPuntuation || this.isCharSpacing) &&
         !allowedIdentifierChars.includes(this.char)
@@ -742,7 +781,7 @@ export class ExiumBase {
         (!isComaNeeded) && this.identifier_CTX(this.checkOnlyOptions) &&
         this.char !== ","
       ) {
-        const identified = this.identifier_CTX();
+        const identified = this.identifier_CTX(opts);
         if (identified) {
           const { lastContext } = this;
           children.push(lastContext);
@@ -772,6 +811,45 @@ export class ExiumBase {
     }
     const token = source.slice(x, this.cursor.x);
     const context = new ExiumContext(ContextTypes.IdentifierList, token, {
+      start: x,
+      end: this.cursor.x,
+      line,
+      column,
+    });
+    this.currentContexts.push(context);
+    context.children.push(...children);
+    return true;
+  }
+  identifier_alias_CTX(opts?: ContextReaderOptions): boolean | null {
+    const { x, line, column } = this.cursor;
+    const { source } = this;
+    // check if it's a as stmt
+    const identified = this.identifier_CTX();
+    const children: ExiumContext[] = [];
+    let isValid = false;
+    if (identified) {
+      const { lastContext } = this;
+      isValid = lastContext.source === 'as';
+      if (isValid) lastContext.type = ContextTypes.AsStatement;
+    }
+    if (!isValid) return false;
+    if (opts?.checkOnly) return true;
+    let isIdentified = false;
+    const allsubs: ContextReader[] = [
+      this.multiple_spaces_CTX,
+      this.space_CTX,
+      this.identifier_CTX,
+    ];
+    while (!this.isEOF) {
+      this.saveStrictContextsTo(allsubs, children);
+      isIdentified = !!children.find((context) => context.type === ContextTypes.Identifier);
+      if (isIdentified) {
+        break;
+      }
+      this.shift(1);
+    }
+    const token = source.slice(x, this.cursor.x);
+    const context = new ExiumContext(ContextTypes.IdentifierAsStatement, token, {
       start: x,
       end: this.cursor.x,
       line,
@@ -1121,11 +1199,11 @@ export class ExiumBase {
       );
       isClosed = Boolean(
         str &&
-          related.find((context) =>
-            [
-              ContextTypes.SemiColon,
-            ].includes(context.type)
-          ),
+        related.find((context) =>
+          [
+            ContextTypes.SemiColon,
+          ].includes(context.type)
+        ),
       );
       const token = source.slice(x, this.cursor.x);
       const context = new ExiumContext(ContextTypes.ImportAmbient, token, {
@@ -1182,32 +1260,55 @@ export class ExiumBase {
   // TODO create contexts for the tokens between import and from
   import_statements_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      const { char, next } = this;
+      const { char, next, nextPart } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
-      const sequence = char +
-        next +
-        source[x + 2] +
-        source[x + 3] +
-        source[x + 4] +
-        source[x + 5] +
-        source[x + 6];
-      if (
-        char !== "i" ||
-        sequence !== "import "
-      ) {
+      const isValid = importRegExp.test(nextPart);
+      const isComponent = importComponentRegExp.test(nextPart);
+      if (!isValid) {
         return false;
       }
       if (opts?.checkOnly) return true;
       const result = true;
       let isClosed = false;
-      let isComponent = null;
       let fromStatement = null;
       const related: ExiumContext[] = [];
       const children: ExiumContext[] = [];
-      const otherImportStatements: ContextReader[] = [
-        this.import_ambient_CTX,
-      ];
+      // shift after the import statement
+      this.shiftUntilEndOf('import');
+      if (isComponent) {
+        this.saveStrictContextsTo([
+          this.multiple_spaces_CTX,
+          this.space_CTX,
+        ], children);
+        this.saveToken(
+          "component",
+          ContextTypes.ImportComponentStatement,
+        );
+      }
+      while (!this.isEOF) {
+        this.saveStrictContextsTo([
+          this.multiple_spaces_CTX,
+          this.space_CTX,
+          this.identifier_asterix_CTX,
+          this.identifier_list_CTX,
+          this.identifier_CTX,
+          this.multiple_spaces_CTX,
+          this.space_CTX,
+        ], children, isComponent ? undefined : {
+          data: {
+            identifer_allow_alias: true,
+          }
+        });
+        fromStatement = this.saveToken(
+          "from",
+          ContextTypes.ImportStatementFrom,
+        );
+        if (fromStatement) {
+          break;
+        }
+        this.isValidChar(opts?.unexpected);
+      }
       /**
        * expected next contexts
        */
@@ -1218,34 +1319,6 @@ export class ExiumBase {
         this.string_single_quote_CTX,
         this.semicolon_CTX,
       ];
-      otherImportStatements.forEach((reader) => reader.apply(this, []));
-      while (!this.isEOF) {
-        if (!isComponent) {
-          isComponent = this.saveToken(
-            "component",
-            ContextTypes.ImportComponentStatement,
-          );
-        }
-        if (isComponent) {
-          this.saveStrictContextsTo([
-            this.space_CTX,
-            this.multiple_spaces_CTX,
-            this.identifier_list_CTX,
-            this.identifier_CTX,
-            this.space_CTX,
-            this.multiple_spaces_CTX,
-          ], children);
-        }
-        fromStatement = this.saveToken(
-          "from",
-          ContextTypes.ImportStatementFrom,
-        );
-        if (fromStatement) {
-          break;
-        }
-        this.shift(1);
-        this.isValidChar(opts?.unexpected);
-      }
       nextContexts.forEach((reader: ContextReader, i: number, arr) => {
         const recognized = reader.apply(this, []);
         if (recognized) {
@@ -1261,12 +1334,12 @@ export class ExiumBase {
       );
       isClosed = Boolean(
         fromStatement &&
-          str &&
-          related.find((context) =>
-            [
-              ContextTypes.SemiColon,
-            ].includes(context.type)
-          ),
+        str &&
+        related.find((context) =>
+          [
+            ContextTypes.SemiColon,
+          ].includes(context.type)
+        ),
       );
       const token = source.slice(x, this.cursor.x);
       const context = new ExiumContext(ContextTypes.ImportStatement, token, {
@@ -1330,7 +1403,7 @@ export class ExiumBase {
               allowedIdentifierChars: ["-"],
             },
           }) &&
-            related.push(this.lastContext),
+          related.push(this.lastContext),
         );
         if (this.isCharPuntuation) break;
         this.shift(1);
