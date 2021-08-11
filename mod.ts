@@ -115,6 +115,11 @@ export class Exium extends ExiumStyleSheet {
       this.component_CTX,
     ],
     script: [
+      this.comment_CTX,
+      this.comment_block_CTX,
+      this.line_break_CTX,
+      this.multiple_spaces_CTX,
+      this.space_CTX,
       this.import_ambient_CTX,
       this.import_statements_CTX,
     ],
