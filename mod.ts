@@ -9,7 +9,7 @@
  */
 import type {
   ContextReader,
-  OgooneLexerParseOptions,
+  ExiumParseOptions,
 } from "./src/types/main.d.ts";
 import { ExiumStyleSheet } from "./src/classes/ExiumStyleSheet.ts";
 import { Reason } from "./src/enums/error-reason.ts";
@@ -63,7 +63,7 @@ export class Exium extends ExiumStyleSheet {
     super(...args);
   }
   private scopedTopLevel: Record<
-    OgooneLexerParseOptions["type"],
+    ExiumParseOptions["type"],
     ContextReader[]
   > = {
     /**
@@ -114,6 +114,10 @@ export class Exium extends ExiumStyleSheet {
       this.export_component_statements_CTX,
       this.component_CTX,
     ],
+    script: [
+      this.import_ambient_CTX,
+      this.import_statements_CTX,
+    ],
     /**
      * use this scope to parse stylesheets (CSS and Typed-CSS)
      */
@@ -139,7 +143,7 @@ export class Exium extends ExiumStyleSheet {
   /**
    * parse the text and retrieve all the contexts
    */
-  readSync(text: string, opts: OgooneLexerParseOptions): ExiumContext[] {
+  readSync(text: string, opts: ExiumParseOptions): ExiumContext[] {
     try {
       /**remove previous contexts */
       this.currentContexts.length && this.currentContexts.splice(0);

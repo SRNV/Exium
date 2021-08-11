@@ -21,7 +21,7 @@ export interface CursorDescriber {
   line: number;
   x: number;
 }
-export interface OgooneLexerParseOptions {
+export interface ExiumParseOptions {
   /**
    * url of the current document
    */
@@ -40,6 +40,7 @@ export interface OgooneLexerParseOptions {
     | "lexer"
     | "custom"
     | "stylesheet"
+    | "script"
     | "protocol";
   /**
    * will print the character

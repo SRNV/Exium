@@ -2,7 +2,7 @@ import {
   ContextReader,
   ContextReaderOptions,
   CursorDescriber,
-  OgooneLexerParseOptions,
+  ExiumParseOptions,
 } from "../types/main.d.ts";
 import { ExiumContext } from "./ExiumContext.ts";
 import { ContextTypes } from "../enums/context-types.ts";
@@ -210,7 +210,7 @@ export class ExiumBase {
       ),
     );
   }
-  protected parseOptions: OgooneLexerParseOptions | null = null;
+  protected parseOptions: ExiumParseOptions | null = null;
   protected debugg(...args: unknown[]): void {
     if (this.parseOptions?.debugg) {
       console.log(...args);
