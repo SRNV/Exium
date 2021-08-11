@@ -705,7 +705,7 @@ export class ExiumBase {
     ], related);
     const isGlobalAlias = related.find((context) => context.type === ContextTypes.IdentifierAsStatement);
     const token = source.slice(x, this.cursor.x);
-    const context = new ExiumContext(!!isGlobalAlias ? ContextTypes.ImportAllAlias : ContextTypes.Asterix, token, {
+    const context = new ExiumContext(isGlobalAlias ? ContextTypes.ImportAllAlias : ContextTypes.Asterix, token, {
       line,
       column,
       start: x,
@@ -1271,7 +1271,7 @@ export class ExiumBase {
   // TODO create contexts for the tokens between import and from
   import_statements_CTX(opts?: ContextReaderOptions): boolean {
     try {
-      const { char, next, nextPart } = this;
+      const { nextPart } = this;
       const { x, line, column } = this.cursor;
       const { source } = this;
       const isValid = importRegExp.test(nextPart);
