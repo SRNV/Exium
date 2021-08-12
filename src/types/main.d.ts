@@ -36,7 +36,7 @@ export interface ExiumParseOptions {
    */
   type:
     | "ogone"
-    | "deeper"
+    | "bio"
     | "lexer"
     | "custom"
     | "stylesheet"

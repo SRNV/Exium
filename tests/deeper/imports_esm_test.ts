@@ -10,7 +10,7 @@ Deno.test("exium supports ImportComponentStatement with global aliases", () => {
   });
   try {
     const content = `import * as THREE from 'three';`;
-    const contexts = lexer.readSync(content, { type: "deeper" });
+    const contexts = lexer.readSync(content, { type: "bio" });
     const impStmt = contexts.find(context => context.type === ContextTypes.ImportStatement);
     assert(impStmt);
     const allalias = impStmt.children.find(context => context.type === ContextTypes.ImportAllAlias);
@@ -29,7 +29,7 @@ Deno.test("", () => {
       );
     });
     const content = `import { Mesh, MeshBasicMaterial } from 'three';`;
-    const contexts = lexer.readSync(content, { type: "deeper" });
+    const contexts = lexer.readSync(content, { type: "bio" });
     try {
 
     } catch(err) {
@@ -43,7 +43,7 @@ Deno.test("", () => {
       );
     });
     const content = `import M, { some } from 'mqi';`;
-    const contexts = lexer.readSync(content, { type: "deeper" });
+    const contexts = lexer.readSync(content, { type: "bio" });
     try {
 
     } catch(err) {
@@ -57,7 +57,7 @@ Deno.test("", () => {
       );
     });
     const content = `import { some }, B from 'qib';`;
-    const contexts = lexer.readSync(content, { type: "deeper" });
+    const contexts = lexer.readSync(content, { type: "bio" });
     try {
 
     } catch(err) {
@@ -71,7 +71,7 @@ Deno.test("", () => {
       );
     });
     const content = `import { some as aliasOfSome, some2 }, B from 'qib';`;
-    const contexts = lexer.readSync(content, { type: "deeper" });
+    const contexts = lexer.readSync(content, { type: "bio" });
     try {
 
     } catch(err) {

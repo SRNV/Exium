@@ -5,10 +5,10 @@ import {
 } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 import { ContextTypes } from "../../../src/enums/context-types.ts";
 
-Deno.test("exium - deeper-document can expose the component's template", () => {
+Deno.test("exium - bio-document can expose the component's template", () => {
   const content = `
-import component { Counter } from './Counter.deeper';
-import component { Route404 } from './404.deeper';
+import component { Counter } from './Counter.bio';
+import component { Route404 } from './404.bio';
 
 export router <Router
     @void doDefaultThings={() => {...}}
@@ -37,7 +37,7 @@ export router <Router
       );
     },
     source: content,
-    options: { type: "deeper" },
+    options: { type: "bio" },
   });
   try {
     const [component] = document.components;
@@ -51,14 +51,14 @@ export router <Router
   }
 });
 
-Deno.test("exium - deeper-document can expose the component's script code", () => {
+Deno.test("exium - bio-document can expose the component's script code", () => {
   const code = `
   case 'beforeEnter:counter': this.doThingsBeforeEnter(); break;
   case 'load:counter': this.doThings(); break;
   default: this.doDefaultThings();`;
   const content = `
-import component { Counter } from './Counter.deeper';
-import component { Route404 } from './404.deeper';
+import component { Counter } from './Counter.bio';
+import component { Route404 } from './404.bio';
 
 export router <Router
     @void doDefaultThings={() => {...}}
@@ -83,7 +83,7 @@ export router <Router
       );
     },
     source: content,
-    options: { type: "deeper" },
+    options: { type: "bio" },
   });
   try {
     const [script] = document.getElementsByTagName("script");
@@ -96,7 +96,7 @@ export router <Router
   }
 });
 
-Deno.test("exium - deeper-document can split local, external and exported components with different methods", () => {
+Deno.test("exium - bio-document can split local, external and exported components with different methods", () => {
   const localComponents: string[][] = [
     ["router", "Router"],
     ["component", "BasicComponent"],
@@ -112,8 +112,8 @@ Deno.test("exium - deeper-document can split local, external and exported compon
     ["controller", "ControllerComponentExported"],
   ];
   const content = `
-import component { Counter } from './Counter.deeper';
-import component { Route404 } from './404.deeper';
+import component { Counter } from './Counter.bio';
+import component { Route404 } from './404.bio';
 
 ${
     exportedLocalComponents.map(([type, name]) => `export ${type} <${name} />`)
@@ -129,7 +129,7 @@ ${localComponents.map(([type, name]) => `${type} <${name} />`).join("\n")}
       );
     },
     source: content,
-    options: { type: "deeper" },
+    options: { type: "bio" },
   });
   try {
     const components = document.getLocalComponents();
@@ -151,7 +151,7 @@ ${localComponents.map(([type, name]) => `${type} <${name} />`).join("\n")}
   }
 });
 Deno.test("exium - use getImportPath to get the path to the dependency", () => {
-  const content = `import component { Dep } from './Dep.deeper';`;
+  const content = `import component { Dep } from './Dep.bio';`;
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
@@ -160,7 +160,7 @@ Deno.test("exium - use getImportPath to get the path to the dependency", () => {
       );
     },
     source: content,
-    options: { type: "deeper" },
+    options: { type: "bio" },
   });
   try {
     const context = document.contexts.find((context) =>
@@ -169,7 +169,7 @@ Deno.test("exium - use getImportPath to get the path to the dependency", () => {
     assert(context);
     const path = context.getImportPath();
     assert(path);
-    assert(path === "./Dep.deeper");
+    assert(path === "./Dep.bio");
   } catch (err) {
     throw err;
   }

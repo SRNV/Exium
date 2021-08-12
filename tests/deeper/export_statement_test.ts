@@ -14,7 +14,7 @@ export component <C>
   <script></script>
 </C>
   `;
-  const contexts = lexer.readSync(content, { type: "deeper" });
+  const contexts = lexer.readSync(content, { type: "bio" });
   assert(contexts.length);
   const exportStatement = contexts.find((context) =>
     context.type === ContextTypes.ExportStatement
@@ -32,6 +32,6 @@ Deno.test("exium throws if their is an unsupported exported type of component", 
     isSucess = false;
   });
   const content = `export foo <A></A>`;
-  lexer.readSync(content, { type: "deeper" });
+  lexer.readSync(content, { type: "bio" });
   assert(!isSucess);
 });

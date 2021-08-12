@@ -1,5 +1,5 @@
-import { Exium } from "../../../mod.ts";
-import { ContextTypes } from "../../../src/enums/context-types.ts";
+import { Exium } from "../../mod.ts";
+import { ContextTypes } from "../../src/enums/context-types.ts";
 
 Deno.test("exium can parse @charset", () => {
   const content = `@charset 'utf-8';`;

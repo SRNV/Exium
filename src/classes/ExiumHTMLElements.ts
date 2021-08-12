@@ -579,7 +579,7 @@ export class ExiumHTMLElements extends ExiumBase {
     }
   }
   /**
-   * support for Deeper's attribute modifiers
+   * support for bio's attribute modifiers
    */
   attributes_modifiers_CTX(opts?: ContextReaderOptions): boolean | null {
     try {
@@ -667,7 +667,7 @@ export class ExiumHTMLElements extends ExiumBase {
     }
   }
   /**
-   * support for Deeper Language specififation
+   * support for bio Language specififation
    * this context allows to define a component with the following pattern:
    * component <ComponentName>
    *   ...
@@ -749,7 +749,7 @@ export class ExiumHTMLElements extends ExiumBase {
     }
   }
   /**
-   * support export statement for Deeper language
+   * support export statement for bio language
    */
   export_component_statements_CTX(): boolean | null {
     try {

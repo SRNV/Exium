@@ -30,7 +30,7 @@ controller <G />
 gl <H></H>
 gl <H />
   `;
-  const contexts = lexer.readSync(content, { type: "deeper" });
+  const contexts = lexer.readSync(content, { type: "bio" });
   assert(contexts);
 });
 
@@ -46,11 +46,11 @@ foo <A />
 
 bar <B />
   `;
-  lexer.readSync(content, { type: "deeper" });
+  lexer.readSync(content, { type: "bio" });
   assert(!isSucess);
 });
 
-Deno.test("exium supports template definition in a deeper component", () => {
+Deno.test("exium supports template definition in a bio component", () => {
   const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -62,6 +62,6 @@ component <C>
   <script></script>
 </C>
   `;
-  const contexts = lexer.readSync(content, { type: "deeper" });
+  const contexts = lexer.readSync(content, { type: "bio" });
   assert(contexts.length);
 });

@@ -101,7 +101,7 @@ export class ExiumDocument {
    * @returns styles declared in the document
    */
   get styles(): ExiumContext[] {
-    if (this.#_type === "deeper") {
+    if (this.#_type === "bio") {
       return [];
     }
     return this.#_stylesheets ||
@@ -113,7 +113,7 @@ export class ExiumDocument {
    * @returns all css content inside the style elements
    */
   get stylesheets(): ExiumContext[] {
-    if (this.#_type === "deeper") {
+    if (this.#_type === "bio") {
       return [];
     }
     return this.#_stylesheets ||
@@ -126,7 +126,7 @@ export class ExiumDocument {
    * @deprecated support single file poly components
    */
   get proto(): ExiumContext | undefined {
-    if (this.#_type === "deeper") {
+    if (this.#_type === "bio") {
       return undefined;
     }
     return this.#_proto ||
@@ -142,7 +142,7 @@ export class ExiumDocument {
    * @deprecated support single file poly components
    */
   get protocol(): ExiumContext | undefined {
-    if (this.#_type === "deeper") {
+    if (this.#_type === "bio") {
       return undefined;
     }
     return this.#_protocol ||
@@ -155,7 +155,7 @@ export class ExiumDocument {
    * @deprecated support single file poly components
    */
   get template(): ExiumContext | undefined {
-    if (this.#_type === "deeper") {
+    if (this.#_type === "bio") {
       return undefined;
     }
     return this.#_template ||
@@ -172,7 +172,7 @@ export class ExiumDocument {
    * @deprecated support single file poly components
    */
   get head(): ExiumContext | undefined {
-    if (this.#_type === "deeper") {
+    if (this.#_type === "bio") {
       return undefined;
     }
     return this.#_head ||
@@ -187,7 +187,7 @@ export class ExiumDocument {
    * retrieve top level components
    */
   get components(): ExiumContext[] {
-    if (this.#_type === "deeper") {
+    if (this.#_type === "bio") {
       return (this.contexts.filter((context) =>
         context.type === ContextTypes.ComponentDeclaration
       ));
@@ -325,7 +325,7 @@ export class ExiumDocument {
     };
   }
   getImportsOfExternalComponentByTagName(tagname: string): ExiumContext[] {
-    if (this.#_type === "deeper") {
+    if (this.#_type === "bio") {
       return this.contexts.filter((context) => {
         const result = context.type === ContextTypes.ImportStatement &&
           context.children.find((child) =>
@@ -438,8 +438,8 @@ export class ExiumDocument {
    */
   getType(): string {
     switch (this.#_type) {
-      case "deeper":
-        return "deeper";
+      case "bio":
+        return "bio";
       case "stylesheet":
         return "stylesheet";
       case "protocol":

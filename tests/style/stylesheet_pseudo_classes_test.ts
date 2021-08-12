@@ -1,6 +1,6 @@
-import { Exium } from "../../../mod.ts";
-import { ContextTypes } from "../../../src/enums/context-types.ts";
-import { SupportedStyleSheetPseudoClasses } from "../../../src/supports.ts";
+import { Exium } from "../../mod.ts";
+import { ContextTypes } from "../../src/enums/context-types.ts";
+import { SupportedStyleSheetPseudoClasses } from "../../src/supports.ts";
 import {
   assert,
   assertEquals,

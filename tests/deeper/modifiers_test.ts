@@ -9,7 +9,7 @@ Deno.test("exium supports attribute modifiers (auto closing tag)", () => {
     );
   });
   const content = `component <C @private name=World />`;
-  const contexts = lexer.readSync(content, { type: "deeper" });
+  const contexts = lexer.readSync(content, { type: "bio" });
   const privateModifier = contexts.find((context) =>
     context.type === ContextTypes.AttributeModifier
   );
@@ -25,7 +25,7 @@ Deno.test("exium supports attribute modifiers", () => {
     );
   });
   const content = `component <C @private name=World> </C>`;
-  const contexts = lexer.readSync(content, { type: "deeper" });
+  const contexts = lexer.readSync(content, { type: "bio" });
   const privateModifier = contexts.find((context) =>
     context.type === ContextTypes.AttributeModifier
   );
@@ -41,7 +41,7 @@ Deno.test("exium supports attribute modifiers on AttributeBoolean", () => {
     );
   });
   const content = `component <C @private isSupported> </C>`;
-  const contexts = lexer.readSync(content, { type: "deeper" });
+  const contexts = lexer.readSync(content, { type: "bio" });
   const privateModifier = contexts.find((context) =>
     context.type === ContextTypes.AttributeModifier
   );
@@ -57,7 +57,7 @@ Deno.test("exium supports attribute modifiers on AttributeProperty", () => {
     );
   });
   const content = `component <C @private isSupported={true}> </C>`;
-  const contexts = lexer.readSync(content, { type: "deeper" });
+  const contexts = lexer.readSync(content, { type: "bio" });
   const privateModifier = contexts.find((context) =>
     context.type === ContextTypes.AttributeModifier
   );
@@ -73,7 +73,7 @@ Deno.test("exium supports attribute modifiers with types", () => {
     );
   });
   const content = `component <C @private[ boolean[] ] isSupported={true}> </C>`;
-  const contexts = lexer.readSync(content, { type: "deeper" });
+  const contexts = lexer.readSync(content, { type: "bio" });
   const privateModifier = contexts.find((context) =>
     context.type === ContextTypes.AttributeModifier
   );
@@ -95,7 +95,7 @@ Deno.test("exium supports attribute modifiers with arguments", () => {
   });
   const content =
     `component <C @store:StoreMenu[ boolean[] ] isSupported={true}> </C>`;
-  const contexts = lexer.readSync(content, { type: "deeper" });
+  const contexts = lexer.readSync(content, { type: "bio" });
   const privateModifier = contexts.find((context) =>
     context.type === ContextTypes.AttributeModifier
   );
@@ -123,7 +123,7 @@ Deno.test("exium - throws if the modifiers is not associated with an attribute",
     isSucess = false;
   });
   const content = `component <C @private/>`;
-  lexer.readSync(content, { type: "deeper" });
+  lexer.readSync(content, { type: "bio" });
   assert(!isSucess);
 });
 
@@ -133,7 +133,7 @@ Deno.test("exium - throws if their is a sequence of modifiers", () => {
     isFailing = true;
   });
   const content = `component <C @private @public/>`;
-  lexer.readSync(content, { type: "deeper" });
+  lexer.readSync(content, { type: "bio" });
   assert(isFailing);
 });
 
@@ -143,11 +143,11 @@ Deno.test("exium - is waiting for a character to make it a modifier", () => {
     isFailing = true;
   });
   const content = `component <C @ attr/>`;
-  lexer.readSync(content, { type: "deeper" });
+  lexer.readSync(content, { type: "bio" });
   assert(!isFailing);
 });
 
-Deno.test("exium supports deeper language with complex example (spec: component.0.0.0.2021-4.7)", () => {
+Deno.test("exium supports bio language with complex example (spec: component.0.0.0.2021-4.7)", () => {
   const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
@@ -167,5 +167,5 @@ Deno.test("exium supports deeper language with complex example (spec: component.
     </script>
   </C>
   `;
-  lexer.readSync(content, { type: "deeper" });
+  lexer.readSync(content, { type: "bio" });
 });

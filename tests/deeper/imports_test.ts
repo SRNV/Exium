@@ -10,8 +10,8 @@ Deno.test("exium supports ImportComponentStatement with a list of identifier", (
   });
   const content = `import component {
     A,
-    B } from './A.deeper';`;
-  const contexts = lexer.readSync(content, { type: "deeper" });
+    B } from './A.bio';`;
+  const contexts = lexer.readSync(content, { type: "bio" });
   const identifiers = contexts.find((context) =>
     context.type === ContextTypes.IdentifierList
   );
@@ -32,8 +32,8 @@ Deno.test("exium throws on malformed ImportComponentStatement when the identifie
   const lexer = new Exium((_reason, _cursor, _context) => {
     isSucess = false;
   });
-  const content = `import component { , A, B } from './A.deeper';`;
-  lexer.readSync(content, { type: "deeper" });
+  const content = `import component { , A, B } from './A.bio';`;
+  lexer.readSync(content, { type: "bio" });
   assert(!isSucess);
 });
 
@@ -42,8 +42,8 @@ Deno.test("exium throws on malformed ImportComponentStatement when theirs a suit
   const lexer = new Exium((_reason, _cursor, _context) => {
     isSucess = false;
   });
-  const content = `import component { A,, B } from './A.deeper';`;
-  lexer.readSync(content, { type: "deeper" });
+  const content = `import component { A,, B } from './A.bio';`;
+  lexer.readSync(content, { type: "bio" });
   assert(!isSucess);
 });
 Deno.test("exium supports imports with unique identifier", () => {
@@ -51,8 +51,8 @@ Deno.test("exium supports imports with unique identifier", () => {
   const lexer = new Exium((_reason, _cursor, _context) => {
     isSucess = false;
   });
-  const content = `import component { V } from './A.deeper';`;
-  lexer.readSync(content, { type: "deeper" });
+  const content = `import component { V } from './A.bio';`;
+  lexer.readSync(content, { type: "bio" });
   assert(isSucess);
 });
 
@@ -61,7 +61,7 @@ Deno.test("exium supports imports with default identifier", () => {
   const lexer = new Exium((_reason, _cursor, _context) => {
     isSucess = false;
   });
-  const content = `import component V from './A.deeper';`;
-  lexer.readSync(content, { type: "deeper" });
+  const content = `import component V from './A.bio';`;
+  lexer.readSync(content, { type: "bio" });
   assert(isSucess);
 });

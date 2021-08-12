@@ -98,9 +98,9 @@ export class Exium extends ExiumStyleSheet {
       this.textnode_CTX,
     ],
     /**
-     * use this scope to parse deeper components
+     * use this scope to parse bio components
      */
-    deeper: [
+    bio: [
       this.comment_CTX,
       this.comment_block_CTX,
       this.line_break_CTX,

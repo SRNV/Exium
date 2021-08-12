@@ -4,6 +4,7 @@ import {
   assertEquals,
 } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
+const importsTypes = [ContextTypes.ImportStatement, ContextTypes.ImportAmbient];
 Deno.test("exium supports import ambient statement", () => {
   const lexer = new Exium((reason, _cursor, context) => {
     throw new Error(
@@ -43,8 +44,9 @@ Deno.test("exium supports all import statements", () => {
   `;
   const contexts = lexer.readSync(content, { type: "ogone" });
   const isNotValid = !(contexts && contexts.length);
-  const imports = contexts.filter(context => context.type === ContextTypes.ImportStatement);
+  const imports = contexts.filter(context => importsTypes.includes(context.type));
   assert(imports.length);
+  assertEquals(imports.length, 10);
   const [
     globalImport,
     defaultImport,
