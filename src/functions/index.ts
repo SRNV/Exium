@@ -1,4 +1,4 @@
-import type { Exium } from '../../mod.ts';
+import type { Exium, Exium } from '../../mod.ts';
 import {
   ContextReader,
   ContextReaderOptions,
@@ -232,7 +232,7 @@ export function comment_block_CTX(exium: Exium, opts?: ContextReaderOptions): bo
     const result = true;
     let isClosed = false;
     const allSubContexts: ContextReader[] = [
-      exium.line_break_CTX,
+      line_break_CTX,
     ];
     const children: ExiumContext[] = [];
     while (!isEOF(exium)) {
@@ -313,7 +313,7 @@ export function string_single_quote_CTX(exium: Exium, opts?: ContextReaderOption
       isValidChar(
         exium,
         opts?.unexpected || [
-          exium.line_break_CTX,
+          line_break_CTX,
         ],
       );
       if (exium.char === "'" && exium.prev !== "\\") {
@@ -355,7 +355,7 @@ export function string_double_quote_CTX(exium: Exium, opts?: ContextReaderOption
       isValidChar(
         exium,
         opts?.unexpected || [
-          exium.line_break_CTX,
+          line_break_CTX,
         ],
       );
       if (exium.char === '"' && exium.prev !== "\\") {
@@ -487,36 +487,513 @@ export function string_template_quote_eval_CTX(exium: Exium, opts?: ContextReade
     throw err;
   }
 }
-  /**
-   * reads if the cursor's character is a space
-   * @returns true if the current character and the next characters are spaces
-   */
-  export function multiple_spaces_CTX(exium: Exium, opts?: ContextReaderOptions): boolean {
-    exium.debuggPosition("\n\n\t\tMULTISPACE START");
-    try {
-      const { char, next, source } = exium;
-      if (char !== " " || next !== " ") return false;
-      const { x, column, line } = exium.cursor;
-      let result = false;
-      while (exium.char === " ") {
-        shift(exium, 1);
-        isValidChar(exium, opts?.unexpected);
-      }
-      result = x !== exium.cursor.x;
-      if (result) {
-        const token = source.slice(x, exium.cursor.x);
-        exium.currentContexts.push(
-          new ExiumContext(ContextTypes.MultipleSpaces, token, {
-            start: x,
-            end: exium.cursor.x,
-            line,
-            column,
-          }),
-        );
-      }
-      exium.debuggPosition("\n\n\t\tMULTISPACE END");
-      return result;
-    } catch (err) {
-      throw err;
+/**
+ * reads if the cursor's character is a space
+ * @returns true if the current character and the next characters are spaces
+ */
+export function multiple_spaces_CTX(exium: Exium, opts?: ContextReaderOptions): boolean {
+  exium.debuggPosition("\n\n\t\tMULTISPACE START");
+  try {
+    const { char, next, source } = exium;
+    if (char !== " " || next !== " ") return false;
+    const { x, column, line } = exium.cursor;
+    let result = false;
+    while (exium.char === " ") {
+      shift(exium, 1);
+      isValidChar(exium, opts?.unexpected);
     }
+    result = x !== exium.cursor.x;
+    if (result) {
+      const token = source.slice(x, exium.cursor.x);
+      exium.currentContexts.push(
+        new ExiumContext(ContextTypes.MultipleSpaces, token, {
+          start: x,
+          end: exium.cursor.x,
+          line,
+          column,
+        }),
+      );
+    }
+    exium.debuggPosition("\n\n\t\tMULTISPACE END");
+    return result;
+  } catch (err) {
+    throw err;
   }
+}
+export function identifier_asterix_CTX(exium: Exium, opts?: ContextReaderOptions): boolean | null {
+  exium.debuggPosition("ASTERIX CTX START");
+  const { line, column, x } = exium.cursor;
+  const { char, source } = exium;
+  const isValid = char === '*';
+  if (!isValid) return false;
+  if (opts?.checkOnly) return true;
+  shift(exium, 1);
+  const related: ExiumContext[] = [];
+  saveStrictContextsTo(exium, [
+    multiple_spaces_CTX,
+    space_CTX,
+    identifier_alias_CTX,
+  ], related);
+  const isGlobalAlias = related.find((context) => context.type === ContextTypes.IdentifierAsStatement);
+  const token = source.slice(x, exium.cursor.x);
+  const context = new ExiumContext(isGlobalAlias ? ContextTypes.ImportAllAlias : ContextTypes.Asterix, token, {
+    line,
+    column,
+    start: x,
+    end: exium.cursor.x,
+  });
+  exium.currentContexts.push(context);
+  exium.debuggPosition("ASTERIX CTX END");
+  return true;
+}
+export function identifier_CTX(exium: Exium, opts?: ContextReaderOptions) {
+  exium.debuggPosition("Identifier CTX START");
+  const { line, column, x } = exium.cursor;
+  if (
+    !exium.isCharIdentifier &&
+    (!opts?.data?.allowDigit && !exium.isCharDigit)
+  ) {
+    return false;
+  }
+  if (opts?.checkOnly) return true;
+  const allowAliases = opts?.data?.identifier_allow_alias;
+  const allowedIdentifierChars = [
+    ...(opts?.data?.allowedIdentifierChars as string[] || []),
+  ];
+  shift(exium, 1);
+  let isAliased = false;
+  const related: ExiumContext[] = [];
+  while (!isEOF(exium)) {
+    const { nextPart } = exium;
+    if (!isAliased && allowAliases && asRegExp.test(nextPart)) {
+      saveContextsTo(exium, [
+        multiple_spaces_CTX,
+        space_CTX,
+        identifier_alias_CTX,
+      ], related);
+      const recognized = related.find((context) => context.type === ContextTypes.IdentifierAsStatement)
+      if (recognized) {
+        related.push(recognized);
+        isAliased = true;
+      }
+    }
+    if (
+      (exium.isCharPuntuation || exium.isCharSpacing) &&
+      !allowedIdentifierChars.includes(exium.char)
+    ) {
+      break;
+    }
+    shift(exium, 1);
+  }
+  const token = exium.source.slice(x, exium.cursor.x);
+  const context = new ExiumContext(ContextTypes.Identifier, token, {
+    start: x,
+    end: exium.cursor.x,
+    line,
+    column,
+  });
+  exium.currentContexts.push(
+    context,
+  );
+  context.related.push(...related);
+  return true;
+}
+export function identifier_list_CTX(exium: Exium, opts?: ContextReaderOptions): boolean | null {
+  exium.debuggPosition("Identifier LIST CTX Start");
+  const { char, source } = exium;
+  const isValid = char === "{";
+  if (!isValid) return false;
+  if (opts?.checkOnly) return true;
+  const { line, column, x } = exium.cursor;
+  shift(exium, 1);
+  const readers: ContextReader[] = [
+    line_break_CTX,
+    space_CTX,
+    multiple_spaces_CTX,
+  ];
+  const children: ExiumContext[] = [];
+  let isComaNeeded = false;
+  let isUnexpected = false;
+  while (!isEOF(exium)) {
+    saveContextsTo(exium, readers, children);
+    if (
+      (!isComaNeeded) && identifier_CTX(exium, exium.checkOnlyOptions) &&
+      exium.char !== ","
+    ) {
+      const identified = identifier_CTX(exium, opts);
+      if (identified) {
+        const lastContext = getLastContext(exium);
+        children.push(lastContext);
+        isComaNeeded = true;
+      }
+    }
+    if (isComaNeeded && exium.char === ",") {
+      const identifiedComa = coma_CTX(exium);
+      if (identifiedComa) {
+        const lastContext = getLastContext(exium);
+        children.push(lastContext);
+        isComaNeeded = false;
+      }
+    }
+    if (!(exium.char === "}" || exium.isCharSpacing)) {
+      isUnexpected = true;
+    }
+    if (isUnexpected) {
+      exium.onError(Reason.UnexpectedToken, exium.cursor, getUnexpected(exium));
+    }
+    if (exium.char === "}") {
+      shift(exium, 1);
+      break;
+    }
+    isValidChar(exium, opts?.unexpected);
+    shift(exium, 1);
+  }
+  const token = source.slice(x, exium.cursor.x);
+  const context = new ExiumContext(ContextTypes.IdentifierList, token, {
+    start: x,
+    end: exium.cursor.x,
+    line,
+    column,
+  });
+  exium.currentContexts.push(context);
+  context.children.push(...children);
+  return true;
+}
+export function identifier_alias_CTX(exium: Exium, opts?: ContextReaderOptions): boolean | null {
+  const { x, line, column } = exium.cursor;
+  const { source } = exium;
+  // check if it's a as stmt
+  const identified = identifier_CTX(exium);
+  const children: ExiumContext[] = [];
+  let isValid = false;
+  if (identified) {
+    const lastContext = getLastContext(exium);
+    isValid = lastContext.source === 'as';
+    if (isValid) lastContext.type = ContextTypes.AsStatement;
+  }
+  if (!isValid) return false;
+  if (opts?.checkOnly) return true;
+  let isIdentified = false;
+  const allsubs: ContextReader[] = [
+    multiple_spaces_CTX,
+    space_CTX,
+    identifier_CTX,
+  ];
+  while (!isEOF(exium)) {
+    saveStrictContextsTo(exium, allsubs, children);
+    isIdentified = !!children.find((context) => context.type === ContextTypes.Identifier);
+    if (isIdentified) {
+      break;
+    }
+    shift(exium, 1);
+  }
+  const token = source.slice(x, exium.cursor.x);
+  const context = new ExiumContext(ContextTypes.IdentifierAsStatement, token, {
+    start: x,
+    end: exium.cursor.x,
+    line,
+    column,
+  });
+  exium.currentContexts.push(context);
+  context.children.push(...children);
+  if (!isIdentified) {
+    exium.onError(Reason.AsStatementMissingIdentifier, exium.cursor, context);
+  }
+  return true;
+}
+export function space_CTX(exium: Exium, opts?: ContextReaderOptions): boolean | null {
+  exium.debuggPosition("\n\n\t\tSPACE START");
+  const result = exium.char === " " && exium.next !== exium.char;
+  if (result) {
+    exium.currentContexts.push(
+      new ExiumContext(ContextTypes.Space, exium.char, {
+        start: exium.cursor.x,
+        end: exium.cursor.x + 1,
+        line: exium.cursor.line,
+        column: exium.cursor.column,
+      }),
+    );
+    shift(exium, 1);
+  }
+  exium.debuggPosition("\n\n\t\tSPACE START");
+  return result;
+}
+export function semicolon_CTX(exium: Exium, opts?: ContextReaderOptions): boolean | null {
+  exium.debuggPosition("\n\n\t\tSEMICOLON START");
+  const result = exium.char === ";";
+  if (result) {
+    exium.currentContexts.push(
+      new ExiumContext(ContextTypes.SemiColon, exium.char, {
+        start: exium.cursor.x,
+        end: exium.cursor.x + 1,
+        line: exium.cursor.line,
+        column: exium.cursor.column,
+      }),
+    );
+    shift(exium, 1);
+  }
+  exium.debuggPosition("\n\n\t\tSEMICOLON END");
+  return result;
+}
+export function point_CTX(exium: Exium, opts?: ContextReaderOptions): boolean | null {
+  exium.debuggPosition("\n\n\t\tPOINT START");
+  const result = exium.char === ".";
+  if (result) {
+    exium.currentContexts.push(
+      new ExiumContext(ContextTypes.Point, exium.char, {
+        start: exium.cursor.x,
+        end: exium.cursor.x + 1,
+        line: exium.cursor.line,
+        column: exium.cursor.column,
+      }),
+    );
+    shift(exium, 1);
+  }
+  exium.debuggPosition("\n\n\t\tPOINT END");
+  return result;
+}
+export function coma_CTX(exium: Exium, opts?: ContextReaderOptions): boolean | null {
+  exium.debuggPosition("\n\n\t\tCOMA START");
+  const result = exium.char === ",";
+  if (result) {
+    exium.currentContexts.push(
+      new ExiumContext(ContextTypes.Coma, exium.char, {
+        start: exium.cursor.x,
+        end: exium.cursor.x + 1,
+        line: exium.cursor.line,
+        column: exium.cursor.column,
+      }),
+    );
+    shift(exium, 1);
+  }
+  exium.debuggPosition("\n\n\t\tCOMA END");
+  return result;
+}
+export function double_point_CTX(exium: Exium, opts?: ContextReaderOptions): boolean | null {
+  exium.debuggPosition("\n\n\t\tDOUBLE POINT START");
+  const result = exium.char === ":";
+  if (result) {
+    exium.currentContexts.push(
+      new ExiumContext(ContextTypes.DoublePoint, exium.char, {
+        start: exium.cursor.x,
+        end: exium.cursor.x + 1,
+        line: exium.cursor.line,
+        column: exium.cursor.column,
+      }),
+    );
+    shift(exium, 1);
+  }
+  exium.debuggPosition("\n\n\t\tDOUBLE POINT END");
+  return result;
+}
+export function line_break_CTX(exium: Exium, opts?: ContextReaderOptions): boolean | null {
+  exium.debuggPosition("\n\n\t\tLINEBREAK START");
+  const { x, line, column } = exium.cursor;
+  const isChariot = exium.char === "\r" && exium.next === "\n";
+  const result = exium.char === "\n" || isChariot;
+  if (result) {
+    if (isChariot) shift(exium, 2);
+    else shift(exium, 1);
+    exium.currentContexts.push(
+      new ExiumContext(ContextTypes.LineBreak, exium.char, {
+        start: x,
+        end: exium.cursor.x,
+        line: line,
+        column: column,
+      }),
+    );
+    exium.cursor.column = 0;
+    exium.cursor.line++;
+  }
+  exium.debuggPosition("\n\n\t\tLINEBREAK END");
+  return result;
+}
+/**
+ * should match with ( ... ) and is recursive
+ */
+export function braces_CTX(exium: Exium, opts?: ContextReaderOptions): boolean | null {
+  try {
+    exium.debuggPosition("BRACES_CTX START");
+    const { char } = exium;
+    const { x, line, column } = exium.cursor;
+    const { source } = exium;
+    if (char !== "(") return false;
+    if (opts?.checkOnly) return true;
+    shift(exium, 1);
+    const result = true;
+    let isClosed = false;
+    const allSubContexts = [
+      line_break_CTX,
+      multiple_spaces_CTX,
+      space_CTX,
+      braces_CTX,
+      ...(opts?.data?.braces_contexts as [] || []),
+    ];
+    const children: ExiumContext[] = [];
+    while (!isEOF(exium)) {
+      exium.debuggPosition("BRACES_CTX");
+      isValidChar(exium, opts?.unexpected);
+      saveContextsTo(exium, allSubContexts, children);
+      if (exium.char === ")") {
+        shift(exium, 1);
+        isClosed = true;
+        break;
+      }
+      shift(exium, 1);
+    }
+    const token = source.slice(x, exium.cursor.x);
+    const context = new ExiumContext(ContextTypes.Braces, token, {
+      start: x,
+      end: exium.cursor.x,
+      line,
+      column,
+    });
+    context.children.push(...children);
+    exium.currentContexts.push(context);
+    if (!isClosed) {
+      exium.onError(Reason.BracesOpen, exium.cursor, context);
+    }
+    return result;
+  } catch (err) {
+    throw err;
+  }
+}
+/**
+ * should match with {...} and is recursive
+ */
+export function curly_brackets_CTX(exium: Exium, opts?: ContextReaderOptions): boolean {
+  try {
+    const { char } = exium;
+    const { x, line, column } = exium.cursor;
+    const { source } = exium;
+    if (char !== "{") return false;
+    if (opts?.checkOnly) return true;
+    const result = true;
+    let isClosed = false;
+    const allSubContexts = opts?.contexts || [
+      line_break_CTX,
+      multiple_spaces_CTX,
+      space_CTX,
+      curly_brackets_CTX,
+    ];
+    const children: ExiumContext[] = [];
+    while (!isEOF(exium)) {
+      shift(exium, 1);
+      isValidChar(exium, opts?.unexpected);
+      saveContextsTo(exium, allSubContexts, children);
+      if (exium.char === "}") {
+        shift(exium, 1);
+        isClosed = true;
+        break;
+      }
+    }
+    const token = source.slice(x, exium.cursor.x);
+    const context = new ExiumContext(ContextTypes.CurlyBrackets, token, {
+      start: x,
+      end: exium.cursor.x,
+      line,
+      column,
+    });
+    context.children.push(...children);
+    exium.currentContexts.push(context);
+    if (!isClosed) {
+      exium.onError(Reason.CurlyBracketsOpen, exium.cursor, context);
+    }
+    return result;
+  } catch (err) {
+    throw err;
+  }
+}
+/**
+ * should match with [...] and is recursive
+ */
+export function array_CTX(exium: Exium, opts?: ContextReaderOptions): boolean {
+  try {
+    const { char } = exium;
+    const { x, line, column } = exium.cursor;
+    const { source } = exium;
+    if (char !== "[") return false;
+    if (opts?.checkOnly) return true;
+    const result = true;
+    let isClosed = false;
+    const allSubContexts = [
+      line_break_CTX,
+      multiple_spaces_CTX,
+      space_CTX,
+      array_CTX,
+    ];
+    const children: ExiumContext[] = [];
+    while (!isEOF(exium)) {
+      shift(exium, 1);
+      isValidChar(exium, opts?.unexpected);
+      saveContextsTo(exium, allSubContexts, children);
+      if (exium.char === "]") {
+        shift(exium, 1);
+        isClosed = true;
+        break;
+      }
+    }
+    const token = source.slice(x, exium.cursor.x);
+    const context = new ExiumContext(ContextTypes.Array, token, {
+      start: x,
+      end: exium.cursor.x,
+      line,
+      column,
+    });
+    context.children.push(...children);
+    exium.currentContexts.push(context);
+    if (!isClosed) {
+      exium.onError(Reason.ArrayOpen, exium.cursor, context);
+    }
+    return result;
+  } catch (err) {
+    throw err;
+  }
+}
+/**
+ * should match with (...) and is recursive
+ */
+export function parenthese_CTX(exium: Exium, opts?: ContextReaderOptions): boolean {
+  try {
+    const { char } = exium;
+    const { x, line, column } = exium.cursor;
+    const { source } = exium;
+    if (char !== "(") return false;
+    if (opts?.checkOnly) return true;
+    const result = true;
+    let isClosed = false;
+    const allSubContexts = (opts?.contexts || [
+      line_break_CTX,
+      multiple_spaces_CTX,
+      space_CTX,
+      array_CTX,
+      parenthese_CTX,
+    ]);
+    const children: ExiumContext[] = [];
+    while (!isEOF(exium)) {
+      shift(exium, 1);
+      isValidChar(exium, opts?.unexpected);
+      saveContextsTo(exium, allSubContexts, children);
+      if (exium.char === ")") {
+        shift(exium, 1);
+        isClosed = true;
+        break;
+      }
+    }
+    const token = source.slice(x, exium.cursor.x);
+    const context = new ExiumContext(ContextTypes.Parenthese, token, {
+      start: x,
+      end: exium.cursor.x,
+      line,
+      column,
+    });
+    context.children.push(...children);
+    exium.currentContexts.push(context);
+    if (!isClosed) {
+      exium.onError(Reason.ParentheseOpen, exium.cursor, context);
+    }
+    return result;
+  } catch (err) {
+    throw err;
+  }
+}
