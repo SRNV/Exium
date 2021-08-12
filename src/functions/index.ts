@@ -1,4 +1,4 @@
-import type { Exium, Exium } from '../../mod.ts';
+import type { Exium } from '../../mod.ts';
 import {
   ContextReader,
   ContextReaderOptions,
@@ -8,10 +8,809 @@ import {
 import { ExiumContext } from "../classes/ExiumContext.ts";
 import { ContextTypes } from "../enums/context-types.ts";
 import { Reason } from "../enums/error-reason.ts";
+import { SupportedStyleSheetCharset } from "../supports.ts";
 
 const importRegExp = /^import\b/i;
 const importComponentRegExp = /^import\s+component\b/i;
 const asRegExp = /^\s+as/i;
+
+/**
+ * support export statement for bio language
+ */
+export function export_component_statements_CTX(exium: Exium): boolean | null {
+  try {
+    const isValid = identifier_CTX(exium, exium.checkOnlyOptions);
+    if (!isValid) return false;
+    const recognized = identifier_CTX(exium, );
+    if (!recognized) return false;
+    const lastContext = getLastContext(exium);
+    const { x, line, column } = exium.cursor;
+    if (lastContext.source !== "export") {
+      shift(exium, -lastContext.source.length);
+      return false;
+    }
+    let isClosed = false;
+    const allSubs: ContextReader[] = [
+      multiple_spaces_CTX,
+      space_CTX,
+      component_CTX,
+    ];
+    const children: ExiumContext[] = [];
+    while (!isEOF(exium)) {
+      saveStrictContextsTo(exium, allSubs, children);
+      const foundComponent = children.find((context) =>
+        context.type === ContextTypes.ComponentDeclaration
+      );
+      if (foundComponent) {
+        isClosed = true;
+        // important to differentiate between the local and exported components
+        foundComponent.data.isExported = true;
+        break;
+      }
+      if (exium.isCharSpacing) {
+        break;
+      }
+    }
+    const context = new ExiumContext(
+      ContextTypes.ExportStatement,
+      lastContext.source,
+      {
+        line,
+        column,
+        start: x,
+        end: exium.cursor.x,
+      },
+    );
+    context.related.push(lastContext);
+    context.children.push(...children);
+    exium.currentContexts.push(context);
+    if (!isClosed) {
+      exium.onError(Reason.UnexpectedToken, exium.cursor, getUnexpected(exium));
+    }
+    return true;
+  } catch (err) {
+    throw err;
+  }
+}
+/**
+ * support for bio Language specififation
+ * exium context allows to define a component with the following pattern:
+ * component <ComponentName>
+ *   ...
+ * </ComponentName>
+ */
+export function component_CTX(exium: Exium, opts?: ContextReaderOptions): boolean | null {
+  try {
+    const { line, column, x } = exium.cursor;
+    const isValid = identifier_CTX(exium, exium.checkOnlyOptions);
+    if (!isValid) return false;
+    // save the identifier
+    const recognized = identifier_CTX(exium, );
+    if (!recognized) return false;
+    const lastContext = getLastContext(exium);
+    if (!exium.supportedComponentTypes.includes(lastContext.source)) {
+      return false;
+    }
+    if (opts?.checkOnly) return true;
+    const { source } = exium;
+    lastContext.type = ContextTypes.ComponentTypeStatement;
+    let isNodeDefined = false;
+    const allSubContexts: ContextReader[] = [
+      line_break_CTX,
+      multiple_spaces_CTX,
+      space_CTX,
+      textnode_CTX,
+      node_CTX,
+      node_CTX,
+    ];
+    const children: ExiumContext[] = [];
+    while (!isEOF(exium)) {
+      saveContextsTo(exium, allSubContexts, children);
+      const node = children.find((context) =>
+        // node with a closing tag
+        (context.type === ContextTypes.Node &&
+          context.related.find((child) =>
+            child.type === ContextTypes.NodeClosing
+          ) &&
+          !context.data.parentNode &&
+          !context.data.isAutoClosing) ||
+        // or an auto closing tag
+        (context.type === ContextTypes.Node &&
+          context.data.isAutoClosing &&
+          !context.data.parentNode)
+      );
+      if (node) {
+        isNodeDefined = true;
+        break;
+      }
+      shift(exium, 1);
+    }
+    const token = source.slice(x, exium.cursor.x);
+    const context = new ExiumContext(
+      ContextTypes.ComponentDeclaration,
+      token,
+      {
+        line,
+        column,
+        start: x,
+        end: exium.cursor.x,
+      },
+    );
+    context.children.push(...children);
+    // declare type
+    Object.assign(context.data, {
+      type: lastContext.source,
+    });
+    exium.currentContexts.push(context);
+    if (!isNodeDefined) {
+      exium.onError(
+        Reason.ComponentDeclarationNodeMissing,
+        exium.cursor,
+        context,
+      );
+    }
+    return true;
+  } catch (err) {
+    throw err;
+  }
+}
+/**
+  * support for bio's attribute modifiers
+  */
+export function attributes_modifiers_CTX(exium: Exium, opts?: ContextReaderOptions): boolean | null {
+  try {
+    const { char } = exium;
+    const { x, line, column } = exium.cursor;
+    const isValid = char === "@";
+    if (!isValid) return false;
+    if (opts?.checkOnly) return true;
+    shift(exium, 1);
+    if (!identifier_CTX(exium, exium.checkOnlyOptions)) {
+      shift(exium, -1);
+      return false;
+    }
+    const { source, cursor } = exium;
+    const attributes = [
+      ContextTypes.Attribute,
+      ContextTypes.AttributeBoolean,
+      ContextTypes.AttributeProperty,
+    ];
+    const exitChars = [" ", ">", "\n", "/", "@"];
+    let isIdentified = false;
+    let isCompleted = false;
+    const related: ExiumContext[] = [];
+    const children: ExiumContext[] = [];
+    const definitions: ContextReader[] = [
+      identifier_CTX,
+      argument_CTX,
+      array_CTX,
+    ];
+    const allSubContexts: ContextReader[] = [
+      multiple_spaces_CTX,
+      space_CTX,
+      line_break_CTX,
+      attributes_CTX,
+    ];
+    while (!isEOF(exium)) {
+      if (!isIdentified) {
+        saveStrictContextsTo(exium, definitions, related);
+        isIdentified = getLastContext(exium).type === ContextTypes.Identifier;
+        // get the type part of the modifier: pattern = @modifier[type] attribute
+        const array = isIdentified &&
+          related.find((context) => context.type === ContextTypes.Array);
+        if (array) {
+          array.type = ContextTypes.AttributeModifierType;
+        }
+        // retrieve also the arguments
+        // and save to children
+        const argument = isIdentified &&
+          related.find((context) => context.type === ContextTypes.Argument);
+        if (argument) {
+          children.push(argument);
+        }
+      } else {
+        saveContextsTo(exium, allSubContexts, children);
+        const attribute = children.find((context) =>
+          attributes.includes(context.type)
+        );
+        if (attribute) {
+          isCompleted = true;
+          break;
+        }
+        if (exitChars.includes(exium.char) || exium.isCharSpacing) {
+          break;
+        }
+      }
+      isValidChar(exium, opts?.unexpected);
+      shift(exium, 1);
+    }
+    const token = source.slice(x, exium.cursor.x);
+    const context = new ExiumContext(ContextTypes.AttributeModifier, token, {
+      line,
+      column,
+      start: x,
+      end: exium.cursor.x,
+    });
+    context.related.push(...related);
+    context.children.push(...children);
+    exium.currentContexts.push(context);
+    if (!isCompleted) {
+      exium.onError(Reason.ModifierNotFinished, cursor, context);
+    }
+    return true;
+  } catch (err) {
+    throw err;
+  }
+}
+export function attribute_unquoted_CTX(exium: Exium, opts?: ContextReaderOptions): boolean {
+  try {
+    const { prev } = exium;
+    const { x, line, column } = exium.cursor;
+    const { source } = exium;
+    if (prev !== "=") return false;
+    if (opts?.checkOnly) return true;
+    const result = true;
+    let isClosed = false;
+    const children: ExiumContext[] = [];
+    const exitChars = [" ", ">", "\n", "/"];
+    while (!isEOF(exium)) {
+      isValidChar(exium,
+        opts?.unexpected || [
+          array_CTX,
+          braces_CTX,
+          curly_brackets_CTX,
+        ],
+      );
+      if (exitChars.includes(exium.char)) {
+        isClosed = true;
+        break;
+      }
+      shift(exium, 1);
+    }
+    const token = source.slice(x, exium.cursor.x);
+    const context = new ExiumContext(
+      ContextTypes.AttributeValueUnquoted,
+      token,
+      {
+        start: x,
+        end: exium.cursor.x,
+        line,
+        column,
+      },
+    );
+    context.children.push(...children);
+    exium.currentContexts.push(context);
+    if (!isClosed) {
+      exium.onError(
+        Reason.HTMLAttributeValueUnquotedNotClosed,
+        exium.cursor,
+        context,
+      );
+    }
+    return result;
+  } catch (err) {
+    throw err;
+  }
+}
+/**
+ * reads the flags after the tag name
+ */
+export function attributes_CTX(exium: Exium, opts?: ContextReaderOptions): boolean {
+  try {
+    const { char } = exium;
+    const { x, line, column } = exium.cursor;
+    const { source } = exium;
+    if (
+      char &&
+      !(/[a-zA-Z0-9\$\_]/i.test(char))
+    ) {
+      return false;
+    }
+    exium.debuggPosition("ATTRIBUTES CTX START");
+    if (opts?.checkOnly) return true;
+    const result = true;
+    let isClosed = false;
+    let isNamed = false;
+    let isBoolean = true;
+    let isProp = false;
+    const children: ExiumContext[] = [];
+    const related: ExiumContext[] = [];
+    const allSubContexts: ContextReader[] = [
+      string_double_quote_CTX,
+      string_single_quote_CTX,
+      string_template_quote_CTX,
+      curly_brackets_CTX,
+      attribute_unquoted_CTX,
+    ];
+    if (!isNamed) {
+      isNamed = Boolean(
+        identifier_CTX(exium, ) &&
+        related.push(getLastContext(exium)),
+      );
+    }
+    const exitChars = [" ", ">", "\n", "/"];
+    while (!isEOF(exium)) {
+      exium.debuggPosition("ATTRIBUTES CTX");
+      isValidChar(exium, opts?.unexpected);
+      if (isBoolean) {
+        isBoolean = exium.char !== "=";
+      }
+      saveContextsTo(exium, allSubContexts, children);
+      if (!isProp && !isBoolean) {
+        isProp = Boolean(
+          children.find((context) =>
+            context.type === ContextTypes.CurlyBrackets
+          ),
+        );
+      }
+      if (exitChars.includes(exium.char)) {
+        isClosed = true;
+        break;
+      }
+      shift(exium, 1);
+    }
+    const token = source.slice(x, exium.cursor.x);
+    const context = new ExiumContext(
+      isBoolean
+        ? ContextTypes.AttributeBoolean
+        : isProp
+          ? ContextTypes.AttributeProperty
+          : ContextTypes.Attribute,
+      token,
+      {
+        start: x,
+        end: exium.cursor.x,
+        line,
+        column,
+      },
+    );
+    context.children.push(...children);
+    context.related.push(...related);
+    exium.currentContexts.push(context);
+    if (!isClosed) {
+      exium.onError(Reason.HTMLAttributeNotClosed, exium.cursor, context);
+    }
+    return result;
+  } catch (err) {
+    throw err;
+  }
+}
+
+export function flag_spread_CTX(exium: Exium, opts?: ContextReaderOptions): boolean {
+  try {
+    const { char } = exium;
+    const { x, line, column } = exium.cursor;
+    const { source } = exium;
+    if (char !== "{" || !/^\{(\s*)(\.){3}/i.test(exium.nextPart)) return false;
+    if (opts?.checkOnly) return true;
+    shift(exium, 1);
+    const result = true;
+    let isClosed = false;
+    const children: ExiumContext[] = [];
+    const readers: ContextReader[] = [
+      line_break_CTX,
+      multiple_spaces_CTX,
+      space_CTX,
+      array_CTX,
+      curly_brackets_CTX,
+    ];
+    while (!isEOF(exium)) {
+      isValidChar(exium, opts?.unexpected);
+      saveContextsTo(exium, readers, children);
+      if (["}"].includes(exium.char)) {
+        shift(exium, 1);
+        isClosed = true;
+        break;
+      }
+      shift(exium, 1);
+    }
+    const token = source.slice(x, exium.cursor.x);
+    const context = new ExiumContext(ContextTypes.FlagSpread, token, {
+      start: x,
+      end: exium.cursor.x,
+      line,
+      column,
+    });
+    context.children.push(...children);
+    exium.currentContexts.push(context);
+    if (!isClosed) {
+      exium.onError(Reason.OgoneSpreadFlagNotClosed, exium.cursor, context);
+    }
+    return result;
+  } catch (err) {
+    throw err;
+  }
+}
+/**
+ * reads the flags after the tag name
+ */
+export function flag_CTX(exium: Exium, opts?: ContextReaderOptions): boolean {
+  try {
+    const { char, next } = exium;
+    const { x, line, column } = exium.cursor;
+    const { source } = exium;
+    if (char !== "-" || next !== "-") return false;
+    if (opts?.checkOnly) return true;
+    const result = true;
+    let isClosed = false;
+    let isNamed = false;
+    let usingStructure = true;
+    let isStructure = false;
+    const children: ExiumContext[] = [];
+    const related: ExiumContext[] = [];
+    const allSubContexts: ContextReader[] = [
+      curly_brackets_CTX,
+      argument_CTX,
+      braces_CTX,
+    ];
+    const exitChars = [" ", ">", "\n", "/"];
+    const argumentChar = ":";
+    while (!isEOF(exium)) {
+      if (!isNamed) {
+        isNamed = Boolean(
+          identifier_CTX(exium, {
+            data: {
+              allowedIdentifierChars: ["-"],
+            },
+          }) &&
+          related.push(getLastContext(exium)),
+        );
+      }
+      // the name of the flag is retrieved
+      // there's no Equal Token found
+      // isStructure isn't set
+      if (exium.char === "=") {
+        isStructure = false;
+        usingStructure = false;
+      }
+      saveContextsTo(exium, allSubContexts, children, {
+        data: {
+          argument_CTX_starts_with: argumentChar,
+        },
+      });
+      if (isNamed && usingStructure && !isStructure) {
+        isStructure = Boolean(
+          children.find((context) => context.type === ContextTypes.Braces),
+        );
+      }
+      if (exitChars.includes(exium.char)) {
+        isClosed = true;
+        break;
+      }
+      if (exium.char !== argumentChar) {
+        shift(exium, 1);
+      }
+      isValidChar(exium, opts?.unexpected);
+    }
+    const token = source.slice(x, exium.cursor.x);
+    const context = new ExiumContext(
+      isStructure ? ContextTypes.FlagStruct : ContextTypes.Flag,
+      token,
+      {
+        start: x,
+        end: exium.cursor.x,
+        line,
+        column,
+      },
+    );
+    Object.assign(context.data, {
+      isStructure,
+    });
+    context.children.push(...children);
+    context.related.push(...related);
+    exium.currentContexts.push(context);
+    if (!isClosed) {
+      exium.onError(Reason.OgoneFlagNotFinish, exium.cursor, context);
+    }
+    return result;
+  } catch (err) {
+    throw err;
+  }
+}
+/**
+ * reads comments
+ */
+export function html_comment_CTX(exium: Exium, opts?: ContextReaderOptions): boolean {
+  try {
+    const { char, next } = exium;
+    const { x, line, column } = exium.cursor;
+    const { source } = exium;
+    const sequence = [char, next, source[x + 2], source[x + 3]];
+    if (
+      char !== "<" ||
+      sequence.join("") !== "<!--"
+    ) {
+      return false;
+    }
+    if (opts?.checkOnly) return true;
+    const result = true;
+    let isClosed = false;
+    const children: ExiumContext[] = [];
+    while (!isEOF(exium)) {
+      shift(exium, 1);
+      isValidChar(exium,
+        opts?.unexpected || [
+          html_comment_CTX,
+        ],
+      );
+      if (
+        exium.char === ">" && exium.prev === "-" &&
+        source[exium.cursor.x - 2] === "-"
+      ) {
+        shift(exium, 1);
+        isClosed = true;
+        break;
+      }
+    }
+    const token = source.slice(x, exium.cursor.x);
+    const context = new ExiumContext(ContextTypes.HTMLComment, token, {
+      start: x,
+      end: exium.cursor.x,
+      line,
+      column,
+    });
+    context.children.push(...children);
+    exium.currentContexts.push(context);
+    if (!isClosed) {
+      exium.onError(Reason.HTMLCommentOpen, exium.cursor, context);
+    }
+    return result;
+  } catch (err) {
+    throw err;
+  }
+}
+/**
+ * should output all the html in the document
+ * any sequence starting with a < and that is followed by a character is a node
+ */
+export function node_CTX(exium: Exium, opts?: ContextReaderOptions): boolean {
+  try {
+    const { char, next, nextPart } = exium;
+    const { x, line, column } = exium.cursor;
+    const { source } = exium;
+    if (
+      char !== "<" ||
+      char === "<" && [" ", "<", "!"].includes(next!) ||
+      next && /([^a-zA-Z0-9\[\/])/i.test(next)
+    ) {
+      return false;
+    }
+    exium.debuggPosition("NODE CTX START");
+    if (opts?.checkOnly) return true;
+    shift(exium, 1);
+    const result = true;
+    let isClosed = false;
+    let isAutoClosing = false;
+    let isNamed = false;
+    let isProto = false;
+    let isTemplate = false;
+    let isStyle = false;
+    const isNodeClosing = nextPart.startsWith("</");
+    const subcontextEvaluatedOnce: ContextReader[] = [
+      identifier_CTX,
+    ];
+    const allSubContexts: ContextReader[] = isNodeClosing
+      ? [
+        line_break_CTX,
+        space_CTX,
+        multiple_spaces_CTX,
+      ]
+      : [
+        line_break_CTX,
+        space_CTX,
+        multiple_spaces_CTX,
+        flag_spread_CTX,
+        attributes_CTX,
+        attributes_modifiers_CTX,
+        flag_CTX,
+      ];
+    const children: ExiumContext[] = [];
+    const related: ExiumContext[] = [];
+    /**
+     * start rendering the nodes
+     */
+    while (!isEOF(exium)) {
+      exium.debuggPosition("NODE CTX");
+      isValidChar(exium,
+        opts?.unexpected || [
+          // shouldn't start a new node
+          node_CTX,
+          html_comment_CTX,
+        ],
+      );
+      if (!isNamed) {
+        subcontextEvaluatedOnce.forEach((reader) => {
+          const recognized = reader(exium);
+          if (recognized) {
+            const context = getLastContext(exium);
+            related.push(context);
+            isNamed = context.type === ContextTypes.Identifier;
+            isProto = isNamed && context.source === "proto";
+            isTemplate = isNamed && context.source === "template";
+            isStyle = isNamed && context.source === "style";
+          }
+        });
+      }
+      saveContextsTo(exium, allSubContexts, children);
+      /**
+       * for any closing tag
+       * should ensure that after the tagname
+       * there's nothing else than spaces, line breaks, or >
+       */
+      if (
+        isNodeClosing &&
+        isNamed &&
+        !([" ", ">", "\n"].includes(exium.char))
+      ) {
+        const token = source.slice(x, exium.cursor.x);
+        const context = new ExiumContext(ContextTypes.Unexpected, token, {
+          start: x,
+          end: exium.cursor.x,
+          line,
+          column,
+        });
+        exium.onError(Reason.UnexpectedToken, exium.cursor, context);
+      }
+      if (exium.char === "<") {
+        break;
+      } else if (exium.char === ">") {
+        shift(exium, 1);
+        isClosed = true;
+        isAutoClosing = exium.previousPart.endsWith("/>");
+        break;
+      }
+      shift(exium, 1);
+    }
+    const token = source.slice(x, exium.cursor.x);
+    const context = new ExiumContext(
+      isNodeClosing ? ContextTypes.NodeClosing : ContextTypes.Node,
+      token,
+      {
+        start: x,
+        end: exium.cursor.x,
+        line,
+        column,
+      },
+    );
+    context.children.push(...children);
+    context.related.push(...related);
+    Object.assign(context.data, {
+      isTemplate,
+      isProto,
+      isStyle,
+      isAutoClosing,
+      isNodeClosing,
+      parentNode: exium.openTags[exium.openTags.length - 1],
+    });
+    exium.currentContexts.push(context);
+    // start resolving open and closing tags
+    if (!isAutoClosing) {
+      if (
+        isClosed &&
+        !isNodeClosing
+      ) {
+        exium.openTags.push(context);
+      } else if (
+        isClosed &&
+        isNodeClosing
+      ) {
+        const openTag = exium.openTags
+          .slice()
+          .reverse()
+          .find((nodeContext) => {
+            const name = nodeContext.related.find((related) =>
+              related.type === ContextTypes.Identifier
+            );
+            const targetName = context.related.find((related) =>
+              related.type === ContextTypes.Identifier
+            );
+            return name &&
+              targetName &&
+              !nodeContext.data.closed &&
+              name.type === ContextTypes.Identifier &&
+              name.source === targetName.source;
+          });
+        if (!openTag) {
+          exium.onError(
+            Reason.HTMLClosingTagWithoutOpening,
+            exium.cursor,
+            context,
+          );
+        } else {
+          const index = exium.openTags.indexOf(openTag);
+          exium.openTags.splice(index, 1);
+          // save the closing tag
+          openTag.related.push(context);
+          openTag.data.closed = true;
+        }
+      }
+    }
+    if (!isClosed) {
+      exium.onError(Reason.HTMLTagNotFinish, exium.cursor, context);
+    }
+    return result;
+  } catch (err) {
+    throw err;
+  }
+}
+/**
+ * reads the textnodes that should match (node)> ... <(node)
+ */
+export function textnode_CTX(exium: Exium, opts?: ContextReaderOptions): boolean {
+  try {
+    const { char, prev } = exium;
+    const lastContext = getLastContext(exium);
+    const { x, line, column } = exium.cursor;
+    const { source } = exium;
+    const lastIsANode = Boolean(
+      lastContext &&
+      [
+        ContextTypes.Node,
+        ContextTypes.NodeClosing,
+        ContextTypes.HTMLComment,
+      ].includes(lastContext.type),
+    );
+    const isValid = prev && [">"].includes(prev) && lastIsANode ||
+      char !== "<" &&
+      !import_statements_CTX(exium, exium.checkOnlyOptions) &&
+      !node_CTX(exium, exium.checkOnlyOptions) &&
+      !comment_CTX(exium, exium.checkOnlyOptions);
+    if (!isValid || !exium.nodeContextStarted) return false;
+    if (opts?.checkOnly) return true;
+    const result = true;
+    const children: ExiumContext[] = [];
+    const allSubContexts = [
+      line_break_CTX,
+      multiple_spaces_CTX,
+      space_CTX,
+      string_template_quote_eval_CTX,
+    ];
+    while (!isEOF(exium)) {
+      isValidChar(exium, opts?.unexpected);
+      saveContextsTo(exium, allSubContexts, children);
+      if (isStartingNode(exium)) {
+        break;
+      }
+      shift(exium, 1);
+    }
+    const token = source.slice(x, exium.cursor.x);
+    const context = new ExiumContext(ContextTypes.TextNode, token, {
+      start: x,
+      end: exium.cursor.x,
+      line,
+      column,
+    });
+    Object.assign(context.data, {
+      parentNode: exium.openTags[exium.openTags.length - 1],
+    });
+    context.children.push(...children);
+    exium.currentContexts.push(context);
+    return result;
+  } catch (err) {
+    throw err;
+  }
+}
+/**
+ * returns if the current character is starting a new element
+ */
+export function isStartingNode(exium: Exium): boolean {
+  return [
+    "<",
+  ].includes(exium.char) &&
+    (node_CTX(exium, exium.checkOnlyOptions) ||
+      html_comment_CTX(exium, exium.checkOnlyOptions));
+}
+
+/**
+ * reads the textnodes that should match (style)> ... </(style)
+ */
+export function isEndOfStylesheet(exium: Exium): boolean {
+  const { nextPart } = exium;
+  return isStartingNode(exium) &&
+    nextPart.startsWith("</style") ||
+    isEOF(exium) ||
+    /\s*(\<\/style)/i.test(nextPart);
+}
 
 /**
  * should validate if the character is accepted inside the current context
@@ -992,6 +1791,328 @@ export function parenthese_CTX(exium: Exium, opts?: ContextReaderOptions): boole
     if (!isClosed) {
       exium.onError(Reason.ParentheseOpen, exium.cursor, context);
     }
+    return result;
+  } catch (err) {
+    throw err;
+  }
+}
+/**
+ * @returns true if the argument_CTx is valid for the current char
+ * @usage
+ * ```
+ * exium.argument_CTX({
+ *   data: {
+ *     argument_CTX_starts_with: '&'
+ *   }
+ * }); // boolean
+ * ```
+ */
+export function argument_CTX(exium: Exium, opts?: ContextReaderOptions): boolean {
+  try {
+    const {
+      char,
+      source,
+    } = exium;
+    const {
+      line,
+      column,
+      x,
+    } = exium.cursor;
+    const startingChar =
+      opts && opts.data?.argument_CTX_starts_with as string || ":";
+    const isValid = char === startingChar;
+    if (!isValid) return false;
+    shiftUntilEndOf(exium, startingChar);
+    const related: ExiumContext[] = [];
+    const children: ExiumContext[] = [];
+    while (!isEOF(exium)) {
+      isValidChar(exium, opts && opts?.unexpected);
+      Boolean(
+        identifier_CTX(exium, {
+          data: {
+            allowedIdentifierChars: ["-"],
+          },
+        }) &&
+        related.push(getLastContext(exium)),
+      );
+      if (exium.isCharPuntuation) break;
+      shift(exium, 1);
+    }
+    const token = source.slice(x, exium.cursor.x);
+    const context = new ExiumContext(ContextTypes.Argument, token, {
+      start: x,
+      end: exium.cursor.x,
+      line,
+      column,
+    });
+    context.related.push(...related);
+    context.children.push(...children);
+    exium.currentContexts.push(context);
+    return true;
+  } catch (err) {
+    throw err;
+  }
+}
+/**
+* should read all import statements
+*/
+// TODO create contexts for the tokens between import and from
+export function import_statements_CTX(exium: Exium, opts?: ContextReaderOptions): boolean {
+  try {
+    const { nextPart } = exium;
+    const { x, line, column } = exium.cursor;
+    const { source } = exium;
+    const isValid = importRegExp.test(nextPart);
+    const isComponent = importComponentRegExp.test(nextPart);
+    if (!isValid) {
+      return false;
+    }
+    if (opts?.checkOnly) return true;
+    const result = true;
+    let isClosed = false;
+    let fromStatement = null;
+    const related: ExiumContext[] = [];
+    const children: ExiumContext[] = [];
+    // shift after the import statement
+    shiftUntilEndOf(exium, 'import');
+    if (isComponent) {
+      saveStrictContextsTo(
+        exium,
+        [
+          multiple_spaces_CTX,
+          space_CTX,
+        ], children);
+      saveToken(
+        exium,
+        "component",
+        ContextTypes.ImportComponentStatement,
+      );
+    }
+    while (!isEOF(exium)) {
+      saveStrictContextsTo(
+        exium,
+        [
+          multiple_spaces_CTX,
+          space_CTX,
+          identifier_asterix_CTX,
+          identifier_list_CTX,
+          identifier_CTX,
+          multiple_spaces_CTX,
+          coma_CTX,
+          space_CTX,
+        ], children, isComponent ? undefined : {
+          data: {
+            identifier_allow_alias: true,
+          }
+        });
+      fromStatement = saveToken(
+        exium,
+        "from",
+        ContextTypes.ImportStatementFrom,
+      );
+      if (fromStatement) {
+        break;
+      }
+      isValidChar(exium, opts?.unexpected);
+    }
+    /**
+     * expected next contexts
+     */
+    const nextContexts: ContextReader[] = [
+      multiple_spaces_CTX,
+      space_CTX,
+      string_double_quote_CTX,
+      string_single_quote_CTX,
+      semicolon_CTX,
+    ];
+    nextContexts.forEach((reader: ContextReader, i: number, arr) => {
+      const recognized = reader(exium);
+      if (recognized) {
+        related.push(getLastContext(exium));
+        delete arr[i];
+      }
+    });
+    const str = related.find((context) =>
+      [
+        ContextTypes.StringSingleQuote,
+        ContextTypes.StringDoubleQuote,
+      ].includes(context.type)
+    );
+    isClosed = Boolean(
+      fromStatement &&
+      str &&
+      related.find((context) =>
+        [
+          ContextTypes.SemiColon,
+        ].includes(context.type)
+      ),
+    );
+    const token = source.slice(x, exium.cursor.x);
+    const context = new ExiumContext(ContextTypes.ImportStatement, token, {
+      start: x,
+      end: exium.cursor.x,
+      line,
+      column,
+    });
+    Object.assign(context.data, {
+      isComponent,
+      path: str,
+    });
+    if (fromStatement) {
+      context.related.push(fromStatement);
+    }
+    context.related.push(...related);
+    context.children.push(...children);
+    exium.currentContexts.push(context);
+    if (!isClosed) {
+      exium.onError(Reason.ImportStatementNotFinish, exium.cursor, context);
+    }
+    return result;
+  } catch (err) {
+    throw err;
+  }
+}
+export function export_statements_CTX(exium: Exium): boolean | null {
+  try {
+    const isValid = identifier_CTX(exium, exium.checkOnlyOptions);
+    if (!isValid) return false;
+    const recognized = identifier_CTX(exium,);
+    if (!recognized) return false;
+    const lastContext = getLastContext(exium);
+    const { x, line, column } = exium.cursor;
+    if (lastContext.source !== "export") {
+      shift(exium, -lastContext.source.length);
+      return false;
+    }
+    const context = new ExiumContext(
+      ContextTypes.ExportStatement,
+      lastContext.source,
+      {
+        line,
+        column,
+        start: x,
+        end: exium.cursor.x,
+      },
+    );
+    context.related.push(lastContext);
+    exium.currentContexts.push(context);
+    return true;
+  } catch (err) {
+    throw err;
+  }
+}
+/**
+* should read all ambient import statements
+*/
+export function import_ambient_CTX(exium: Exium, opts?: ContextReaderOptions): boolean {
+  try {
+    const { x, line, column } = exium.cursor;
+    const { source } = exium;
+    if (!/^import\s*(["'])(.*?)(\1)/i.test(exium.nextPart)) return false;
+    if (opts?.checkOnly) return true;
+    const result = true;
+    let isClosed = false;
+    const related: ExiumContext[] = [];
+    /**
+     * expected next contexts
+     */
+    const nextContexts: ContextReader[] = [
+      multiple_spaces_CTX,
+      space_CTX,
+      string_double_quote_CTX,
+      string_single_quote_CTX,
+      semicolon_CTX,
+    ];
+    while (!isEOF(exium)) {
+      shift(exium, 1);
+      isValidChar(exium, opts?.unexpected);
+      if (exium.char === " " || ['"', "'"].includes(exium.char)) {
+        break;
+      }
+    }
+    nextContexts.forEach((reader: ContextReader, i: number, arr) => {
+      const recognized = reader(exium);
+      if (recognized) {
+        related.push(getLastContext(exium));
+        delete arr[i];
+      }
+    });
+    const str = related.find((context) =>
+      [
+        ContextTypes.StringDoubleQuote,
+        ContextTypes.StringSingleQuote,
+      ].includes(context.type)
+    );
+    isClosed = Boolean(
+      str &&
+      related.find((context) =>
+        [
+          ContextTypes.SemiColon,
+        ].includes(context.type)
+      ),
+    );
+    const token = source.slice(x, exium.cursor.x);
+    const context = new ExiumContext(ContextTypes.ImportAmbient, token, {
+      start: x,
+      end: exium.cursor.x,
+      line,
+      column,
+    });
+    Object.assign(context.data, {
+      path: str,
+    });
+    context.related.push(...related);
+    exium.currentContexts.push(context);
+    if (!isClosed) {
+      exium.onError(Reason.ImportAmbientStringMissing, exium.cursor, context);
+    }
+    return result;
+  } catch (err) {
+    throw err;
+  }
+}
+/**
+   * reads the textnode that should match (protocol)> ... </(protocol)
+   */
+ export function protocol_CTX(exium: Exium, opts?: ContextReaderOptions): boolean {
+  try {
+    const { x, line, column } = exium.cursor;
+    const { source } = exium;
+    const lastIsAStyleNode = exium.currentContexts.find((context) =>
+      context.type === ContextTypes.Node &&
+      context.related.find((node) =>
+        node.type === ContextTypes.Identifier &&
+        node.source === "proto"
+      ) &&
+      !context.related.find((node) => node.type === ContextTypes.NodeClosing)
+    );
+    const isValid = !!lastIsAStyleNode;
+    if (!isValid) return false;
+    if (opts?.checkOnly) return true;
+    const result = true;
+    const children: ExiumContext[] = [];
+    const allSubContexts = [
+      line_break_CTX,
+      multiple_spaces_CTX,
+      space_CTX,
+    ];
+    while (!isEOF(exium)) {
+      shift(exium, 1);
+      isValidChar(exium, opts?.unexpected);
+      saveContextsTo(exium, allSubContexts, children);
+      if (isStartingNode(exium) && exium.nextPart.startsWith("</proto")) {
+        break;
+      }
+    }
+    const token = source.slice(x, exium.cursor.x);
+    const context = new ExiumContext(ContextTypes.Protocol, token, {
+      start: x,
+      end: exium.cursor.x,
+      line,
+      column,
+    });
+    context.children.push(...children);
+    exium.currentContexts.push(context);
     return result;
   } catch (err) {
     throw err;
