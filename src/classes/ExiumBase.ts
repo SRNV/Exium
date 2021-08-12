@@ -19,6 +19,8 @@ const asRegExp = /^\s+as/i;
  */
 export class ExiumBase {
   public treePosition = 0;
+  allowPseudoProperties = true;
+  isInPseudoProperty = false;
   public supportedComponentTypes = [
     "component",
     "app",

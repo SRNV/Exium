@@ -11,11 +11,33 @@ import type {
   ContextReader,
   ExiumParseOptions,
 } from "./src/types/main.d.ts";
-import { ExiumStyleSheet } from "./src/classes/ExiumStyleSheet.ts";
+import { ExiumBase } from "./src/classes/ExiumBase.ts";
 import { Reason } from "./src/enums/error-reason.ts";
 import { ContextTypes } from "./src/enums/context-types.ts";
 import { ExiumContext } from "./src/classes/ExiumContext.ts";
 import { ExiumDocument } from "./src/classes/ExiumDocument.ts";
+import {
+  topCTX,
+  comment_CTX,
+  comment_block_CTX,
+  line_break_CTX,
+  multiple_spaces_CTX,
+  space_CTX,
+  string_template_quote_CTX,
+  getUnexpected,
+  string_single_quote_CTX,
+  string_double_quote_CTX,
+  import_ambient_CTX,
+  import_statements_CTX,
+  html_comment_CTX,
+  node_CTX,
+  stylesheet_CTX,
+  protocol_CTX,
+  textnode_CTX,
+  export_component_statements_CTX,
+  component_CTX,
+  isEOF
+} from "./src/functions/index.ts";
 export { ContextTypes, ExiumContext, ExiumDocument, Reason };
 
 /**
@@ -58,8 +80,8 @@ export { ContextTypes, ExiumContext, ExiumDocument, Reason };
  * });
  * ```
  */
-export class Exium extends ExiumStyleSheet {
-  constructor(...args: ConstructorParameters<typeof ExiumStyleSheet>) {
+export class Exium extends ExiumBase {
+  constructor(...args: ConstructorParameters<typeof ExiumBase>) {
     super(...args);
   }
   private scopedTopLevel: Record<
@@ -70,78 +92,78 @@ export class Exium extends ExiumStyleSheet {
      * use this scope to test the lexer
      */
     lexer: [
-      this.comment_CTX,
-      this.comment_block_CTX,
-      this.line_break_CTX,
-      this.multiple_spaces_CTX,
-      this.space_CTX,
-      this.string_template_quote_CTX,
+      comment_CTX,
+      comment_block_CTX,
+      line_break_CTX,
+      multiple_spaces_CTX,
+      space_CTX,
+      string_template_quote_CTX,
     ],
 
     /**
      * use this scope to parse ogone components
      */
     ogone: [
-      this.comment_CTX,
-      this.comment_block_CTX,
-      this.line_break_CTX,
-      this.multiple_spaces_CTX,
-      this.space_CTX,
-      this.string_single_quote_CTX,
-      this.string_double_quote_CTX,
-      this.import_ambient_CTX,
-      this.import_statements_CTX,
-      this.html_comment_CTX,
-      this.node_CTX,
-      this.stylesheet_CTX,
-      this.protocol_CTX,
-      this.textnode_CTX,
+      comment_CTX,
+      comment_block_CTX,
+      line_break_CTX,
+      multiple_spaces_CTX,
+      space_CTX,
+      string_single_quote_CTX,
+      string_double_quote_CTX,
+      import_ambient_CTX,
+      import_statements_CTX,
+      html_comment_CTX,
+      node_CTX,
+      stylesheet_CTX,
+      protocol_CTX,
+      textnode_CTX,
     ],
     /**
      * use this scope to parse bio components
      */
     bio: [
-      this.comment_CTX,
-      this.comment_block_CTX,
-      this.line_break_CTX,
-      this.multiple_spaces_CTX,
-      this.space_CTX,
-      this.string_single_quote_CTX,
-      this.string_double_quote_CTX,
-      this.import_ambient_CTX,
-      this.import_statements_CTX,
-      this.html_comment_CTX,
-      this.export_component_statements_CTX,
-      this.component_CTX,
+      comment_CTX,
+      comment_block_CTX,
+      line_break_CTX,
+      multiple_spaces_CTX,
+      space_CTX,
+      string_single_quote_CTX,
+      string_double_quote_CTX,
+      import_ambient_CTX,
+      import_statements_CTX,
+      html_comment_CTX,
+      export_component_statements_CTX,
+      component_CTX,
     ],
     script: [
-      this.comment_CTX,
-      this.comment_block_CTX,
-      this.line_break_CTX,
-      this.multiple_spaces_CTX,
-      this.space_CTX,
-      this.import_ambient_CTX,
-      this.import_statements_CTX,
+      comment_CTX,
+      comment_block_CTX,
+      line_break_CTX,
+      multiple_spaces_CTX,
+      space_CTX,
+      import_ambient_CTX,
+      import_statements_CTX,
     ],
     /**
      * use this scope to parse stylesheets (CSS and Typed-CSS)
      */
     stylesheet: [
-      this.comment_CTX,
-      this.comment_block_CTX,
-      this.line_break_CTX,
-      this.multiple_spaces_CTX,
-      this.space_CTX,
-      this.stylesheet_CTX,
+      comment_CTX,
+      comment_block_CTX,
+      line_break_CTX,
+      multiple_spaces_CTX,
+      space_CTX,
+      stylesheet_CTX,
     ],
     /**
      * use this scope to parse ogone components protocols
      */
     protocol: [
-      this.line_break_CTX,
-      this.multiple_spaces_CTX,
-      this.space_CTX,
-      this.protocol_CTX,
+      line_break_CTX,
+      multiple_spaces_CTX,
+      space_CTX,
+      protocol_CTX,
     ],
     custom: [],
   };
@@ -171,12 +193,12 @@ export class Exium extends ExiumStyleSheet {
       if (opts.type === "custom") {
         toplevel.push(...(opts.contexts || []));
       }
-      while (!this.isEOF) {
+      while (!isEOF(this)) {
         // we are at the top level
         // start using context readers
-        const isValid = this.topCTX(toplevel);
+        const isValid = topCTX(this, toplevel);
         if (!isValid) {
-          this.onError(Reason.UnexpectedToken, this.cursor, this.unexpected);
+          this.onError(Reason.UnexpectedToken, this.cursor, getUnexpected(this));
           break;
         }
       }
