@@ -18,8 +18,8 @@ const asRegExp = /^\s+as/i;
  * to use into Exium classes
  */
 export class ExiumBase {
-  private treePosition = 0;
-  protected supportedComponentTypes = [
+  public treePosition = 0;
+  public supportedComponentTypes = [
     "component",
     "app",
     "async",
@@ -28,7 +28,7 @@ export class ExiumBase {
     "controller",
     "gl",
   ];
-  protected readonly checkOnlyOptions: ContextReaderOptions = {
+  public readonly checkOnlyOptions: ContextReaderOptions = {
     checkOnly: true,
   };
   /**
@@ -43,7 +43,7 @@ export class ExiumBase {
    * all regular at rules
    * that aren't followed by curly braces
    */
-  protected regularAtRulesNames: string[] = [
+  public regularAtRulesNames: string[] = [
     "charset",
     "import",
     "namespace",
@@ -58,28 +58,28 @@ export class ExiumBase {
    * you should save here all the retrieved context
    * of the document
    */
-  protected currentContexts: ExiumContext[] = [];
+  public currentContexts: ExiumContext[] = [];
   // to retrieve all remaining open tag
-  protected openTags: ExiumContext[] = [];
+  public openTags: ExiumContext[] = [];
   /**
    * this will shift the cursor into the document
    */
-  protected cursor: CursorDescriber = {
+  public cursor: CursorDescriber = {
     x: 0,
     line: 0,
     column: 0,
   };
-  protected source = "";
+  public source = "";
   /**
    * the current character
    */
-  protected get char(): string {
+  public get char(): string {
     return this.source[this.cursor.x];
   }
   /**
    * the character code of the current character
    */
-  protected get charCode(): number {
+  public get charCode(): number {
     return this.char?.charCodeAt(0);
   }
   /**
@@ -130,93 +130,46 @@ export class ExiumBase {
   /**
   * the next character
   */
-  protected get next(): string | undefined {
+  public get next(): string | undefined {
     return this.source[this.cursor.x + 1];
   }
   /**
   * the previous character
   */
 
-  protected get prev(): string | undefined {
+  public get prev(): string | undefined {
     return this.source[this.cursor.x - 1];
   } /**
    * the following part
    * from the cursor index until the end of the document
    */
 
-  protected get nextPart(): string {
+  public get nextPart(): string {
     return this.source.slice(this.cursor.x);
   }
   /**
    * the following part
    * from the cursor index until the end of the document
    */
-  protected get previousPart(): string {
+  public get previousPart(): string {
     return this.source.slice(0, this.cursor.x);
   }
-  /**
-   * @param text text that the next part of the source should start with
-   * @param shiftToTheEnd move the cursor to the end of the text, will only sift if the the next part is starting with the text
-   * @returns true if the next part of the source is starting with the first argument
-   */
-  protected isFollowedBy(text: string, shiftToTheEnd?: boolean): boolean {
-    const { nextPart } = this;
-    const result = nextPart.startsWith(text);
-    if (shiftToTheEnd && result) {
-      this.shiftUntilEndOf(text);
-    }
-    return result;
-  }
-  /**
-   * checks if the context.source is included into the support list
-   */
-  protected checkSupport(
-    context: ExiumContext,
-    supportList: string[],
-    strict?: boolean,
-  ) {
-    const result = supportList.includes(context.source);
-    if (strict && !result) {
-      this.onError(Reason.Unsupported, this.cursor, context);
-      return result;
-    }
-    return result;
-  }
-  /**
-   * should return the previously defined context
-   */
-  protected get unexpected(): ExiumContext {
-    return new ExiumContext(
-      ContextTypes.Unexpected,
-      this.source.slice(this.cursor.x),
-      {
-        start: this.cursor.x,
-        line: this.cursor.line,
-        column: this.cursor.column,
-        end: this.cursor.x + 1,
-      },
-    );
-  }
-  protected get lastContext(): ExiumContext {
-    const last = this.currentContexts[this.currentContexts.length - 1] ||
-      this.unexpected;
-    return last;
-  }
+
   // returns if a node context has been declared
-  protected get nodeContextStarted(): boolean {
+  public get nodeContextStarted(): boolean {
     return Boolean(
       this.currentContexts.find((context) =>
         [ContextTypes.Node].includes(context.type)
       ),
     );
   }
-  protected parseOptions: ExiumParseOptions | null = null;
-  protected debugg(...args: unknown[]): void {
+  public parseOptions: ExiumParseOptions | null = null;
+  public debugg(...args: unknown[]): void {
     if (this.parseOptions?.debugg) {
       console.log(...args);
     }
   }
-  protected debuggPosition(name: string): void {
+  public debuggPosition(name: string): void {
     if (this.parseOptions?.debugg) {
       this.debugg(`${this.cursor.x} - %c${name.trim()}`, "color:orange", {
         prev: this.prev,
@@ -225,378 +178,17 @@ export class ExiumBase {
       });
     }
   }
-  /**
-   * returns if the lexer has finished to read
-   */
-  protected get isEOF(): boolean {
-    const { char } = this;
-    return Boolean(!char || this.source.length === this.cursor.x);
-  }
   constructor(
     /**
      * function used when Exium find an unexpected token
      */
-    protected onError: (
+    public onError: (
       reason: Reason,
       cursor: CursorDescriber,
       context: ExiumContext,
     ) => void,
   ) { }
-  /**
-   * should validate if the character is accepted inside the current context
-   * if it's not the ogone lexer will use the error function passed into the constructor
-   */
-  isValidChar(unexpected?: ContextReader[]) {
-    if (!unexpected) return;
-    for (const reader of unexpected) {
-      const isUnexpected = reader.apply(this, [this.checkOnlyOptions]);
-      if (isUnexpected) {
-        this.onError(Reason.UnexpectedToken, this.cursor, this.lastContext);
-      }
-    }
-  }
 
-  /**
-   * find through the first argument the children context
-   * will push the contexts to the second argument
-   */
-  saveContextsTo(
-    /**
-     * the contexts to check
-     */
-    fromContexts: ContextReader[],
-    /**
-     * the array used to save the children contexts
-     */
-    to: ExiumContext[],
-    opts?: ContextReaderOptions,
-  ) {
-    let endingCTX = false;
-    this.treePosition++;
-    for (const reader of fromContexts) {
-      this.debugg(
-        `${"\t".repeat(this.treePosition)}%c[${this.char}]`,
-        "color:yellow",
-      );
-      const recognized = reader.apply(this, [opts || {}]);
-      if (recognized === null) {
-        to.push(this.lastContext);
-        fromContexts.splice(0);
-        endingCTX = true;
-        break;
-      }
-      if (recognized) {
-        this.debugg(
-          `\n\t\t\t%cusing reader: ${reader.name} was sucessful\n`,
-          "color:gray",
-        );
-        to.push(this.lastContext);
-      }
-    }
-    this.treePosition--;
-    if (endingCTX) return;
-  }
-  /**
-   * same as saveContextsTo but if no context is found,
-   * the function onError iscalled
-   */
-  saveStrictContextsTo(
-    /**
-     * the contexts to check
-     */
-    fromContexts: ContextReader[],
-    /**
-     * the array used to save the children contexts
-     */
-    to: ExiumContext[],
-    opts?: ContextReaderOptions,
-  ) {
-    const { length } = to;
-    let endingCTX = false;
-    this.treePosition++;
-    for (const reader of fromContexts) {
-      this.debugg(
-        `${"\t".repeat(this.treePosition)}%c[${this.char}]`,
-        "color:yellow",
-      );
-      const recognized = reader.apply(this, [opts || {}]);
-      if (recognized === null) {
-        to.push(this.lastContext);
-        fromContexts.splice(0);
-        endingCTX = true;
-        break;
-      }
-      if (recognized) {
-        this.debugg(
-          `\n\t\t\t%cusing reader: ${reader.name} was sucessful\n`,
-          "color:gray",
-        );
-        to.push(this.lastContext);
-      }
-    }
-    this.treePosition--;
-    if (endingCTX) return;
-    // no changes
-    if (to.length === length && !this.isEOF) {
-      this.onError(Reason.UnexpectedToken, this.cursor, this.unexpected);
-    }
-  }
-  /**
-   * move the cursor and the column,
-   * this method is used during parsing step
-   */
-  shift(movement = 1) {
-    this.cursor.x += +movement;
-    this.cursor.column += +movement;
-    this.debugg(
-      `%c\t\t${movement} ${this.prev} ${">".repeat(movement > 0 ? movement : 0)
-      } ${this.char}`,
-      "color:gray",
-    );
-  }
-  shiftUntilEndOf(text: string): boolean {
-    if (!this.nextPart.startsWith(text)) return false;
-    let result = "";
-    while (result !== text) {
-      result += this.char;
-      this.shift(1);
-    }
-    return true;
-  }
-  saveToken(token: string, type: ContextTypes): ExiumContext | undefined {
-    const { x, line, column } = this.cursor;
-    const hasShifted = this.shiftUntilEndOf(token);
-    if (hasShifted) {
-      const context = new ExiumContext(type, token, {
-        start: x,
-        end: this.cursor.x,
-        line,
-        column,
-      });
-      this.currentContexts.push(context);
-      return context;
-    }
-  }
-  /**
-   * read the top level of the current document
-   * @param readers array of context readers which will shift the cursor of the lexer
-   */
-  topCTX(readers: ContextReader[]): boolean {
-    try {
-      return Boolean(
-        readers.find((reader) => reader.apply(this, [])),
-      );
-    } catch (err) {
-      throw err;
-    }
-  }
-  /**
-   * will parse any comment blocks starting with /* and ending with * /
-   */
-  comment_block_CTX(opts?: ContextReaderOptions): boolean {
-    try {
-      const { char, next } = this;
-      const { x, line, column } = this.cursor;
-      const { source } = this;
-      if (char !== "/" || char === "/" && next !== "*") return false;
-      if (opts?.checkOnly) return true;
-      const result = true;
-      let isClosed = false;
-      const allSubContexts: ContextReader[] = [
-        this.line_break_CTX,
-      ];
-      const children: ExiumContext[] = [];
-      while (!this.isEOF) {
-        this.shift(1);
-        this.isValidChar(opts?.unexpected);
-        this.saveContextsTo(allSubContexts, children);
-        if (this.char === "/" && this.prev === "*") {
-          this.shift(1);
-          isClosed = true;
-          break;
-        }
-      }
-      const token = source.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.CommentBlock, token, {
-        start: x,
-        end: this.cursor.x,
-        line,
-        column,
-      });
-      context.children.push(...children);
-      this.currentContexts.push(context);
-      if (!isClosed) {
-        this.onError(Reason.CommentBlockOpen, this.cursor, context);
-      }
-      return result;
-    } catch (err) {
-      throw err;
-    }
-  }
-  /**
-   * will parse any comment blocks starting with /* and ending with * /
-   */
-  comment_CTX(opts?: ContextReaderOptions): boolean {
-    try {
-      const { char, next } = this;
-      const { x, line, column } = this.cursor;
-      const { source } = this;
-      if (char !== "/" || char === "/" && next !== "/") return false;
-      if (opts?.checkOnly) return true;
-      const result = true;
-      while (!this.isEOF) {
-        this.shift(1);
-        this.isValidChar(opts?.unexpected);
-        if (this.char === "\n") {
-          this.cursor.x++;
-          this.cursor.line++;
-          this.cursor.column = 0;
-          break;
-        }
-      }
-      const token = source.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.Comment, token, {
-        start: x,
-        end: this.cursor.x,
-        line,
-        column,
-      });
-      this.currentContexts.push(context);
-      return result;
-    } catch (err) {
-      throw err;
-    }
-  }
-  /**
-   * reads the all strings starting with a '
-   */
-  string_single_quote_CTX(opts?: ContextReaderOptions): boolean {
-    try {
-      const { char, prev } = this;
-      const { source } = this;
-      const { x, column, line } = this.cursor;
-      if (char !== "'" || char === "'" && prev === "\\") return false;
-      if (opts?.checkOnly) return true;
-      const result = true;
-      let isClosed = false;
-      while (!this.isEOF) {
-        this.shift(1);
-        this.isValidChar(
-          opts?.unexpected || [
-            this.line_break_CTX,
-          ],
-        );
-        if (this.char === "'" && this.prev !== "\\") {
-          this.shift(1);
-          isClosed = true;
-          break;
-        }
-      }
-      const token = source.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.StringSingleQuote, token, {
-        start: x,
-        end: this.cursor.x,
-        line,
-        column,
-      });
-      this.currentContexts.push(context);
-      if (!isClosed) {
-        this.onError(Reason.StringSingleQuoteOpen, this.cursor, context);
-      }
-      return result;
-    } catch (err) {
-      throw err;
-    }
-  }
-  /**
-   * reads the all strings starting with a "
-   */
-  string_double_quote_CTX(opts?: ContextReaderOptions): boolean {
-    try {
-      const { char, prev } = this;
-      const { source } = this;
-      const { x, column, line } = this.cursor;
-      if (char !== '"' || char === '"' && prev === "\\") return false;
-      if (opts?.checkOnly) return true;
-      const result = true;
-      let isClosed = false;
-      while (!this.isEOF) {
-        this.shift(1);
-        this.isValidChar(
-          opts?.unexpected || [
-            this.line_break_CTX,
-          ],
-        );
-        if (this.char === '"' && this.prev !== "\\") {
-          this.shift(1);
-          isClosed = true;
-          break;
-        }
-      }
-      const token = source.slice(x, this.cursor.x);
-      const context = new ExiumContext(ContextTypes.StringDoubleQuote, token, {
-        start: x,
-        end: this.cursor.x,
-        line,
-        column,
-      });
-      this.currentContexts.push(context);
-      if (!isClosed) {
-        this.onError(Reason.StringDoubleQuoteOpen, this.cursor, context);
-      }
-      return result;
-    } catch (err) {
-      throw err;
-    }
-  }
-  /**
-   * reads the all strings starting with a `
-   */
-  string_template_quote_CTX(opts?: ContextReaderOptions): boolean {
-    try {
-      const { char, prev } = this;
-      const { x, line, column } = this.cursor;
-      const { source } = this;
-      if (char !== "`" || char === "`" && prev === "\\") return false;
-      if (opts?.checkOnly) return true;
-      const result = true;
-      let isClosed = false;
-      const allSubContexts = [
-        this.line_break_CTX,
-        this.string_template_quote_eval_CTX,
-      ];
-      const children: ExiumContext[] = [];
-      while (!this.isEOF) {
-        this.shift(1);
-        this.isValidChar(opts?.unexpected);
-        this.saveContextsTo(allSubContexts, children);
-        if (this.char === "`" && this.prev !== "\\") {
-          this.shift(1);
-          isClosed = true;
-          break;
-        }
-      }
-      const token = source.slice(x, this.cursor.x);
-      const context = new ExiumContext(
-        ContextTypes.StringTemplateQuote,
-        token,
-        {
-          start: x,
-          end: this.cursor.x,
-          line,
-          column,
-        },
-      );
-      context.children.push(...children);
-      this.currentContexts.push(context);
-      if (!isClosed) {
-        this.onError(Reason.StringTemplateQuoteOpen, this.cursor, context);
-      }
-      return result;
-    } catch (err) {
-      throw err;
-    }
-  }
   /**
    * checks inside a string_template_quote_context if there's an evaluation
    */

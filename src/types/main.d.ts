@@ -1,3 +1,5 @@
+import { Exium } from '../../mod.ts';
+
 export interface ContextReaderOptions {
   contexts?: ContextReader[];
   unexpected?: ContextReader[];
@@ -15,7 +17,7 @@ export interface ContextReaderOptions {
  * - return true
  * - should return null only to break the parent context read
  */
-export type ContextReader = (opts?: ContextReaderOptions) => (boolean | null);
+export type ContextReader = (exium: Exium, opts?: ContextReaderOptions) => (boolean | null);
 export interface CursorDescriber {
   column: number;
   line: number;
