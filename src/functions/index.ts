@@ -923,6 +923,9 @@ export function readTextnodeCtx(
         !readCommentCtx(exium, checkOnlyOptions);
     if (!isValid || !getNodeContextStarted(exium)) return false;
     if (opts?.checkOnly) return true;
+    const styleNode = exium.openTags[exium.openTags.length -1];
+    const isStyleNode = styleNode && styleNode.name === 'style';
+    if (isStyleNode) return readStyleSheetCtx(exium, opts);
     const result = true;
     const children: ExiumContext[] = [];
     const allSubContexts = [
