@@ -9,34 +9,34 @@
  */
 import type {
   ContextReader,
+  CursorDescriber,
   ExiumParseOptions,
 } from "./src/types/main.d.ts";
-import { ExiumBase } from "./src/classes/ExiumBase.ts";
 import { Reason } from "./src/enums/error-reason.ts";
 import { ContextTypes } from "./src/enums/context-types.ts";
 import { ExiumContext } from "./src/classes/ExiumContext.ts";
 import { ExiumDocument } from "./src/classes/ExiumDocument.ts";
 import {
-  topCTX,
-  comment_CTX,
-  comment_block_CTX,
-  line_break_CTX,
-  multiple_spaces_CTX,
-  space_CTX,
-  string_template_quote_CTX,
   getUnexpected,
-  string_single_quote_CTX,
-  string_double_quote_CTX,
-  import_ambient_CTX,
-  import_statements_CTX,
-  html_comment_CTX,
-  node_CTX,
-  stylesheet_CTX,
-  protocol_CTX,
-  textnode_CTX,
-  export_component_statements_CTX,
-  component_CTX,
-  isEOF
+  isEOF,
+  readCommentBlockCtx,
+  readCommentCtx,
+  readComponentCtx,
+  readExportComponentStatementsCtx,
+  readHTMLCommentCtx,
+  readImportAmbientCtx,
+  readImportStatementsCtx,
+  readLineBreakCtx,
+  readMultiSpacesCtx,
+  readNodeCtx,
+  readProtocolCtx,
+  readSpaceCtx,
+  readStringDoubleQuoteCtx,
+  readStringSingleQuoteCtx,
+  readStringTemplateQuoteCtx,
+  readStyleSheetCtx,
+  readTextnodeCtx,
+  topCTX,
 } from "./src/functions/index.ts";
 export { ContextTypes, ExiumContext, ExiumDocument, Reason };
 
@@ -80,10 +80,37 @@ export { ContextTypes, ExiumContext, ExiumDocument, Reason };
  * });
  * ```
  */
-export class Exium extends ExiumBase {
-  constructor(...args: ConstructorParameters<typeof ExiumBase>) {
-    super(...args);
-  }
+export class Exium {
+  public treePosition = 0;
+  public allowPseudoProperties = true;
+  public isInPseudoProperty = false;
+  /**
+   * you should save here all the retrieved context
+   * of the document
+   */
+  public currentContexts: ExiumContext[] = [];
+  // to retrieve all remaining open tag
+  public openTags: ExiumContext[] = [];
+  /**
+   * this will shift the cursor into the document
+   */
+  public cursor: CursorDescriber = {
+    x: 0,
+    line: 0,
+    column: 0,
+  };
+  public source = "";
+  public parseOptions: ExiumParseOptions | null = null;
+  constructor(
+    /**
+     * function used when Exium find an unexpected token
+     */
+    public onError: (
+      reason: Reason,
+      cursor: CursorDescriber,
+      context: ExiumContext,
+    ) => void,
+  ) {}
   private scopedTopLevel: Record<
     ExiumParseOptions["type"],
     ContextReader[]
@@ -92,78 +119,78 @@ export class Exium extends ExiumBase {
      * use this scope to test the lexer
      */
     lexer: [
-      comment_CTX,
-      comment_block_CTX,
-      line_break_CTX,
-      multiple_spaces_CTX,
-      space_CTX,
-      string_template_quote_CTX,
+      readCommentCtx,
+      readCommentBlockCtx,
+      readLineBreakCtx,
+      readMultiSpacesCtx,
+      readSpaceCtx,
+      readStringTemplateQuoteCtx,
     ],
 
     /**
      * use this scope to parse ogone components
      */
     ogone: [
-      comment_CTX,
-      comment_block_CTX,
-      line_break_CTX,
-      multiple_spaces_CTX,
-      space_CTX,
-      string_single_quote_CTX,
-      string_double_quote_CTX,
-      import_ambient_CTX,
-      import_statements_CTX,
-      html_comment_CTX,
-      node_CTX,
-      stylesheet_CTX,
-      protocol_CTX,
-      textnode_CTX,
+      readCommentCtx,
+      readCommentBlockCtx,
+      readLineBreakCtx,
+      readMultiSpacesCtx,
+      readSpaceCtx,
+      readStringSingleQuoteCtx,
+      readStringDoubleQuoteCtx,
+      readImportAmbientCtx,
+      readImportStatementsCtx,
+      readHTMLCommentCtx,
+      readNodeCtx,
+      readStyleSheetCtx,
+      readProtocolCtx,
+      readTextnodeCtx,
     ],
     /**
      * use this scope to parse bio components
      */
     bio: [
-      comment_CTX,
-      comment_block_CTX,
-      line_break_CTX,
-      multiple_spaces_CTX,
-      space_CTX,
-      string_single_quote_CTX,
-      string_double_quote_CTX,
-      import_ambient_CTX,
-      import_statements_CTX,
-      html_comment_CTX,
-      export_component_statements_CTX,
-      component_CTX,
+      readCommentCtx,
+      readCommentBlockCtx,
+      readLineBreakCtx,
+      readMultiSpacesCtx,
+      readSpaceCtx,
+      readStringSingleQuoteCtx,
+      readStringDoubleQuoteCtx,
+      readImportAmbientCtx,
+      readImportStatementsCtx,
+      readHTMLCommentCtx,
+      readExportComponentStatementsCtx,
+      readComponentCtx,
     ],
     script: [
-      comment_CTX,
-      comment_block_CTX,
-      line_break_CTX,
-      multiple_spaces_CTX,
-      space_CTX,
-      import_ambient_CTX,
-      import_statements_CTX,
+      readCommentCtx,
+      readCommentBlockCtx,
+      readLineBreakCtx,
+      readMultiSpacesCtx,
+      readSpaceCtx,
+      readImportAmbientCtx,
+      readImportStatementsCtx,
     ],
     /**
      * use this scope to parse stylesheets (CSS and Typed-CSS)
      */
     stylesheet: [
-      comment_CTX,
-      comment_block_CTX,
-      line_break_CTX,
-      multiple_spaces_CTX,
-      space_CTX,
-      stylesheet_CTX,
+      readCommentCtx,
+      readCommentBlockCtx,
+      readLineBreakCtx,
+      readMultiSpacesCtx,
+      readSpaceCtx,
+      readStyleSheetCtx,
     ],
     /**
      * use this scope to parse ogone components protocols
      */
     protocol: [
-      line_break_CTX,
-      multiple_spaces_CTX,
-      space_CTX,
-      protocol_CTX,
+      readLineBreakCtx,
+      readMultiSpacesCtx,
+      readSpaceCtx,
+      readProtocolCtx,
     ],
     custom: [],
   };
@@ -198,7 +225,11 @@ export class Exium extends ExiumBase {
         // start using context readers
         const isValid = topCTX(this, toplevel);
         if (!isValid) {
-          this.onError(Reason.UnexpectedToken, this.cursor, getUnexpected(this));
+          this.onError(
+            Reason.UnexpectedToken,
+            this.cursor,
+            getUnexpected(this),
+          );
           break;
         }
       }

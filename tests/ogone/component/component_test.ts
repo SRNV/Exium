@@ -102,7 +102,7 @@ import component A from './b.o3';
 Deno.test("exium large component is parsed < 100ms", () => {
   const perf = performance.now();
   const lexer = new Exium((reason, _cursor, context) => {
-    console.warn(context, _cursor)
+    console.warn(context, _cursor);
     throw new Error(
       `${reason} ${context.position.line}:${context.position.column}`,
     );

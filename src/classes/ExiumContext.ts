@@ -171,23 +171,23 @@ export class ExiumContext {
    */
   get template(): ExiumContext | undefined {
     return !this.parentNode && this.nodeType === 1 ||
-      this.type === ContextTypes.ComponentDeclaration
+        this.type === ContextTypes.ComponentDeclaration
       ? this.#_template ||
-      (this.#_template = this.children.find((context) =>
-        context.type === ContextTypes.Node &&
-        !context.data.isNodeClosing &&
-        context.name === "template"
-      ))
+        (this.#_template = this.children.find((context) =>
+          context.type === ContextTypes.Node &&
+          !context.data.isNodeClosing &&
+          context.name === "template"
+        ))
       : undefined;
   }
   get proto(): ExiumContext | undefined {
     return !this.parentNode && this.nodeType === 1
       ? this.#_proto ||
-      (this.#_proto = this.children.find((context) =>
-        context.type === ContextTypes.Node &&
-        !context.data.isNodeClosing &&
-        context.name === "proto"
-      ))
+        (this.#_proto = this.children.find((context) =>
+          context.type === ContextTypes.Node &&
+          !context.data.isNodeClosing &&
+          context.name === "proto"
+        ))
       : undefined;
   }
   get protocol(): ExiumContext | null | undefined {
@@ -210,7 +210,7 @@ export class ExiumContext {
       line: number;
       column: number;
     },
-  ) { }
+  ) {}
   /**
    * recursive function
    * @param search a function to use to retrieve a context, a basic find function

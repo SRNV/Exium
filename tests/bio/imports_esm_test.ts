@@ -1,6 +1,9 @@
 import { ContextTypes } from "../../src/enums/context-types.ts";
 import { Exium } from "./../../mod.ts";
-import { assert, assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
+import {
+  assert,
+  assertEquals,
+} from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 Deno.test("exium supports ImportComponentStatement with global aliases", () => {
   const lexer = new Exium((reason, _cursor, context) => {
@@ -11,11 +14,15 @@ Deno.test("exium supports ImportComponentStatement with global aliases", () => {
   try {
     const content = `import * as THREE from 'three';`;
     const contexts = lexer.readSync(content, { type: "bio" });
-    const impStmt = contexts.find(context => context.type === ContextTypes.ImportStatement);
+    const impStmt = contexts.find((context) =>
+      context.type === ContextTypes.ImportStatement
+    );
     assert(impStmt);
-    const allalias = impStmt.children.find(context => context.type === ContextTypes.ImportAllAlias);
+    const allalias = impStmt.children.find((context) =>
+      context.type === ContextTypes.ImportAllAlias
+    );
     assert(allalias);
-    assertEquals(allalias.source, '* as THREE');
+    assertEquals(allalias.source, "* as THREE");
   } catch (err) {
     throw err;
   }
