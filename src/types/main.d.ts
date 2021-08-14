@@ -22,8 +22,6 @@ export type ContextReader = (
   opts?: ContextReaderOptions,
 ) => (boolean | null);
 export interface CursorDescriber {
-  column: number;
-  line: number;
   x: number;
 }
 export interface ExiumParseOptions {
@@ -52,4 +50,10 @@ export interface ExiumParseOptions {
    * and the context that is currently used
    */
   debugg?: boolean;
+}
+export interface Position {
+  start: number;
+  line: number;
+  column: number;
+  end: number;
 }

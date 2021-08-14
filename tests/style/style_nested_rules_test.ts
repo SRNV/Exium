@@ -33,8 +33,6 @@ Deno.test("exium - support for nested rules in stylesheet", () => {
     assert(rulesP.length);
     const [rule1WithDiv] = rulesDiv;
     const [rule1WithP] = rulesP;
-    console.warn(1, rule1WithP.related[0].type);
-    // assert(rule1WithP.parentRule);
     const divBackgroundContext = rule1WithDiv.getPropertyContexts("background");
     const pBackgroundContext = rule1WithP.getPropertyContexts("background");
     assert(divBackgroundContext);

@@ -11,6 +11,7 @@ import type {
   ContextReader,
   CursorDescriber,
   ExiumParseOptions,
+  Position,
 } from "./src/types/main.d.ts";
 import { Reason } from "./src/enums/error-reason.ts";
 import { ContextTypes } from "./src/enums/context-types.ts";
@@ -37,8 +38,17 @@ import {
   readStyleSheetCtx,
   readTextnodeCtx,
   topCTX,
+  getPositionSync,
 } from "./src/functions/index.ts";
-export { ContextTypes, ExiumContext, ExiumDocument, Reason };
+export {
+  ContextTypes,
+  ExiumContext,
+  ExiumDocument,
+  Reason,
+};
+export type {
+  Position
+};
 
 /**
  * @README
@@ -96,8 +106,6 @@ export class Exium {
    */
   public cursor: CursorDescriber = {
     x: 0,
-    line: 0,
-    column: 0,
   };
   public source = "";
   public parseOptions: ExiumParseOptions | null = null;
@@ -241,5 +249,11 @@ export class Exium {
     } catch (err) {
       throw err;
     }
+  }
+  /**
+   * return position of the token in the source
+   */
+  getPositionSync(context: ExiumContext): Position {
+    return getPositionSync(this, context);
   }
 }

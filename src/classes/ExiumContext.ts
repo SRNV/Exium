@@ -1,5 +1,6 @@
 import { ContextTypes } from "../../src/enums/context-types.ts";
 import { ExiumDocument } from "./ExiumDocument.ts";
+import { Position } from "../types/main.d.ts";
 export type ExiumContextValue = string;
 /**
  * ExiumContext constructor for all retrieved contexts.
@@ -54,6 +55,14 @@ export class ExiumContext {
    * mostly things like name or type of the current context.
    */
   public related: ExiumContext[] = [];
+  get position(): Position {
+    return {
+      line: 0,
+      end: 0,
+      start: this.start,
+      column: 0,
+    }
+  }
   /**
    * the computed value of the ExiumContext
    */
@@ -204,12 +213,7 @@ export class ExiumContext {
   constructor(
     public type: ContextTypes,
     public source: string,
-    public position: {
-      start: number;
-      end: number;
-      line: number;
-      column: number;
-    },
+    public start: number,
   ) {}
   /**
    * recursive function
