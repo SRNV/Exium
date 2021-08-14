@@ -38,7 +38,6 @@ import {
   readStyleSheetCtx,
   readTextnodeCtx,
   topCTX,
-  getPositionSync,
 } from "./src/functions/index.ts";
 export {
   ContextTypes,
@@ -254,6 +253,6 @@ export class Exium {
    * return position of the token in the source
    */
   getPositionSync(context: ExiumContext): Position {
-    return getPositionSync(this, context);
+    return context.getPosition(this.source);
   }
 }
