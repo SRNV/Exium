@@ -26,8 +26,9 @@ Deno.test("exium can retrieve properties", () => {
 </Test>
   `;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const contexts = lexer.readSync(content, { type: "ogone" });
@@ -81,8 +82,9 @@ Deno.test("exium can retrieve properties (stylesheet)", () => {
   }
   `;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const contexts = lexer.readSync(content, { type: "stylesheet" });

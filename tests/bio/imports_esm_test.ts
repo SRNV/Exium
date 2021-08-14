@@ -6,13 +6,14 @@ import {
 } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 Deno.test("exium supports ImportComponentStatement with global aliases", () => {
+  const content = `import * as THREE from 'three';`;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   try {
-    const content = `import * as THREE from 'three';`;
     const contexts = lexer.readSync(content, { type: "bio" });
     const impStmt = contexts.find((context) =>
       context.type === ContextTypes.ImportStatement
@@ -31,8 +32,9 @@ Deno.test("exium supports ImportComponentStatement with global aliases", () => {
 /*
 Deno.test("", () => {
     const lexer = new Exium((reason, _cursor, context) => {
+      const position = context.getPosition(content);
       throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
+        `${reason} ${position.line}:${position.column}`,
       );
     });
     const content = `import { Mesh, MeshBasicMaterial } from 'three';`;
@@ -45,8 +47,9 @@ Deno.test("", () => {
   });
   Deno.test("", () => {
     const lexer = new Exium((reason, _cursor, context) => {
+      const position = context.getPosition(content);
       throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
+        `${reason} ${position.line}:${position.column}`,
       );
     });
     const content = `import M, { some } from 'mqi';`;
@@ -59,8 +62,9 @@ Deno.test("", () => {
   });
   Deno.test("", () => {
     const lexer = new Exium((reason, _cursor, context) => {
+      const position = context.getPosition(content);
       throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
+        `${reason} ${position.line}:${position.column}`,
       );
     });
     const content = `import { some }, B from 'qib';`;
@@ -73,8 +77,9 @@ Deno.test("", () => {
   });
   Deno.test("", () => {
     const lexer = new Exium((reason, _cursor, context) => {
+      const position = context.getPosition(content);
       throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
+        `${reason} ${position.line}:${position.column}`,
       );
     });
     const content = `import { some as aliasOfSome, some2 }, B from 'qib';`;

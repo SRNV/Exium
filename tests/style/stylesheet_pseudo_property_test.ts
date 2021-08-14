@@ -16,8 +16,9 @@ Deno.test("exium can retrieve pseudo properties", () => {
     }
   `;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const contexts = lexer.readSync(content, { type: "stylesheet" });
@@ -52,8 +53,9 @@ Deno.test("exium can retrieve pseudo properties (ogone)", () => {
 </Test>
   `;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const contexts = lexer.readSync(content, { type: "ogone" });
@@ -88,8 +90,9 @@ Deno.test("exium can retrieve pseudo properties (media-min-width)", () => {
 </Test>
   `;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const contexts = lexer.readSync(content, { type: "ogone" });
@@ -133,8 +136,9 @@ Deno.test("exium can retrieve pseudo properties (keyframes)", () => {
 </Test>
   `;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const contexts = lexer.readSync(content, { type: "ogone" });

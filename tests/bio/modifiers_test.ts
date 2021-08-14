@@ -4,8 +4,9 @@ import { ContextTypes } from "../../src/enums/context-types.ts";
 
 Deno.test("exium supports attribute modifiers (auto closing tag)", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `component <C @private name=World />`;
@@ -20,8 +21,9 @@ Deno.test("exium supports attribute modifiers (auto closing tag)", () => {
 
 Deno.test("exium supports attribute modifiers", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `component <C @private name=World> </C>`;
@@ -36,8 +38,9 @@ Deno.test("exium supports attribute modifiers", () => {
 
 Deno.test("exium supports attribute modifiers on AttributeBoolean", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `component <C @private isSupported> </C>`;
@@ -52,8 +55,9 @@ Deno.test("exium supports attribute modifiers on AttributeBoolean", () => {
 
 Deno.test("exium supports attribute modifiers on AttributeProperty", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `component <C @private isSupported={true}> </C>`;
@@ -68,8 +72,9 @@ Deno.test("exium supports attribute modifiers on AttributeProperty", () => {
 
 Deno.test("exium supports attribute modifiers with types", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `component <C @private[ boolean[] ] isSupported={true}> </C>`;
@@ -89,8 +94,9 @@ Deno.test("exium supports attribute modifiers with types", () => {
 
 Deno.test("exium supports attribute modifiers with arguments", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content =
@@ -149,8 +155,9 @@ Deno.test("exium - is waiting for a character to make it a modifier", () => {
 
 Deno.test("exium supports bio language with complex example (spec: component.0.0.0.2021-4.7)", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `

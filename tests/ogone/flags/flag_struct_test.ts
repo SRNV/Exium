@@ -8,8 +8,9 @@ import { ExiumDocument } from "../../../src/classes/ExiumDocument.ts";
 
 Deno.test("exium can retrieve node flags", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const structures = [
@@ -80,8 +81,9 @@ ${
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
+      const position = context.getPosition(content);
       throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
+        `${reason} ${position.line}:${position.column}`,
       );
     },
     source: content,
@@ -125,8 +127,9 @@ Deno.test("exium document can retrieve flag value (using value)", () => {
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
+      const position = context.getPosition(content);
       throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
+        `${reason} ${position.line}:${position.column}`,
       );
     },
     source: content,

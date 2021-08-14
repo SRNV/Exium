@@ -18,8 +18,9 @@ Deno.test("exium - supports StyleSheetSelectorParentRef (& token)", () => {
   }
   `;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   try {
@@ -50,8 +51,9 @@ Deno.test("exium - no parent Ref parsed", () => {
   }
   `;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   try {

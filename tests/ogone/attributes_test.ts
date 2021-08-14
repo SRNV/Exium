@@ -7,8 +7,9 @@ import {
 
 Deno.test("exium can parse attribute unquoted", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const source = "a=value";
@@ -40,11 +41,11 @@ Deno.test("exium can parse attribute unquoted", () => {
         const attributeNamePosition = { start: 5, end: 6, line: 0, column: 5 };
         assertEquals(target.type, attribute.type);
         assertEquals(target.source, attribute.source);
-        assertEquals(target.position, attribute.position);
+        assertEquals(target.position, attribute.getPosition(content));
         assertEquals(attribute.children[0].source, "value");
         assertEquals(attribute.related[0].source, "a");
-        assertEquals(attributeName.position, attributeNamePosition);
-        assertEquals(attributeUnquoted.position, unquotedPosition);
+        assertEquals(attributeName.getPosition(content), attributeNamePosition);
+        assertEquals(attributeUnquoted.getPosition(content), unquotedPosition);
       } else {
         throw new Error("Exium - test failed");
       }
@@ -58,8 +59,9 @@ Deno.test("exium can parse attribute unquoted", () => {
 
 Deno.test("exium can parse boolean attributes and a space after", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const source = "hidden";
@@ -78,7 +80,7 @@ Deno.test("exium can parse boolean attributes and a space after", () => {
         };
         assertEquals(target.type, attribute.type);
         assertEquals(target.source, attribute.source);
-        assertEquals(target.position, attribute.position);
+        assertEquals(target.position, attribute.getPosition(content));
         assertEquals(attribute.source, source);
       } else {
         throw new Error("Exium - test failed");
@@ -93,8 +95,9 @@ Deno.test("exium can parse boolean attributes and a space after", () => {
 
 Deno.test("exium can parse multiple boolean attributes", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const sources = ["hidden", "named", "href", "src-p"];
@@ -109,15 +112,15 @@ Deno.test("exium can parse multiple boolean attributes", () => {
         },
         {
           source: "named",
-          position: { start: 13, end: 18, line: 0, column: 13 },
+          position: { start: 13, end: 18, line: 1, column: 1 },
         },
         {
           source: "href",
-          position: { start: 20, end: 24, line: 0, column: 20 },
+          position: { start: 20, end: 24, line: 2, column: 1 },
         },
         {
           source: "src-p",
-          position: { start: 26, end: 31, line: 0, column: 26 },
+          position: { start: 26, end: 31, line: 3, column: 1 },
         },
       ];
       const div = contexts.find((context) =>
@@ -131,7 +134,7 @@ Deno.test("exium can parse multiple boolean attributes", () => {
         attributes.forEach((attribute, i: number) => {
           assertEquals(div.children.includes(attribute), true);
           assertEquals(attribute.source, sources[i]);
-          assertEquals(attribute.position, targets[i].position);
+          assertEquals(attribute.getPosition(content), targets[i].position);
         });
       } else {
         console.error("attributes", attributes);
@@ -147,8 +150,9 @@ Deno.test("exium can parse multiple boolean attributes", () => {
 
 Deno.test("exium can parse boolean attributes and without space after", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const source = "hidden";
@@ -167,7 +171,7 @@ Deno.test("exium can parse boolean attributes and without space after", () => {
         };
         assertEquals(target.type, attribute.type);
         assertEquals(target.source, attribute.source);
-        assertEquals(target.position, attribute.position);
+        assertEquals(target.position, attribute.getPosition(content));
         assertEquals(attribute.source, source);
       } else {
         console.error("attribute", attribute);

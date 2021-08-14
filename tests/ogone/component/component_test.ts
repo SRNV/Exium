@@ -15,8 +15,9 @@ Deno.test("exium can parse a basic component", () => {
     public basic: string = 'this is a basic component';
 `;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `
@@ -65,25 +66,25 @@ import component A from './b.o3';
       if (!protocolCTX) {
         throw new Error("Failed to retrieve the protocol context");
       }
-      assertEquals(proto.position, {
+      assertEquals(proto.getPosition(content), {
         column: 2,
         end: 154,
         line: 10,
         start: 147,
       });
-      assertEquals(template.position, {
+      assertEquals(template.getPosition(content), {
         column: 2,
         end: 60,
         line: 4,
         start: 50,
       });
-      assertEquals(style.position, {
+      assertEquals(style.getPosition(content), {
         column: 4,
         end: 72,
         line: 5,
         start: 65,
       });
-      assertEquals(protocolCTX.position, {
+      assertEquals(protocolCTX.getPosition(content), {
         column: 2,
         end: 222,
         line: 11,
@@ -103,8 +104,9 @@ Deno.test("exium large component is parsed < 100ms", () => {
   const perf = performance.now();
   const lexer = new Exium((reason, _cursor, context) => {
     console.warn(context, _cursor);
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = component1;
@@ -123,8 +125,9 @@ Deno.test("exium large component is parsed < 100ms", () => {
 
 Deno.test("exium supports props to component", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `
@@ -145,7 +148,7 @@ Deno.test("exium supports props to component", () => {
       const [name] = property.related;
       assert(name);
       assertEquals(name.source, "prop");
-      assertEquals(name.position, {
+      assertEquals(name.getPosition(content), {
         column: 17,
         end: 73,
         line: 4,
@@ -161,8 +164,9 @@ Deno.test("exium supports props to component", () => {
 
 Deno.test("exium supports functions into props", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `
@@ -182,7 +186,7 @@ Deno.test("exium supports functions into props", () => {
       const [name] = property.related;
       assert(name);
       assertEquals(name.source, "prop");
-      assertEquals(name.position, {
+      assertEquals(name.getPosition(content), {
         column: 17,
         end: 72,
         line: 3,

@@ -11,8 +11,9 @@ Deno.test("exium - document can expose the component's template", () => {
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
+      const position = context.getPosition(content);
       throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
+        `${reason} ${position.line}:${position.column}`,
       );
     },
     source: content,
@@ -34,8 +35,9 @@ Deno.test("exium - document can retrieve an element", () => {
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
+      const position = context.getPosition(content);
       throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
+        `${reason} ${position.line}:${position.column}`,
       );
     },
     source: content,
@@ -54,8 +56,9 @@ Deno.test("exium - document can retrieve an element with getElementsByClassName 
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
+      const position = context.getPosition(content);
       throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
+        `${reason} ${position.line}:${position.column}`,
       );
     },
     source: content,
@@ -74,8 +77,9 @@ Deno.test("exium - document can retrieve an element with getElementsByClassName 
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
+      const position = context.getPosition(content);
       throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
+        `${reason} ${position.line}:${position.column}`,
       );
     },
     source: content,
@@ -94,8 +98,9 @@ Deno.test("exium - document can retrieve an element with getElementById (quoted)
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
+      const position = context.getPosition(content);
       throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
+        `${reason} ${position.line}:${position.column}`,
       );
     },
     source: content,
@@ -114,8 +119,9 @@ Deno.test("exium - document can retrieve an element with getElementById (unquote
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
+      const position = context.getPosition(content);
       throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
+        `${reason} ${position.line}:${position.column}`,
       );
     },
     source: content,
@@ -134,8 +140,9 @@ Deno.test("exium - document can retrieve an element with getElementsByFlag", () 
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
+      const position = context.getPosition(content);
       throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
+        `${reason} ${position.line}:${position.column}`,
       );
     },
     source: content,
@@ -154,8 +161,9 @@ Deno.test("exium - document can retrieve an element with getElementsByFlag (:arg
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
+      const position = context.getPosition(content);
       throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
+        `${reason} ${position.line}:${position.column}`,
       );
     },
     source: content,
@@ -174,8 +182,9 @@ Deno.test("exium - document can retrieve arguments on flag", () => {
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
+      const position = context.getPosition(content);
       throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
+        `${reason} ${position.line}:${position.column}`,
       );
     },
     source: content,
@@ -192,18 +201,20 @@ Deno.test("exium - document can retrieve arguments on flag", () => {
 });
 
 Deno.test("exium - document should return null when a component is not imported", () => {
+  const content = `
+  <Component>
+    <template>
+      <AsyncComponent />
+    </template>
+  </Component>
+`;
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
-    source: `
-    <Component>
-      <template>
-        <AsyncComponent />
-      </template>
-    </Component>
-  `,
+    source: content,
     onError: (reason, _cursor, context) => {
+      const position = context.getPosition(content);
       throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
+        `${reason} ${position.line}:${position.column}`,
       );
     },
   });

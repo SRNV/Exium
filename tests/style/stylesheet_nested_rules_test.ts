@@ -17,8 +17,9 @@ Deno.test("exium can retrieve properties", () => {
   `;
   const lexer = new Exium((reason, _cursor, context) => {
     console.warn(context);
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const contexts = lexer.readSync(content, { type: "ogone"});

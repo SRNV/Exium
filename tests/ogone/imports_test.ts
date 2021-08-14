@@ -7,8 +7,9 @@ import {
 const importsTypes = [ContextTypes.ImportStatement, ContextTypes.ImportAmbient];
 Deno.test("exium supports import ambient statement", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `import'my_stuff.js';`;
@@ -25,8 +26,9 @@ Deno.test("exium supports import ambient statement", () => {
 
 Deno.test("exium supports all import statements", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `

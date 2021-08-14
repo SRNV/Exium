@@ -7,8 +7,9 @@ import {
 
 Deno.test("exium - bio language supports styleheet for components", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `

@@ -18,8 +18,9 @@ Deno.test("exium supports spread feature", () => {
 </Deno>
   `;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const contexts = lexer.readSync(content, { type: "ogone" });
@@ -33,7 +34,7 @@ Deno.test("exium supports spread feature", () => {
       );
     assert(!!spread);
     assertEquals(spread.source, "...rule;");
-    assertEquals(spread.position, { start: 53, end: 61, line: 5, column: 8 });
+    assertEquals(spread.getPosition(content), { start: 53, end: 61, line: 5, column: 8 });
     if (!spreadName) {
       throw new Error("Failed to retrieve spread identifier");
     }
@@ -52,8 +53,9 @@ Deno.test("exium supports spread feature (stylesheet)", () => {
   }
   `;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const contexts = lexer.readSync(content, { type: "stylesheet" });
@@ -63,7 +65,7 @@ Deno.test("exium supports spread feature (stylesheet)", () => {
     );
     assert(!!spread);
     assertEquals(spread.source, "...rule;");
-    assertEquals(spread.position, { start: 13, end: 21, line: 2, column: 4 });
+    assertEquals(spread.getPosition(content), { start: 13, end: 21, line: 2, column: 4 });
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorPseudoElement} context`,
@@ -84,8 +86,9 @@ Deno.test("exium supports multiple spreads", () => {
   }
   `;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const contexts = lexer.readSync(content, { type: "stylesheet" });
@@ -100,7 +103,7 @@ Deno.test("exium supports multiple spreads", () => {
       const name = spreadsName[i];
       assert(name.source === items[i]);
       assert(spread.related.includes(name));
-      assert(name.position.start === spread.position.start + 3);
+      assert(name.start === spread.start + 3);
     });
   } else {
     throw new Error(

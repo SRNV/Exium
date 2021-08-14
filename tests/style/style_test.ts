@@ -16,8 +16,9 @@ Deno.test("exium can retrieve nested css", () => {
   </template>
 </Deno>`;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const contexts = lexer.readSync(content, { type: "ogone" });
@@ -40,8 +41,9 @@ Deno.test("exium can retrieve nested css", () => {
 Deno.test("exium can parse at-rules", () => {
   const content = ` @media screen and (min-width: 100px) {} `;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const contexts = lexer.readSync(content, { type: "stylesheet" });
@@ -61,8 +63,8 @@ Deno.test("exium can parse at-rules", () => {
     if (!name) {
       throw new Error(`Exium - Failed to retrieve the name of the at rule`);
     }
-    assertEquals(name.position, { start: 2, end: 7, line: 0, column: 2 });
-    assertEquals(atrule.position, { start: 1, end: 38, line: 0, column: 1 });
+    assertEquals(name.getPosition(content), { start: 2, end: 7, line: 0, column: 2 });
+    assertEquals(atrule.getPosition(content), { start: 1, end: 38, line: 0, column: 1 });
     assert(
       atrule.related.find((ctx) =>
         ctx.type === ContextTypes.StyleSheetPropertyList

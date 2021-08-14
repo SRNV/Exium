@@ -17,8 +17,9 @@ Deno.test("exium - document can retrieve the component type", () => {
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
+      const position = context.getPosition(content);
       throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
+        `${reason} ${position.line}:${position.column}`,
       );
     },
     source: content,
@@ -47,8 +48,9 @@ Deno.test("exium - document can retrieve the component type (unquoted)", () => {
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
+      const position = context.getPosition(content);
       throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
+        `${reason} ${position.line}:${position.column}`,
       );
     },
     source: content,
@@ -76,8 +78,9 @@ Deno.test("exium - document can expose the component's proto", () => {
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
+      const position = context.getPosition(content);
       throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
+        `${reason} ${position.line}:${position.column}`,
       );
     },
     source: content,

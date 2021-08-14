@@ -18,8 +18,9 @@ Deno.test("exium stylesheet supports @const statement, and it can retrieve the n
   }
   `;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const contexts = lexer.readSync(content, { type: "stylesheet" });
@@ -64,8 +65,9 @@ Deno.test("exium stylesheet supports @const statement, and it can retrieve the n
   </template>
 </Styling>`;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const contexts = lexer.readSync(content, { type: "ogone" });
@@ -99,8 +101,9 @@ Deno.test("exium stylesheet supports @const statement, and it can retrieve the n
 Deno.test("exium stylesheet supports @export statement", () => {
   const content = `@export const myVar<hex> = #000000;`;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const contexts = lexer.readSync(content, { type: "stylesheet" });
@@ -125,8 +128,9 @@ Deno.test("exium stylesheet supports @const statement and supports rule assignme
     color: red;
   };`;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const contexts = lexer.readSync(content, { type: "stylesheet" });
@@ -163,7 +167,7 @@ Deno.test("exium stylesheet supports @const statement and supports rule assignme
     }
     assertEquals(constantName.source, constName);
     assertEquals(constantTypeAssignment.source, "<rule>");
-    assertEquals(constantTypeAssignment.position, {
+    assertEquals(constantTypeAssignment.getPosition(content), {
       start: 15,
       end: 21,
       line: 0,

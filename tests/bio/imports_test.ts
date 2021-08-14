@@ -4,8 +4,9 @@ import { assert } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 Deno.test("exium supports ImportComponentStatement with a list of identifier", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `import component {

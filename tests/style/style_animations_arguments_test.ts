@@ -16,8 +16,9 @@ Deno.test("exium - support for animations arguments", () => {
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
+      const position = context.getPosition(stylesheet);
       throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
+        `${reason} ${position.line}:${position.column}`,
       );
     },
     source: stylesheet,

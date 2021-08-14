@@ -15,8 +15,9 @@ Deno.test("exium - document can expose the component's styles", () => {
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
+      const position = context.getPosition(content);
       throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
+        `${reason} ${position.line}:${position.column}`,
       );
     },
     source: content,
@@ -62,8 +63,9 @@ Deno.test("exium - document can select rules with component (div, .className, #i
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
+      const position = context.getPosition(content);
       throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
+        `${reason} ${position.line}:${position.column}`,
       );
     },
     source: content,
@@ -107,8 +109,9 @@ Deno.test("exium - document can get stylesheet constants", () => {
   const document = new ExiumDocument({
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
+      const position = context.getPosition(content);
       throw new Error(
-        `${reason} ${context.position.line}:${context.position.column}`,
+        `${reason} ${position.line}:${position.column}`,
       );
     },
     source: content,

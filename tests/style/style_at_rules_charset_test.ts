@@ -4,8 +4,9 @@ import { ContextTypes } from "../../src/enums/context-types.ts";
 Deno.test("exium can parse @charset", () => {
   const content = `@charset 'utf-8';`;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const contexts = lexer.readSync(content, { type: "stylesheet" });

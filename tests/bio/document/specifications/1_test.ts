@@ -10,8 +10,9 @@ Deno.test("exium - bio-document can expose the component's template", () => {
       url: new URL(import.meta.url),
       onError: (reason, _cursor, context) => {
         console.log(reason, _cursor, context);
+        const position = context.getPosition(content);
         throw new Error(
-          `${reason} ${context.position.line}:${context.position.column}`,
+          `${reason} ${position.line}:${position.column}`,
         );
       },
       source: content,

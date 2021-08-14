@@ -19,8 +19,9 @@ Deno.test("exium can retrieve selectors with pseudo elements", () => {
   </Test>
   `;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const contexts = lexer.readSync(content, { type: "ogone" });
@@ -32,7 +33,7 @@ Deno.test("exium can retrieve selectors with pseudo elements", () => {
       throw new Error("failed to retrieve the hover pseudo class");
     }
     assertEquals(hover.source, "::selection");
-    assertEquals(hover.position, {
+    assertEquals(hover.getPosition(content), {
       end: 55,
       line: 4,
       start: 44,
@@ -62,8 +63,9 @@ Deno.test("exium supports all standard pseudo classes", () => {
   </Test>
     `;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const contexts = lexer.readSync(content, { type: "ogone" });
@@ -97,8 +99,9 @@ Deno.test("exium supports all standard pseudo classes (stylesheet)", () => {
           color: blue;
         }`;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const contexts = lexer.readSync(content, { type: "stylesheet" });

@@ -4,8 +4,9 @@ import { assertEquals } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 Deno.test("exium supports nodes", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `<div></div>`;
@@ -14,8 +15,8 @@ Deno.test("exium supports nodes", () => {
     const [tagname, node] = contexts;
     assertEquals(tagname.source, "div");
     assertEquals(tagname.type, ContextTypes.Identifier);
-    assertEquals(tagname.position, { start: 1, end: 4, line: 0, column: 1 });
-    assertEquals(node.position, { start: 0, end: 5, line: 0, column: 0 });
+    assertEquals(tagname.getPosition(content), { start: 1, end: 4, line: 0, column: 1 });
+    assertEquals(node.getPosition(content), { start: 0, end: 5, line: 0, column: 0 });
     assertEquals(node.related.includes(tagname), true);
   } else {
     throw new Error("Exium - Failed to retrieve Node Context");
@@ -23,8 +24,9 @@ Deno.test("exium supports nodes", () => {
 });
 Deno.test("exium can retrieve node names: template", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `<template></template>`;
@@ -33,8 +35,8 @@ Deno.test("exium can retrieve node names: template", () => {
     const [tagname, node] = contexts;
     assertEquals(tagname.source, "template");
     assertEquals(tagname.type, ContextTypes.Identifier);
-    assertEquals(tagname.position, { start: 1, end: 9, line: 0, column: 1 });
-    assertEquals(node.position, { start: 0, end: 10, line: 0, column: 0 });
+    assertEquals(tagname.getPosition(content), { start: 1, end: 9, line: 0, column: 1 });
+    assertEquals(node.getPosition(content), { start: 0, end: 10, line: 0, column: 0 });
     assertEquals(node.related.includes(tagname), true);
   } else {
     throw new Error("Exium - Failed to retrieve Node Context");
@@ -42,8 +44,9 @@ Deno.test("exium can retrieve node names: template", () => {
 });
 Deno.test("exium can retrieve node names: proto", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `<proto></proto>`;
@@ -52,8 +55,8 @@ Deno.test("exium can retrieve node names: proto", () => {
     const [tagname, node] = contexts;
     assertEquals(tagname.source, "proto");
     assertEquals(tagname.type, ContextTypes.Identifier);
-    assertEquals(tagname.position, { start: 1, end: 6, line: 0, column: 1 });
-    assertEquals(node.position, { start: 0, end: 7, line: 0, column: 0 });
+    assertEquals(tagname.getPosition(content), { start: 1, end: 6, line: 0, column: 1 });
+    assertEquals(node.getPosition(content), { start: 0, end: 7, line: 0, column: 0 });
     assertEquals(node.related.includes(tagname), true);
   } else {
     throw new Error("Exium - Failed to retrieve Node Context");
@@ -61,8 +64,9 @@ Deno.test("exium can retrieve node names: proto", () => {
 });
 Deno.test("exium tagname is accessible through the related property", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `<proto></proto>`;
@@ -73,8 +77,8 @@ Deno.test("exium tagname is accessible through the related property", () => {
       const [tagname] = node.related;
       assertEquals(tagname.source, "proto");
       assertEquals(tagname.type, ContextTypes.Identifier);
-      assertEquals(tagname.position, { start: 1, end: 6, line: 0, column: 1 });
-      assertEquals(node.position, { start: 0, end: 7, line: 0, column: 0 });
+      assertEquals(tagname.getPosition(content), { start: 1, end: 6, line: 0, column: 1 });
+      assertEquals(node.getPosition(content), { start: 0, end: 7, line: 0, column: 0 });
       assertEquals(node.related.includes(tagname), true);
     } catch (err) {
       throw err;
@@ -182,8 +186,9 @@ Deno.test("exium should use onError function when a node is not closed", () => {
 
 Deno.test("exium supports auto closing tags", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `<proto/>`;
@@ -197,7 +202,7 @@ Deno.test("exium supports auto closing tags", () => {
       if (!proto) {
         throw new Error("Failed to retrieve Node Context");
       }
-      assertEquals(proto.position, { start: 0, end: 8, line: 0, column: 0 });
+      assertEquals(proto.getPosition(content), { start: 0, end: 8, line: 0, column: 0 });
       assertEquals(proto.data.isAutoClosing, true);
     } catch (err) {
       throw err;
@@ -209,8 +214,9 @@ Deno.test("exium supports auto closing tags", () => {
 
 Deno.test("exium supports auto closing tags 2", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `<proto />`;
@@ -224,7 +230,7 @@ Deno.test("exium supports auto closing tags 2", () => {
       if (!proto) {
         throw new Error("Failed to retrieve Node Context");
       }
-      assertEquals(proto.position, { start: 0, end: 9, line: 0, column: 0 });
+      assertEquals(proto.getPosition(content), { start: 0, end: 9, line: 0, column: 0 });
       assertEquals(proto.data.isAutoClosing, true);
     } catch (err) {
       throw err;
@@ -236,8 +242,9 @@ Deno.test("exium supports auto closing tags 2", () => {
 
 Deno.test("exium supports auto closing tags 3", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `<proto
@@ -267,8 +274,9 @@ Deno.test("exium supports auto closing tags 3", () => {
 
 Deno.test("exium supports auto closing tags 4 (ending with an attribute)", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `<proto ending/>`;
@@ -293,8 +301,9 @@ Deno.test("exium supports auto closing tags 4 (ending with an attribute)", () =>
 
 Deno.test("exium supports auto closing tags 4 (ending with a flag)", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `<proto --await/>`;
@@ -319,8 +328,9 @@ Deno.test("exium supports auto closing tags 4 (ending with a flag)", () => {
 
 Deno.test("exium supports auto closing tags 4 (ending with a flag and a value)", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `<proto --await={}/>`;

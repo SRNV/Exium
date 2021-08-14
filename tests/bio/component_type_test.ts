@@ -4,8 +4,9 @@ import { assert } from "https://deno.land/std@0.95.0/testing/asserts.ts";
 
 Deno.test("exium supports the ComponentTypeStatement", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `
@@ -52,8 +53,9 @@ bar <B />
 
 Deno.test("exium supports template definition in a bio component", () => {
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const content = `

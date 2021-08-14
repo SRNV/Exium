@@ -16,8 +16,9 @@ Deno.test("exium stylesheet supports type rule assignment", () => {
       color: red;
     }`;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const contexts = lexer.readSync(content, {
@@ -41,7 +42,7 @@ Deno.test("exium stylesheet supports type rule assignment", () => {
       );
     }
     assertEquals(typeRule.source, "<myTrait>");
-    assertEquals(typeRule.position, { start: 6, end: 15, line: 1, column: 5 });
+    assertEquals(typeRule.getPosition(content), { start: 6, end: 15, line: 1, column: 5 });
     assert(atRule.data.isTyped);
     assert(
       atRule.related.find((ctx) =>
@@ -68,8 +69,9 @@ Deno.test("exium stylesheet supports type rule assignment (stylesheet)", () => {
 </Test>
 `;
   const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
     throw new Error(
-      `${reason} ${context.position.line}:${context.position.column}`,
+      `${reason} ${position.line}:${position.column}`,
     );
   });
   const contexts = lexer.readSync(content, {
@@ -93,7 +95,7 @@ Deno.test("exium stylesheet supports type rule assignment (stylesheet)", () => {
       );
     }
     assertEquals(typeRule.source, "<myTrait>");
-    assertEquals(typeRule.position, {
+    assertEquals(typeRule.getPosition(content), {
       end: 49,
       line: 4,
       start: 40,

@@ -55,13 +55,8 @@ export class ExiumContext {
    * mostly things like name or type of the current context.
    */
   public related: ExiumContext[] = [];
-  get position(): Position {
-    return {
-      line: 0,
-      end: 0,
-      start: this.start,
-      column: 0,
-    }
+  get end() {
+    return this.start + this.source.length;
   }
   /**
    * the computed value of the ExiumContext
@@ -154,14 +149,14 @@ export class ExiumContext {
     return 6;
   }
   get nodeStart(): number {
-    return this.position.start;
+    return this.start;
   }
   get nodeEnd(): number {
     const nodeEnd = this.related.find((context) =>
       context.type === ContextTypes.NodeClosing
     );
-    if (nodeEnd) return nodeEnd.position.end;
-    return this.position.end;
+    if (nodeEnd) return nodeEnd.end;
+    return this.end;
   }
   /**
    * @returns the parentNode of the context
@@ -277,6 +272,30 @@ export class ExiumContext {
     return null;
   }
   /**
+   * @returns the complete position description
+   */
+  getPosition(content: string): Position {
+    let line = 0;
+    let column = 0;
+    let x = 0;
+    for (const char of content) {
+      if (x >= this.start) break;
+      if (char === '\n') {
+        line++;
+        column = 0;
+      } else {
+        column++;
+      }
+      x++;
+    }
+    return {
+      line,
+      column,
+      start: this.start,
+      end: this.start + this.source.length,
+    };
+  }
+  /**
    * @returns the value of the attribute or undefined
    * @usage
    * ```typescript
@@ -364,8 +383,8 @@ export class ExiumContext {
     if (!this.document) return [];
     return this.document.contexts.filter((child) => {
       return child.type === ContextTypes.StyleSheetSelectorList &&
-        child.position.start >= this.nodeStart &&
-        child.position.end <= this.nodeEnd &&
+        child.start >= this.nodeStart &&
+        child.end <= this.nodeEnd &&
         child.children.find((subchild) =>
           subchild.type === ContextTypes.StyleSheetSelectorHTMLElement &&
           subchild.source === tagname
@@ -379,8 +398,8 @@ export class ExiumContext {
     if (!this.document) return [];
     return this.document.contexts.filter((child) => {
       return child.type === ContextTypes.StyleSheetSelectorList &&
-        child.position.start >= this.nodeStart &&
-        child.position.end <= this.nodeEnd &&
+        child.start >= this.nodeStart &&
+        child.end <= this.nodeEnd &&
         child.children.find((subchild) =>
           subchild.type === ContextTypes.StyleSheetSelectorClass &&
           subchild.source === `.${className}`
@@ -394,8 +413,8 @@ export class ExiumContext {
     if (!this.document) return [];
     return this.document.contexts.filter((child) => {
       return child.type === ContextTypes.StyleSheetSelectorList &&
-        child.position.start >= this.nodeStart &&
-        child.position.end <= this.nodeEnd &&
+        child.start >= this.nodeStart &&
+        child.end <= this.nodeEnd &&
         child.children.find((subchild) =>
           subchild.type === ContextTypes.StyleSheetSelectorId &&
           subchild.source === `#${id}`
@@ -409,8 +428,8 @@ export class ExiumContext {
     if (!this.document) return [];
     return this.document.contexts.filter((child) => {
       return child.type === ContextTypes.StyleSheetSelectorList &&
-        child.position.start >= this.nodeStart &&
-        child.position.end <= this.nodeEnd &&
+        child.start >= this.nodeStart &&
+        child.end <= this.nodeEnd &&
         child.children.find((subchild) =>
           subchild.type === ContextTypes.StyleSheetSelectorAttribute &&
           subchild.name === attr
@@ -427,8 +446,8 @@ export class ExiumContext {
     if (!this.document) return [];
     return this.document.contexts.filter((child) => {
       return child.type === ContextTypes.StyleSheetSelectorList &&
-        child.position.start >= this.nodeStart &&
-        child.position.end <= this.nodeEnd &&
+        child.start >= this.nodeStart &&
+        child.end <= this.nodeEnd &&
         child.related.find((subchild) =>
           subchild.type === ContextTypes.StyleSheetPropertyList &&
           subchild.children.find((props) =>
@@ -453,8 +472,8 @@ export class ExiumContext {
     if (!this.document) return [];
     return this.document.contexts.filter((child) => {
       return child.type === ContextTypes.StyleSheetSelectorList &&
-        child.position.start >= this.nodeStart &&
-        child.position.end <= this.nodeEnd &&
+        child.start >= this.nodeStart &&
+        child.end <= this.nodeEnd &&
         child.related.find((subchild) =>
           subchild.type === ContextTypes.StyleSheetPropertyList &&
           subchild.children.find((props) => {
@@ -471,8 +490,8 @@ export class ExiumContext {
     if (!this.document) return [];
     return this.document.contexts.filter((context) => {
       return context.type === ContextTypes.StyleSheetAtRuleConst &&
-        context.position.start >= this.nodeStart &&
-        context.position.end <= this.nodeEnd;
+        context.start >= this.nodeStart &&
+        context.end <= this.nodeEnd;
     });
   }
   /**
@@ -482,8 +501,8 @@ export class ExiumContext {
     if (!this.document) return [];
     const exports = this.document.contexts.filter((context) => {
       return context.type === ContextTypes.StyleSheetAtRuleExport &&
-        context.position.start >= this.nodeStart &&
-        context.position.end <= this.nodeEnd;
+        context.start >= this.nodeStart &&
+        context.end <= this.nodeEnd;
     });
     const isConst = exports.filter((exp) =>
       exp.children.find((child) =>
@@ -503,8 +522,8 @@ export class ExiumContext {
     if (!this.document) return;
     return this.document.contexts.find((context) => {
       return context.type === ContextTypes.StyleSheetAtRuleConst &&
-        context.position.start >= this.nodeStart &&
-        context.position.end <= this.nodeEnd &&
+        context.start >= this.nodeStart &&
+        context.end <= this.nodeEnd &&
         context.name === name;
     });
   }
@@ -515,8 +534,8 @@ export class ExiumContext {
     if (!this.document) return;
     const exportCTX = this.document.contexts.find((context) => {
       return context.type === ContextTypes.StyleSheetAtRuleExport &&
-        context.position.start >= this.nodeStart &&
-        context.position.end <= this.nodeEnd;
+        context.start >= this.nodeStart &&
+        context.end <= this.nodeEnd;
     });
     if (!exportCTX) return;
     return exportCTX.children.find((child) =>
@@ -555,8 +574,8 @@ export class ExiumContext {
       context.type === ContextTypes.NodeClosing
     );
     if (this.nodeType === 1 && nodeEnd) {
-      const { end } = this.position;
-      const { start } = nodeEnd.position;
+      const { end } = this;
+      const { start } = nodeEnd;
       return source.slice(end, start);
     }
     return null;
@@ -577,8 +596,8 @@ export class ExiumContext {
       context.type === ContextTypes.NodeClosing
     );
     if (this.nodeType === 1 && nodeEnd) {
-      const { end } = this.position;
-      const { start } = nodeEnd.position;
+      const { end } = this;
+      const { start } = nodeEnd;
       return source.slice(end, start);
     }
     return null;
@@ -598,8 +617,8 @@ export class ExiumContext {
       context.type === ContextTypes.NodeClosing
     );
     if (this.nodeType === 1 && nodeEnd) {
-      const { end } = this.position;
-      const { start } = nodeEnd.position;
+      const { end } = this;
+      const { start } = nodeEnd;
       return source.slice(end, start);
     }
     return null;
