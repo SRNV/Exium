@@ -13,12 +13,8 @@ Deno.test("exium supports spaces", () => {
   if (contexts && contexts.length) {
     const [space] = contexts;
     assertEquals(space.type, ContextTypes.Space);
-    /*
-    assertEquals(space.position.line, 0);
-    assertEquals(space.position.column, 0);
-    assertEquals(space.position.start, 0);
-    assertEquals(space.position.end, 1);
-    */
+    const position = space.getPosition(" ");
+    assertEquals(position, { line: 0, column: 0, start: 0, end: 1 });
   } else {
     throw new Error("Exium - Failed to retrieve Space context");
   }
@@ -35,12 +31,8 @@ Deno.test("exium supports multiple spaces", () => {
   if (contexts && contexts.length) {
     const [space] = contexts;
     assertEquals(space.type, ContextTypes.MultipleSpaces);
-    /*
-    assertEquals(space.position.line, 0);
-    assertEquals(space.position.column, 0);
-    assertEquals(space.position.start, 0);
-    assertEquals(space.position.end, 2);
-    */
+    const position = space.getPosition("  ");
+    assertEquals(position, { line: 0, column: 0, start: 0, end: 2 });
   } else {
     throw new Error("Exium - Failed to retrieve MultipleSpaces context");
   }
@@ -61,12 +53,8 @@ Deno.test("exium supports line break", () => {
   if (contexts && contexts.length) {
     const [lineBreak] = contexts;
     assertEquals(lineBreak.type, ContextTypes.LineBreak);
-    /*
-    assertEquals(lineBreak.position.line, 0);
-    assertEquals(lineBreak.position.column, 0);
-    assertEquals(lineBreak.position.start, 0);
-    assertEquals(lineBreak.position.end, 1);
-    */
+    const position = lineBreak.getPosition(content);
+    assertEquals(position, { line: 0, column: 0, start: 0, end: 1 });
   } else {
     throw new Error("Exium - Failed to retrieve MultipleSpaces context");
   }

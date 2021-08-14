@@ -14,12 +14,8 @@ Deno.test("exium supports comments", () => {
   if (contexts && contexts.length) {
     const [comment] = contexts;
     assertEquals(comment.type, ContextTypes.Comment);
-    /*
-    assertEquals(comment.position.line, 0);
-    assertEquals(comment.position.column, 0);
-    assertEquals(comment.position.start, 0);
-    assertEquals(comment.position.end, content.length);
-    */
+    const position = comment.getPosition(content);
+    assertEquals(position, { line: 0, column: 0, start: 0, end: content.length });
   } else {
     throw new Error("Exium - Failed to retrieve Comment context");
   }

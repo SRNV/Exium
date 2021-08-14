@@ -14,13 +14,8 @@ Deno.test("exium supports double quotes", () => {
   if (contexts && contexts.length) {
     const [doubleQuote] = contexts;
     assertEquals(doubleQuote.type, ContextTypes.StringDoubleQuote);
-    /*
-    assertEquals(doubleQuote.source, content);
-    assertEquals(doubleQuote.position.start, 0);
-    assertEquals(doubleQuote.position.line, 0);
-    assertEquals(doubleQuote.position.column, 0);
-    assertEquals(doubleQuote.position.end, 31);
-    */
+    const position = doubleQuote.getPosition(content);
+    assertEquals(position, { line: 0, column: 0, start: 0, end: 31 });
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StringDoubleQuote} context`,
@@ -42,12 +37,8 @@ Deno.test("exium should not use escaped quotes to close quotes", () => {
     const [doubleQuote] = contexts;
     assertEquals(doubleQuote.type, ContextTypes.StringDoubleQuote);
     assertEquals(doubleQuote.source, content);
-    /*
-    assertEquals(doubleQuote.position.start, 0);
-    assertEquals(doubleQuote.position.line, 0);
-    assertEquals(doubleQuote.position.column, 0);
-    assertEquals(doubleQuote.position.end, 59);
-    */
+    const position = doubleQuote.getPosition(content);
+    assertEquals(position, { line: 0, column: 0, start: 0, end: 59 });
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StringDoubleQuote} context`,

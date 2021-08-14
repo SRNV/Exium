@@ -15,12 +15,8 @@ Deno.test("exium supports template quotes", () => {
     const [doubleQuote] = contexts;
     assertEquals(doubleQuote.type, ContextTypes.StringTemplateQuote);
     assertEquals(doubleQuote.source, content);
-    /*
-    assertEquals(doubleQuote.position.start, 0);
-    assertEquals(doubleQuote.position.line, 0);
-    assertEquals(doubleQuote.position.column, 0);
-    assertEquals(doubleQuote.position.end, 16);
-    */
+    const position = doubleQuote.getPosition(content);
+    assertEquals(position, { line: 0, column: 0, start: 0, end: 16 });
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StringTemplateQuote} context`,
@@ -41,12 +37,8 @@ Deno.test("exium should not use escaped template quotes to close quotes", () => 
     const [doubleQuote] = contexts;
     assertEquals(doubleQuote.type, ContextTypes.StringTemplateQuote);
     assertEquals(doubleQuote.source, content);
-    /*
-    assertEquals(doubleQuote.position.start, 0);
-    assertEquals(doubleQuote.position.line, 0);
-    assertEquals(doubleQuote.position.column, 0);
-    assertEquals(doubleQuote.position.end, 50);
-    */
+    const position = doubleQuote.getPosition(content);
+    assertEquals(position, { line: 0, column: 0, start: 0, end: 50 });
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StringTemplateQuote} context`,
@@ -103,12 +95,8 @@ Deno.test("exium supports template concatenation inside template quotes", () => 
     assertEquals(templateQuote.type, ContextTypes.StringTemplateQuote);
     assertEquals(templateEval.type, ContextTypes.StringTemplateQuoteEval);
     assertEquals(templateEval.source, content.slice(1, -1));
-    /*
-    assertEquals(templateEval.position.start, 1);
-    assertEquals(templateEval.position.end, 13);
-    assertEquals(templateEval.position.line, 0);
-    assertEquals(templateEval.position.column, 1);
-    */
+    const position = templateEval.getPosition(content);
+    assertEquals(position, { line: 0, column: 1, start: 1, end: 13 });
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StringTemplateQuote} context`,

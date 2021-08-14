@@ -101,7 +101,7 @@ Deno.test("exium can parse multiple boolean attributes", () => {
     );
   });
   const sources = ["hidden", "named", "href", "src-p"];
-  const content = `<div ${sources.join("\n\t")} ></div>`;
+  const content = `<div ${sources.join("\n  ")} ></div>`;
   const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     try {
@@ -112,15 +112,15 @@ Deno.test("exium can parse multiple boolean attributes", () => {
         },
         {
           source: "named",
-          position: { start: 13, end: 18, line: 1, column: 1 },
+          position: { start: 14, end: 19, line: 1, column: 2 },
         },
         {
           source: "href",
-          position: { start: 20, end: 24, line: 2, column: 1 },
+          position: { start: 22, end: 26, line: 2, column: 2 },
         },
         {
           source: "src-p",
-          position: { start: 26, end: 31, line: 3, column: 1 },
+          position: { start: 29, end: 34, line: 3, column: 2 },
         },
       ];
       const div = contexts.find((context) =>

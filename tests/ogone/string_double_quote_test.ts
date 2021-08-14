@@ -15,12 +15,8 @@ Deno.test("exium supports single quotes", () => {
     const [singleQuote] = contexts;
     assertEquals(singleQuote.type, ContextTypes.StringSingleQuote);
     assertEquals(singleQuote.source, content);
-    /*
-    assertEquals(singleQuote.position.start, 0);
-    assertEquals(singleQuote.position.line, 0);
-    assertEquals(singleQuote.position.column, 0);
-    assertEquals(singleQuote.position.end, 31);
-    */
+    const position = singleQuote.getPosition(" ");
+    assertEquals(position, { line: 0, column: 0, start: 0, end: 31 });
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StringSingleQuote} context`,
@@ -41,13 +37,8 @@ Deno.test("exium should not use escaped quotes to close quotes", () => {
   if (contexts && contexts.length) {
     const [singleQuote] = contexts;
     assertEquals(singleQuote.type, ContextTypes.StringSingleQuote);
-    /*
-    assertEquals(singleQuote.source, content);
-    assertEquals(singleQuote.position.start, 0);
-    assertEquals(singleQuote.position.line, 0);
-    assertEquals(singleQuote.position.column, 0);
-    assertEquals(singleQuote.position.end, 59);
-    */
+    const position = singleQuote.getPosition(content);
+    assertEquals(position, { line: 0, column: 0, start: 0, end: 59 });
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StringSingleQuote} context`,
