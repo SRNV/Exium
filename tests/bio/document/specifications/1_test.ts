@@ -1,5 +1,5 @@
 import { ExiumDocument } from "./../../../../src/classes/ExiumDocument.ts";
-import { assert } from "https://deno.land/std@0.95.0/testing/asserts.ts";
+import { assert } from "https://deno.land/std@0.104.0/testing/asserts.ts";
 
 const content = Deno.readTextFileSync(
   new URL("./fixtures/LargeComponent.bio", import.meta.url),

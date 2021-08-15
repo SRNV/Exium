@@ -3,7 +3,7 @@ import { Exium } from "./../../../mod.ts";
 import {
   assert,
   assertEquals,
-} from "https://deno.land/std@0.95.0/testing/asserts.ts";
+} from "https://deno.land/std@0.104.0/testing/asserts.ts";
 
 Deno.test("exium can parse textnodes with template eval ctx inside a component's template", () => {
   const textnode = "$\{this.basic}";

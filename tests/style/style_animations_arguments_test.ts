@@ -1,5 +1,5 @@
 import { ExiumDocument } from "./../../src/classes/ExiumDocument.ts";
-import { assert } from "https://deno.land/std@0.95.0/testing/asserts.ts";
+import { assert, assertEquals } from "https://deno.land/std@0.104.0/testing/asserts.ts";
 
 Deno.test("exium - support for animations arguments", () => {
   const stylesheet = /*css*/ `
@@ -27,7 +27,15 @@ Deno.test("exium - support for animations arguments", () => {
     },
   });
   try {
-    assert(document.getStylesheetRulesByProperty("right").length);
+    const rules = document.getStylesheetRulesByProperty("right");
+    assert(rules.length);
+    assert(rules[0]);
+    const [ rule ] = rules;
+    assert(rule);
+    const { cssProperties } = rule;
+    assert(cssProperties?.length);
+    const [ right ] = cssProperties
+    assertEquals(right.name, 'right');
   } catch (err) {
     throw err;
   }

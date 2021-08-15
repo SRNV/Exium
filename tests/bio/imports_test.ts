@@ -1,6 +1,6 @@
 import { ContextTypes } from "../../src/enums/context-types.ts";
 import { Exium } from "./../../mod.ts";
-import { assert } from "https://deno.land/std@0.95.0/testing/asserts.ts";
+import { assert } from "https://deno.land/std@0.104.0/testing/asserts.ts";
 
 Deno.test("exium supports ImportComponentStatement with a list of identifier", () => {
   const lexer = new Exium((reason, _cursor, context) => {

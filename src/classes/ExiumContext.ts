@@ -175,23 +175,23 @@ export class ExiumContext {
    */
   get template(): ExiumContext | undefined {
     return !this.parentNode && this.nodeType === 1 ||
-        this.type === ContextTypes.ComponentDeclaration
+      this.type === ContextTypes.ComponentDeclaration
       ? this.#_template ||
-        (this.#_template = this.children.find((context) =>
-          context.type === ContextTypes.Node &&
-          !context.data.isNodeClosing &&
-          context.name === "template"
-        ))
+      (this.#_template = this.children.find((context) =>
+        context.type === ContextTypes.Node &&
+        !context.data.isNodeClosing &&
+        context.name === "template"
+      ))
       : undefined;
   }
   get proto(): ExiumContext | undefined {
     return !this.parentNode && this.nodeType === 1
       ? this.#_proto ||
-        (this.#_proto = this.children.find((context) =>
-          context.type === ContextTypes.Node &&
-          !context.data.isNodeClosing &&
-          context.name === "proto"
-        ))
+      (this.#_proto = this.children.find((context) =>
+        context.type === ContextTypes.Node &&
+        !context.data.isNodeClosing &&
+        context.name === "proto"
+      ))
       : undefined;
   }
   get protocol(): ExiumContext | null | undefined {
@@ -209,7 +209,7 @@ export class ExiumContext {
     public type: ContextTypes,
     public source: string,
     public start: number,
-  ) {}
+  ) { }
   /**
    * recursive function
    * @param search a function to use to retrieve a context, a basic find function
@@ -622,5 +622,24 @@ export class ExiumContext {
       return source.slice(end, start);
     }
     return null;
+  }
+  /**
+   * provides all the properties of the CSS rule
+   */
+  get cssProperties(): ExiumContext[] | null {
+    switch (this.type) {
+      case ContextTypes.StyleSheetSelectorList:
+        const { cssList } = this;
+        return cssList?.cssProperties || null;
+      case ContextTypes.StyleSheetPropertyList:
+        return this.children.filter((context) => context.type === ContextTypes.StyleSheetProperty);
+      default: return null;
+    }
+  }
+  get cssList(): ExiumContext | undefined {
+    switch(this.type) {
+      case ContextTypes.StyleSheetSelectorList:
+        return this.related.find((context) => context.type === ContextTypes.StyleSheetPropertyList);
+    }
   }
 }

@@ -1,9 +1,40 @@
 import { ExiumDocument } from "./../../src/classes/ExiumDocument.ts";
+import { ContextTypes } from "../../src/enums/context-types.ts";
 import {
   assert,
   assertEquals,
-} from "https://deno.land/std@0.95.0/testing/asserts.ts";
+} from "https://deno.land/std@0.104.0/testing/asserts.ts";
 
+Deno.test("exium - basic nested rules with parentNode", () => {
+  const content = `
+  div {
+    p {
+      span {
+        color: red;
+      }
+    }
+  }
+  `;
+  const document = new ExiumDocument({
+    url: new URL(import.meta.url),
+    onError: (reason, _cursor, context) => {
+      const position = context.getPosition(content);
+      throw new Error(
+        `${reason} ${position.line}:${position.column}`,
+      );
+    },
+    source: content,
+    options: {
+      type: "stylesheet",
+    },
+  });
+  try {
+    const propertyLists = document.contexts.filter(context => context.type === ContextTypes.StyleSheetPropertyList);
+    assertEquals(propertyLists.length, 3);
+  } catch(err) {
+    throw err;
+  }
+});
 Deno.test("exium - support for nested rules in stylesheet", () => {
   const content = `
     div {
@@ -105,6 +136,7 @@ Deno.test("exium - support for nested rules in stylesheet", () => {
     assert(document.getStylesheetRulesByClassName("slide-out-right").length);
     assert(document.getStylesheetRulesByClassName("slide-in-right").length);
     assert(document.getStylesheetRulesByClassName("container").length);
+    // TODO test presence of the keyframes at rule
   } catch (err) {
     throw err;
   }

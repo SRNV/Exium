@@ -2,7 +2,7 @@ import { ContextTypes, Exium } from "./../../mod.ts";
 import {
   assert,
   assertEquals,
-} from "https://deno.land/std@0.95.0/testing/asserts.ts";
+} from "https://deno.land/std@0.104.0/testing/asserts.ts";
 
 const importsTypes = [ContextTypes.ImportStatement, ContextTypes.ImportAmbient];
 Deno.test("exium supports import ambient statement", () => {

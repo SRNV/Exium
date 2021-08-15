@@ -3,7 +3,7 @@ import { Exium } from "./../../../mod.ts";
 import {
   assert,
   assertEquals,
-} from "https://deno.land/std@0.95.0/testing/asserts.ts";
+} from "https://deno.land/std@0.104.0/testing/asserts.ts";
 
 Deno.test("exium - bio language supports styleheet for components", () => {
   const lexer = new Exium((reason, _cursor, context) => {

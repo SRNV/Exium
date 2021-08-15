@@ -1,5 +1,5 @@
 import { Exium } from "./../../mod.ts";
-import { assert } from "https://deno.land/std@0.95.0/testing/asserts.ts";
+import { assert } from "https://deno.land/std@0.104.0/testing/asserts.ts";
 import { ContextTypes } from "../../src/enums/context-types.ts";
 
 Deno.test("exium supports attribute modifiers (auto closing tag)", () => {

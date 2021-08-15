@@ -9,7 +9,7 @@ import { ContextTypes } from "../../../src/enums/context-types.ts";
 import {
   assert,
   assertEquals,
-} from "https://deno.land/std@0.95.0/testing/asserts.ts";
+} from "https://deno.land/std@0.104.0/testing/asserts.ts";
 Deno.test('exium stylesheet supports specs statement', () => {
   const content = `
   @specify {

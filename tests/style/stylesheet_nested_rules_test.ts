@@ -5,7 +5,7 @@ import { SupportedStyleSheetProperties } from "../../../src/supports.ts";
 import {
   assert,
   assertEquals,
-} from "https://deno.land/std@0.95.0/testing/asserts.ts";
+} from "https://deno.land/std@0.104.0/testing/asserts.ts";
 Deno.test("exium can retrieve properties", () => {
   const content = `
   div::selection {
