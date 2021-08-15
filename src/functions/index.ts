@@ -29,15 +29,6 @@ export const regularAtRulesNames: string[] = [
 export const checkOnlyOptions: ContextReaderOptions = {
   checkOnly: true,
 };
-
-export function getPositionSync(exium: Exium, context: ExiumContext) {
-  return {
-    line: 0,
-    start: 0,
-    end: 0,
-    column: 0,
-  }
-}
 export function getChar(exium: Exium): string {
   return exium.source[exium.cursor.x];
 }
