@@ -47,9 +47,7 @@ Deno.test("exium supports line break", () => {
       `${reason} ${position.line}:${position.column}`,
     );
   });
-  const contexts = lexer.readSync(content,
-    { type: "ogone" },
-  );
+  const contexts = lexer.readSync(content, { type: "ogone" });
   if (contexts && contexts.length) {
     const [lineBreak] = contexts;
     assertEquals(lineBreak.type, ContextTypes.LineBreak);

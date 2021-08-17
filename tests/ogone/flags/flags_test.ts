@@ -122,7 +122,12 @@ Deno.test("exium can retrieve spread value", () => {
       if (!flag) {
         throw new Error(`Failed to retrieve spread value`);
       }
-      assertEquals(flag.getPosition(content), { start: 7, end: 25, line: 0, column: 7 });
+      assertEquals(flag.getPosition(content), {
+        start: 7,
+        end: 25,
+        line: 0,
+        column: 7,
+      });
     } catch (err) {
       throw err;
     }
@@ -148,7 +153,12 @@ Deno.test("exium can retrieve spread value on a auto-closing tag", () => {
       if (!flag) {
         throw new Error(`Failed to retrieve spread value`);
       }
-      assertEquals(flag.getPosition(content), { start: 7, end: 25, line: 0, column: 7 });
+      assertEquals(flag.getPosition(content), {
+        start: 7,
+        end: 25,
+        line: 0,
+        column: 7,
+      });
     } catch (err) {
       throw err;
     }
@@ -174,7 +184,12 @@ Deno.test("exium can retrieve spread value without spaces", () => {
       if (!flag) {
         throw new Error(`Failed to retrieve spread value`);
       }
-      assertEquals(flag.getPosition(content), { start: 7, end: 23, line: 0, column: 7 });
+      assertEquals(flag.getPosition(content), {
+        start: 7,
+        end: 23,
+        line: 0,
+        column: 7,
+      });
     } catch (err) {
       throw err;
     }

@@ -64,7 +64,7 @@ export class ExiumContext {
     public type: ContextTypes,
     public source: string,
     public start: number,
-  ) { }
+  ) {}
 
   get end() {
     return this.start + this.source.length;
@@ -95,12 +95,14 @@ export class ExiumContext {
         return this.source;
       // modifiers
       case ContextTypes.AttributeModifier: {
-        const attribute = this.children.find((context) => [
-          ContextTypes.Attribute,
-          ContextTypes.AttributeBoolean,
-          ContextTypes.AttributeProperty
-        ].includes(context.type));
-        return attribute?.value || '';
+        const attribute = this.children.find((context) =>
+          [
+            ContextTypes.Attribute,
+            ContextTypes.AttributeBoolean,
+            ContextTypes.AttributeProperty,
+          ].includes(context.type)
+        );
+        return attribute?.value || "";
       }
       // attributes and flags
       case ContextTypes.Attribute:
@@ -194,23 +196,23 @@ export class ExiumContext {
    */
   get template(): ExiumContext | undefined {
     return !this.parentNode && this.nodeType === 1 ||
-      this.type === ContextTypes.ComponentDeclaration
+        this.type === ContextTypes.ComponentDeclaration
       ? this.#_template ||
-      (this.#_template = this.children.find((context) =>
-        context.type === ContextTypes.Node &&
-        !context.data.isNodeClosing &&
-        context.name === "template"
-      ))
+        (this.#_template = this.children.find((context) =>
+          context.type === ContextTypes.Node &&
+          !context.data.isNodeClosing &&
+          context.name === "template"
+        ))
       : undefined;
   }
   get proto(): ExiumContext | undefined {
     return !this.parentNode && this.nodeType === 1
       ? this.#_proto ||
-      (this.#_proto = this.children.find((context) =>
-        context.type === ContextTypes.Node &&
-        !context.data.isNodeClosing &&
-        context.name === "proto"
-      ))
+        (this.#_proto = this.children.find((context) =>
+          context.type === ContextTypes.Node &&
+          !context.data.isNodeClosing &&
+          context.name === "proto"
+        ))
       : undefined;
   }
   get protocol(): ExiumContext | null | undefined {
@@ -230,14 +232,19 @@ export class ExiumContext {
         return cssList?.cssProperties || null;
       }
       case ContextTypes.StyleSheetPropertyList:
-        return this.children.filter((context) => context.type === ContextTypes.StyleSheetProperty);
-      default: return null;
+        return this.children.filter((context) =>
+          context.type === ContextTypes.StyleSheetProperty
+        );
+      default:
+        return null;
     }
   }
   get cssList(): ExiumContext | undefined {
     switch (this.type) {
       case ContextTypes.StyleSheetSelectorList:
-        return this.related.find((context) => context.type === ContextTypes.StyleSheetPropertyList);
+        return this.related.find((context) =>
+          context.type === ContextTypes.StyleSheetPropertyList
+        );
     }
     return undefined;
   }
@@ -311,7 +318,7 @@ export class ExiumContext {
     let x = 0;
     for (const char of content) {
       if (x >= this.start) break;
-      if (char === '\n') {
+      if (char === "\n") {
         line++;
         column = 0;
       } else {
@@ -654,27 +661,41 @@ export class ExiumContext {
     }
     return null;
   }
-  getAttributeModifiers(name: string, attributeName?: string): ExiumContext[] | null {
+  getAttributeModifiers(
+    name: string,
+    attributeName?: string,
+  ): ExiumContext[] | null {
     switch (this.type) {
       case ContextTypes.Node: {
-        const modifier = this.children.filter((context) => context.type === ContextTypes.AttributeModifier
-          && context.name === name);
-        return attributeName ? modifier.filter((context) => context.children.find((child) => [
-          ContextTypes.AttributeBoolean,
-          ContextTypes.AttributeProperty,
-          ContextTypes.Attribute].includes(child.type)
-          && child.name === attributeName
-        )) : modifier;
+        const modifier = this.children.filter((context) =>
+          context.type === ContextTypes.AttributeModifier &&
+          context.name === name
+        );
+        return attributeName
+          ? modifier.filter((context) =>
+            context.children.find((child) =>
+              [
+                ContextTypes.AttributeBoolean,
+                ContextTypes.AttributeProperty,
+                ContextTypes.Attribute,
+              ].includes(child.type) &&
+              child.name === attributeName
+            )
+          )
+          : modifier;
       }
       case ContextTypes.ComponentDeclaration: {
-        const node = this.children.find((context) => context.type === ContextTypes.Node
-          && !context.data.isNodeClosing);
+        const node = this.children.find((context) =>
+          context.type === ContextTypes.Node &&
+          !context.data.isNodeClosing
+        );
         if (node) {
           const modifier = node.getAttributeModifiers(name, attributeName);
           return modifier;
         } else return null;
       }
-      default: return null;
+      default:
+        return null;
     }
   }
 }

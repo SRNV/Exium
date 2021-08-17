@@ -152,7 +152,7 @@ export function readExportComponentStatementsCtx(exium: Exium): boolean | null {
     const recognized = readIdentifierCtx(exium);
     if (!recognized) return false;
     const lastContext = getLastContext(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     if (lastContext.source !== "export") {
       shift(exium, -lastContext.source.length);
       return false;
@@ -284,7 +284,7 @@ export function readAttributesModifiersCtx(
 ): boolean | null {
   try {
     const char = getChar(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const isValid = char === "@";
     if (!isValid) return false;
     if (opts?.checkOnly) return true;
@@ -318,7 +318,9 @@ export function readAttributesModifiersCtx(
     while (!isEOF(exium)) {
       if (!isIdentified) {
         saveStrictContextsTo(exium, definitions, related);
-        isIdentified = Boolean(related.find((context) => context.type === ContextTypes.Identifier));
+        isIdentified = Boolean(
+          related.find((context) => context.type === ContextTypes.Identifier),
+        );
         // get the type part of the modifier: pattern = @modifier[type] attribute
         const array = isIdentified &&
           related.find((context) => context.type === ContextTypes.Array);
@@ -367,7 +369,7 @@ export function readAttributeUnquotedCtx(
 ): boolean {
   try {
     const prev = getPrev(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     if (prev !== "=") return false;
     if (opts?.checkOnly) return true;
@@ -384,8 +386,10 @@ export function readAttributeUnquotedCtx(
           readCurlyBracketsCtx,
         ],
       );
-      if (exitChars.includes(getChar(exium))
-        || getChar(exium) === "/" && getNext(exium) === ">") {
+      if (
+        exitChars.includes(getChar(exium)) ||
+        getChar(exium) === "/" && getNext(exium) === ">"
+      ) {
         isClosed = true;
         break;
       }
@@ -420,7 +424,7 @@ export function readAttributesCtx(
 ): boolean {
   try {
     const char = getChar(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     if (
       char &&
@@ -465,8 +469,10 @@ export function readAttributesCtx(
           ),
         );
       }
-      if (exitChars.includes(getChar(exium))
-        || getChar(exium) === "/" && getNext(exium) === ">") {
+      if (
+        exitChars.includes(getChar(exium)) ||
+        getChar(exium) === "/" && getNext(exium) === ">"
+      ) {
         isClosed = true;
         break;
       }
@@ -500,7 +506,7 @@ export function readFlagSpreadCtx(
 ): boolean {
   try {
     const char = getChar(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     if (char !== "{" || !/^\{(\s*)(\.){3}/i.test(getNextPart(exium))) {
       return false;
@@ -549,7 +555,7 @@ export function readFlagCtx(
   try {
     const char = getChar(exium);
     const next = getNext(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     if (char !== "-" || next !== "-") return false;
     if (opts?.checkOnly) return true;
@@ -634,7 +640,7 @@ export function readHTMLCommentCtx(
   try {
     const char = getChar(exium);
     const next = getNext(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const sequence = [char, next, source[x + 2], source[x + 3]];
     if (
@@ -688,7 +694,7 @@ export function readNodeCtx(
     const char = getChar(exium);
     const nextPart = getNextPart(exium);
     const next = getNext(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     if (
       char !== "<" ||
@@ -857,7 +863,7 @@ export function readTextnodeCtx(
     const char = getChar(exium);
     const prev = getPrev(exium);
     const lastContext = getLastContext(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const lastIsANode = Boolean(
       lastContext &&
@@ -874,8 +880,8 @@ export function readTextnodeCtx(
         !readCommentCtx(exium, checkOnlyOptions);
     if (!isValid || !getNodeContextStarted(exium)) return false;
     if (opts?.checkOnly) return true;
-    const styleNode = exium.openTags[exium.openTags.length -1];
-    const isStyleNode = styleNode && styleNode.name === 'style';
+    const styleNode = exium.openTags[exium.openTags.length - 1];
+    const isStyleNode = styleNode && styleNode.name === "style";
     if (isStyleNode) return readStyleSheetCtx(exium, opts);
     const result = true;
     const children: ExiumContext[] = [];
@@ -1064,7 +1070,7 @@ export function saveToken(
   token: string,
   type: ContextTypes,
 ): ExiumContext | undefined {
-  const { x, } = exium.cursor;
+  const { x } = exium.cursor;
   const hasShifted = shiftUntilEndOf(exium, token);
   if (hasShifted) {
     const context = new ExiumContext(type, token, x);
@@ -1150,7 +1156,7 @@ export function readCommentBlockCtx(
   try {
     const char = getChar(exium);
     const next = getNext(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     if (char !== "/" || char === "/" && next !== "*") return false;
     if (opts?.checkOnly) return true;
@@ -1192,7 +1198,7 @@ export function readCommentCtx(
   try {
     const char = getChar(exium);
     const next = getNext(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     if (char !== "/" || char === "/" && next !== "/") return false;
     if (opts?.checkOnly) return true;
@@ -1224,7 +1230,7 @@ export function readStringSingleQuoteCtx(
     const char = getChar(exium);
     const prev = getPrev(exium);
     const { source } = exium;
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     if (char !== "'" || char === "'" && prev === "\\") return false;
     if (opts?.checkOnly) return true;
     const result = true;
@@ -1265,7 +1271,7 @@ export function readStringDoubleQuoteCtx(
     const char = getChar(exium);
     const prev = getPrev(exium);
     const { source } = exium;
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     if (char !== '"' || char === '"' && prev === "\\") return false;
     if (opts?.checkOnly) return true;
     const result = true;
@@ -1305,7 +1311,7 @@ export function readStringTemplateQuoteCtx(
   try {
     const char = getChar(exium);
     const prev = getPrev(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     if (char !== "`" || char === "`" && prev === "\\") return false;
     if (opts?.checkOnly) return true;
@@ -1353,7 +1359,7 @@ export function readStringTemplateQuoteEvalCtx(
     const char = getChar(exium);
     const prev = getPrev(exium);
     const next = getNext(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     if (
       char !== "$" || char === "$" && prev === "\\" ||
@@ -1415,7 +1421,7 @@ export function readMultiSpacesCtx(
     const next = getNext(exium);
     const { source } = exium;
     if (char !== " " || next !== " ") return false;
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     let result = false;
     while (getChar(exium) === " ") {
       shift(exium, 1);
@@ -1578,7 +1584,7 @@ export function readIdentifierAliasCtx(
   exium: Exium,
   opts?: ContextReaderOptions,
 ): boolean | null {
-  const { x, } = exium.cursor;
+  const { x } = exium.cursor;
   const { source } = exium;
   // check if it's a as stmt
   const identified = readIdentifierCtx(exium);
@@ -1608,7 +1614,11 @@ export function readIdentifierAliasCtx(
     shift(exium, 1);
   }
   const token = source.slice(x, exium.cursor.x);
-  const context = new ExiumContext(ContextTypes.IdentifierAsStatement, token, x);
+  const context = new ExiumContext(
+    ContextTypes.IdentifierAsStatement,
+    token,
+    x,
+  );
   exium.currentContexts.push(context);
   context.children.push(...children);
   if (!isIdentified) {
@@ -1679,7 +1689,11 @@ export function readDoublePointCtx(
   const result = getChar(exium) === ":";
   if (result) {
     exium.currentContexts.push(
-      new ExiumContext(ContextTypes.DoublePoint, getChar(exium), exium.cursor.x),
+      new ExiumContext(
+        ContextTypes.DoublePoint,
+        getChar(exium),
+        exium.cursor.x,
+      ),
     );
     shift(exium, 1);
   }
@@ -1690,7 +1704,7 @@ export function readLineBreakCtx(
   exium: Exium,
 ): boolean | null {
   debuggPosition(exium, "\n\n\t\tLINEBREAK START");
-  const { x, } = exium.cursor;
+  const { x } = exium.cursor;
   const isChariot = getChar(exium) === "\r" && getNext(exium) === "\n";
   const result = getChar(exium) === "\n" || isChariot;
   if (result) {
@@ -1713,7 +1727,7 @@ export function readBracesCtx(
   try {
     debuggPosition(exium, "readBracesCtx START");
     const char = getChar(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     if (char !== "(") return false;
     if (opts?.checkOnly) return true;
@@ -1760,7 +1774,7 @@ export function readCurlyBracketsCtx(
 ): boolean {
   try {
     const char = getChar(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     if (char !== "{") return false;
     if (opts?.checkOnly) return true;
@@ -1804,7 +1818,7 @@ export function readArrayCtx(
 ): boolean {
   try {
     const char = getChar(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     if (char !== "[") return false;
     if (opts?.checkOnly) return true;
@@ -1849,7 +1863,7 @@ export function readParentheseCtx(
 ): boolean {
   try {
     const char = getChar(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     if (char !== "(") return false;
     if (opts?.checkOnly) return true;
@@ -1948,7 +1962,7 @@ export function readImportStatementsCtx(
 ): boolean {
   try {
     const nextPart = getNextPart(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const isValid = importRegExp.test(nextPart);
     const isComponent = importComponentRegExp.test(nextPart);
@@ -2067,7 +2081,7 @@ export function readExportStatementCtx(exium: Exium): boolean | null {
     const recognized = readIdentifierCtx(exium);
     if (!recognized) return false;
     const lastContext = getLastContext(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     if (lastContext.source !== "export") {
       shift(exium, -lastContext.source.length);
       return false;
@@ -2092,7 +2106,7 @@ export function readImportAmbientCtx(
   opts?: ContextReaderOptions,
 ): boolean {
   try {
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     if (!/^import\s*(["'])(.*?)(\1)/i.test(getNextPart(exium))) return false;
     if (opts?.checkOnly) return true;
@@ -2160,7 +2174,7 @@ export function readProtocolCtx(
   opts?: ContextReaderOptions,
 ): boolean {
   try {
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const lastIsAStyleNode = exium.currentContexts.find((context) =>
       context.type === ContextTypes.Node &&
@@ -2211,7 +2225,7 @@ export function readStyleSheetCtx(
 ): boolean {
   debuggPosition(exium, "STYLESHEET START  ==================>");
   try {
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const lastIsAStyleNode = exium.currentContexts.find((context) =>
       context.type === ContextTypes.Node &&
@@ -2274,7 +2288,7 @@ export function readStyleSheetCharsetAtRuleCtx(
 ): boolean {
   debuggPosition(exium, "readStyleSheetCharsetAtRuleCtx");
   try {
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const isValid = Boolean(isFollowedBy(exium, "@charset", true));
     if (!isValid) return isValid;
@@ -2369,7 +2383,7 @@ export function readStyleSheetExportAtRuleCtx(
   opts?: ContextReaderOptions,
 ): boolean {
   try {
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const isValid = Boolean(isFollowedBy(exium, "@export", true));
     if (!isValid) return isValid;
@@ -2422,7 +2436,7 @@ export function readStyleSheetConstAtRuleCtx(
 ): boolean {
   debuggPosition(exium, "readStyleSheetConstAtRuleCtx");
   try {
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const isValid = Boolean(
       isFollowedBy(exium, "@const", true) || opts?.data?.isExportStatement,
@@ -2509,7 +2523,7 @@ export function readStyleSheetHexTypeCtx(
   debuggPosition(exium, "STYLESHEET HEX TYPE START");
   const char = getChar(exium);
   const { source } = exium;
-  const { x, } = exium.cursor;
+  const { x } = exium.cursor;
   if (char !== "#") return false;
   if (opts?.checkOnly) return true;
   while (!isEOF(exium)) {
@@ -2532,7 +2546,7 @@ export function readStyleSheetConstAtRuleEqualCtx(
   try {
     const char = getChar(exium);
     const next = getNext(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const isValid: boolean = char === "=" && next !== "=";
     if (!isValid) return isValid;
@@ -2559,7 +2573,7 @@ export function readStyleSheetDefaultAtRuleCtx(
   debuggPosition(exium, "\nDEFAULT AT RULE");
   try {
     const char = getChar(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const isValid = Boolean(char === "@");
     if (!isValid) return isValid;
@@ -2615,7 +2629,7 @@ export function readStyleSheetTypeAssignementCtx(
   try {
     const char = getChar(exium);
     const prev = getPrev(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const isValid = Boolean(
       (prev === "@" && char === "<") ||
@@ -2678,7 +2692,7 @@ export function readStyleSheetSelectorListCtx(
     const char = getChar(exium);
     const nextPart = getNextPart(exium);
     const next = getNext(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const isValid = ![",", "@", " ", "\n", "}", "{"].includes(char) &&
       /^([^;\{\}]*?)(\{)/gi.test(nextPart);
@@ -2750,7 +2764,7 @@ export function readStyleSheetParentRefCtx(
       cursor,
       source,
     } = exium;
-    const { x, } = cursor;
+    const { x } = cursor;
     const isValid = char === "&" && next !== "&" && prev !== "&";
     if (!isValid) return false;
     if (opts?.checkOnly) return true;
@@ -2773,7 +2787,7 @@ export function readStyleSheetSelectorElementCtx(
 ): boolean {
   try {
     const char = getChar(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const unsupportedChars = ["#", ".", "[", " ", "@", "{", "\n", ",", "}"];
     const isValid = !unsupportedChars.includes(char);
@@ -2812,7 +2826,7 @@ export function readStyleSheetSelectorClassCtx(
   try {
     const char = getChar(exium);
     const prev = getPrev(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const previousIsClassStart = prev === "." && char !== ".";
     const isValid: boolean = (char === "." || previousIsClassStart);
@@ -2857,7 +2871,7 @@ export function readStyleSheetSelectorPseudoClassCtx(
     const char = getChar(exium);
     const next = getNext(exium);
     const prev = getPrev(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const isValid: boolean = (char === ":" || prev === ":") && next !== ":";
     if (!isValid) return isValid;
@@ -2903,7 +2917,7 @@ export function readStyleSheetSelectorPseudoElementCtx(
     const char = getChar(exium);
     const next = getNext(exium);
     const prev = getPrev(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const isValid: boolean =
       (char === ":" && next === ":" || prev === ":" && char === ":");
@@ -2950,7 +2964,7 @@ export function readStyleSheetSelectorIdCtx(
   try {
     const char = getChar(exium);
     const prev = getPrev(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const isValid: boolean = (char === "#" || prev === "#");
     if (!isValid) return isValid;
@@ -2988,7 +3002,7 @@ export function readStyleSheetSelectorAttributeCtx(
   try {
     const char = getChar(exium);
     const prev = getPrev(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const isValid: boolean = (char === "[" || prev === "[" && char !== "]");
     if (!isValid) return isValid;
@@ -3054,7 +3068,7 @@ export function readStyleSheetSelectorAttributeEqualCtx(
   try {
     const char = getChar(exium);
     const next = getNext(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const supported = ["^", "$", "|", "*", "~"];
     const isValid: boolean = supported.includes(char) && next === "=" ||
@@ -3090,7 +3104,7 @@ export function readSelectorCombinatorCtx(
   debuggPosition(exium, "\nSELECTOR COMBINATOR START");
   try {
     const char = getChar(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const supported = ["+", ">", "~", "*"];
     const isValid: boolean = supported.includes(char);
@@ -3123,7 +3137,7 @@ export function readStyleSheetSelectorAttributeValueCtx(
   debuggPosition(exium, "\nSELECTOR ATTRIBUTE EQUAL START");
   try {
     const lastContext = getLastContext(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const isValid: boolean =
       lastContext.type === ContextTypes.StyleSheetSelectorAttributeEqual;
@@ -3161,7 +3175,7 @@ export function readStyleSheetPropertyListCtx(
   try {
     const char = getChar(exium);
     const lastContext = getLastContext(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const forced = !!opts?.data?.force_property_list_context;
     const isValid: boolean =
@@ -3222,7 +3236,7 @@ export function readStyleSheetSpreadCtx(
   try {
     const char = getChar(exium);
     const next = getNext(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const isValid = [
       char,
@@ -3286,7 +3300,7 @@ export function readStylesheetPropertyCtx(
   debuggPosition(exium, "\nSELECTOR PROPERTY START");
   try {
     const char = getChar(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const unsupported = [":", "@", " ", ";", "}", "\n", ".", "(", ")"];
     const isValid = !unsupported.includes(char);
@@ -3357,7 +3371,7 @@ export function readStyleSheetPseudoPropertyCtx(
   try {
     const char = getChar(exium);
     const lastContext = getLastContext(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const isValid: boolean = !exium.isInPseudoProperty && (
       char === ":" &&
@@ -3433,7 +3447,7 @@ export function readStylesheetPropertyValueCtx(
   try {
     const char = getChar(exium);
     const lastContext = getLastContext(exium);
-    const { x, } = exium.cursor;
+    const { x } = exium.cursor;
     const { source } = exium;
     const isValid: boolean = lastContext.type === ContextTypes.DoublePoint &&
       char !== ":";
@@ -3492,7 +3506,7 @@ export function readStylesheetPropertyValueCtx(
 export function readStylesheetEndCtx(exium: Exium): boolean | null {
   const nextPart = getNextPart(exium);
   const { source } = exium;
-  const { x, } = exium.cursor;
+  const { x } = exium.cursor;
   const reg = /^([\s\n]*?)(\<\/style)/i;
   const isValid: boolean = reg.test(nextPart);
   if (!isValid) return isValid;

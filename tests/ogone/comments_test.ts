@@ -15,7 +15,12 @@ Deno.test("exium supports comments", () => {
     const [comment] = contexts;
     assertEquals(comment.type, ContextTypes.Comment);
     const position = comment.getPosition(content);
-    assertEquals(position, { line: 0, column: 0, start: 0, end: content.length });
+    assertEquals(position, {
+      line: 0,
+      column: 0,
+      start: 0,
+      end: content.length,
+    });
   } else {
     throw new Error("Exium - Failed to retrieve Comment context");
   }
@@ -147,7 +152,12 @@ Deno.test("exium supports html comments", () => {
   if (contexts && contexts.length) {
     const [comment] = contexts;
     assertEquals(comment.type, ContextTypes.HTMLComment);
-    assertEquals(comment.getPosition(content), { start: 0, end: 8, line: 0, column: 0 });
+    assertEquals(comment.getPosition(content), {
+      start: 0,
+      end: 8,
+      line: 0,
+      column: 0,
+    });
     assertEquals(comment.source, content);
   } else {
     throw new Error("Exium - Failed to retrieve Space context");
@@ -166,7 +176,12 @@ Deno.test("exium - only one html comment", () => {
   if (contexts && contexts.length && contexts.length === 1) {
     const [comment] = contexts;
     assertEquals(comment.type, ContextTypes.HTMLComment);
-    assertEquals(comment.getPosition(content), { start: 0, end: 29, line: 0, column: 0 });
+    assertEquals(comment.getPosition(content), {
+      start: 0,
+      end: 29,
+      line: 0,
+      column: 0,
+    });
     assertEquals(comment.source, content);
   } else {
     throw new Error("Exium - Failed to retrieve Space context");
@@ -184,7 +199,12 @@ Deno.test("exium supports compact html comments", () => {
   if (contexts && contexts.length && contexts.length === 1) {
     const [comment] = contexts;
     assertEquals(comment.type, ContextTypes.HTMLComment);
-    assertEquals(comment.getPosition(content), { start: 0, end: 7, line: 0, column: 0 });
+    assertEquals(comment.getPosition(content), {
+      start: 0,
+      end: 7,
+      line: 0,
+      column: 0,
+    });
     assertEquals(comment.source, content);
   } else {
     throw new Error("Exium - Failed to retrieve Space context");

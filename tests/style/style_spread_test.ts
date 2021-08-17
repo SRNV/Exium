@@ -34,7 +34,12 @@ Deno.test("exium supports spread feature", () => {
       );
     assert(!!spread);
     assertEquals(spread.source, "...rule;");
-    assertEquals(spread.getPosition(content), { start: 53, end: 61, line: 5, column: 8 });
+    assertEquals(spread.getPosition(content), {
+      start: 53,
+      end: 61,
+      line: 5,
+      column: 8,
+    });
     if (!spreadName) {
       throw new Error("Failed to retrieve spread identifier");
     }
@@ -65,7 +70,12 @@ Deno.test("exium supports spread feature (stylesheet)", () => {
     );
     assert(!!spread);
     assertEquals(spread.source, "...rule;");
-    assertEquals(spread.getPosition(content), { start: 13, end: 21, line: 2, column: 4 });
+    assertEquals(spread.getPosition(content), {
+      start: 13,
+      end: 21,
+      line: 2,
+      column: 4,
+    });
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorPseudoElement} context`,

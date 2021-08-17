@@ -29,9 +29,11 @@ Deno.test("exium - basic nested rules with parentNode", () => {
     },
   });
   try {
-    const propertyLists = document.contexts.filter(context => context.type === ContextTypes.StyleSheetPropertyList);
+    const propertyLists = document.contexts.filter((context) =>
+      context.type === ContextTypes.StyleSheetPropertyList
+    );
     assertEquals(propertyLists.length, 3);
-  } catch(err) {
+  } catch (err) {
     throw err;
   }
 });

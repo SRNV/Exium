@@ -39,15 +39,8 @@ import {
   readTextnodeCtx,
   topCTX,
 } from "./src/functions/index.ts";
-export {
-  ContextTypes,
-  ExiumContext,
-  ExiumDocument,
-  Reason,
-};
-export type {
-  Position
-};
+export { ContextTypes, ExiumContext, ExiumDocument, Reason };
+export type { Position };
 
 /**
  * @README

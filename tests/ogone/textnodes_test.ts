@@ -19,8 +19,18 @@ Deno.test("exium supports textnodes", () => {
     const [text1, text2] = textnodes;
     assertEquals(text1.source, "here a textnode");
     assertEquals(text2.source, "here another one");
-    assertEquals(text1.getPosition(content), { start: 23, end: 38, line: 0, column: 23 });
-    assertEquals(text2.getPosition(content), { start: 67, end: 83, line: 0, column: 67 });
+    assertEquals(text1.getPosition(content), {
+      start: 23,
+      end: 38,
+      line: 0,
+      column: 23,
+    });
+    assertEquals(text2.getPosition(content), {
+      start: 67,
+      end: 83,
+      line: 0,
+      column: 67,
+    });
     assertEquals(textnodes.length, 2);
   } else {
     throw new Error(
@@ -58,7 +68,12 @@ Deno.test("exium supports textnodes with template", () => {
       line: 0,
       column: 39,
     });
-    assertEquals(text1.getPosition(content), { start: 23, end: 51, line: 0, column: 23 });
+    assertEquals(text1.getPosition(content), {
+      start: 23,
+      end: 51,
+      line: 0,
+      column: 23,
+    });
     assertEquals(textnodes.length, 1);
   } else {
     throw new Error(
@@ -74,7 +89,12 @@ Deno.test("exium should use onError function when an unsupported textnode is par
   new Exium((_reason, _cursor, context) => {
     result = context.type === ContextTypes.Unexpected &&
       context.source === content;
-    assertEquals(context.getPosition(content), { start: 0, line: 0, column: 0, end: 17 });
+    assertEquals(context.getPosition(content), {
+      start: 0,
+      line: 0,
+      column: 0,
+      end: 17,
+    });
   })
     .readSync(content, { type: "ogone" });
   if (!result) {

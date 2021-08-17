@@ -1,9 +1,7 @@
 import { Exium } from "./../../mod.ts";
 import { ExiumContext } from "./ExiumContext.ts";
 import { ContextTypes } from "../enums/context-types.ts";
-import {
-  Position,
-} from '../types/main.d.ts';
+import { Position } from "../types/main.d.ts";
 
 export interface ExiumDocumentOptions {
   url: URL;
@@ -107,7 +105,7 @@ export class ExiumDocument {
    */
   getPositionSync(context: ExiumContext): Position {
     if (!this.contexts.includes(context)) {
-      throw new Error('unexpected context, using the wrong document.');
+      throw new Error("unexpected context, using the wrong document.");
     }
     return context.getPosition(this.text);
   }

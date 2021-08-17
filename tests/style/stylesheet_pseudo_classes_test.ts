@@ -33,7 +33,12 @@ Deno.test("exium can retrieve selectors with pseudo classes", () => {
       throw new Error("failed to retrieve the hover pseudo class");
     }
     assertEquals(hover.source, ":hover");
-    assertEquals(hover.getPosition(content), { start: 44, end: 50, line: 4, column: 9 });
+    assertEquals(hover.getPosition(content), {
+      start: 44,
+      end: 50,
+      line: 4,
+      column: 9,
+    });
   } else {
     throw new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetSelectorPseudoClass} context`,

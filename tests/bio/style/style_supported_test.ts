@@ -21,7 +21,9 @@ component<A>
   `;
   const contexts = lexer.readSync(content, { type: "bio" });
   assert(contexts);
-  const stylesheet = contexts.find((context) => context.type === ContextTypes.StyleSheet);
-  assert(stylesheet)
-  assertEquals(stylesheet.source.trim(), 'div {}');
+  const stylesheet = contexts.find((context) =>
+    context.type === ContextTypes.StyleSheet
+  );
+  assert(stylesheet);
+  assertEquals(stylesheet.source.trim(), "div {}");
 });
