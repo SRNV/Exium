@@ -94,17 +94,15 @@ export class ExiumContext {
       case ContextTypes.TextNode:
         return this.source;
       // modifiers
-      case ContextTypes.AttributeModifier:
+      case ContextTypes.AttributeModifier: {
         const attribute = this.children.find((context) => [
           ContextTypes.Attribute,
           ContextTypes.AttributeBoolean,
           ContextTypes.AttributeProperty
         ].includes(context.type));
         return attribute?.value || '';
+      }
       // attributes and flags
-
-      case ContextTypes.AttributeBoolean:
-        return 'true';
       case ContextTypes.Attribute:
       case ContextTypes.AttributeProperty:
       case ContextTypes.Flag:
@@ -227,9 +225,10 @@ export class ExiumContext {
    */
   get cssProperties(): ExiumContext[] | null {
     switch (this.type) {
-      case ContextTypes.StyleSheetSelectorList:
+      case ContextTypes.StyleSheetSelectorList: {
         const { cssList } = this;
         return cssList?.cssProperties || null;
+      }
       case ContextTypes.StyleSheetPropertyList:
         return this.children.filter((context) => context.type === ContextTypes.StyleSheetProperty);
       default: return null;
@@ -240,6 +239,7 @@ export class ExiumContext {
       case ContextTypes.StyleSheetSelectorList:
         return this.related.find((context) => context.type === ContextTypes.StyleSheetPropertyList);
     }
+    return undefined;
   }
   /**
    * recursive function
@@ -656,7 +656,7 @@ export class ExiumContext {
   }
   getAttributeModifiers(name: string, attributeName?: string): ExiumContext[] | null {
     switch (this.type) {
-      case ContextTypes.Node:
+      case ContextTypes.Node: {
         const modifier = this.children.filter((context) => context.type === ContextTypes.AttributeModifier
           && context.name === name);
         return attributeName ? modifier.filter((context) => context.children.find((child) => [
@@ -665,13 +665,15 @@ export class ExiumContext {
           ContextTypes.Attribute].includes(child.type)
           && child.name === attributeName
         )) : modifier;
-      case ContextTypes.ComponentDeclaration:
+      }
+      case ContextTypes.ComponentDeclaration: {
         const node = this.children.find((context) => context.type === ContextTypes.Node
           && !context.data.isNodeClosing);
         if (node) {
           const modifier = node.getAttributeModifiers(name, attributeName);
           return modifier;
         } else return null;
+      }
       default: return null;
     }
   }
