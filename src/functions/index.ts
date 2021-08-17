@@ -374,7 +374,7 @@ export function readAttributeUnquotedCtx(
     const result = true;
     let isClosed = false;
     const children: ExiumContext[] = [];
-    const exitChars = [" ", ">", "\n", "/"];
+    const exitChars = [" ", ">", "\n"];
     while (!isEOF(exium)) {
       isValidChar(
         exium,
@@ -384,7 +384,8 @@ export function readAttributeUnquotedCtx(
           readCurlyBracketsCtx,
         ],
       );
-      if (exitChars.includes(getChar(exium))) {
+      if (exitChars.includes(getChar(exium))
+        || getChar(exium) === "/" && getNext(exium) === ">") {
         isClosed = true;
         break;
       }
@@ -449,7 +450,7 @@ export function readAttributesCtx(
           related.push(getLastContext(exium)),
       );
     }
-    const exitChars = [" ", ">", "\n", "/"];
+    const exitChars = [" ", ">", "\n"];
     while (!isEOF(exium)) {
       debuggPosition(exium, "ATTRIBUTES CTX");
       isValidChar(exium, opts?.unexpected);
@@ -464,7 +465,8 @@ export function readAttributesCtx(
           ),
         );
       }
-      if (exitChars.includes(getChar(exium))) {
+      if (exitChars.includes(getChar(exium))
+        || getChar(exium) === "/" && getNext(exium) === ">") {
         isClosed = true;
         break;
       }

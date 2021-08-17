@@ -427,7 +427,7 @@ const SupportedStyleSheetCharset = [
     "Trin Tantsetthi",
     "Vladas Tumasonis",
     "Woohyong Choi",
-    "Yui Naruse", 
+    "Yui Naruse",
 ];
 class ExiumContext1 {
     type;
@@ -459,7 +459,7 @@ class ExiumContext1 {
                 ContextTypes1.StringDoubleQuote,
                 ContextTypes1.StringSingleQuote,
                 ContextTypes1.CurlyBrackets,
-                ContextTypes1.AttributeValueUnquoted, 
+                ContextTypes1.AttributeValueUnquoted,
             ].includes(context.type)
         );
         switch(this.type){
@@ -582,7 +582,7 @@ class ExiumContext1 {
     }
      #getDeepElements(search) {
         const result = [
-            ...this.related.filter(search), 
+            ...this.related.filter(search),
         ];
         this.children.forEach((context)=>{
             result.push(...context.#getDeepElements(search));
@@ -596,7 +596,7 @@ class ExiumContext1 {
                 {
                     const str = this.related.find((context)=>[
                             ContextTypes1.StringDoubleQuote,
-                            ContextTypes1.StringSingleQuote, 
+                            ContextTypes1.StringSingleQuote,
                         ].includes(context.type)
                     );
                     if (str) return str.value;
@@ -649,7 +649,7 @@ class ExiumContext1 {
         }
         return this.children.find((context)=>[
                 ContextTypes1.Flag,
-                ContextTypes1.FlagStruct, 
+                ContextTypes1.FlagStruct,
             ].includes(context.type) && context.name === name
         );
     }
@@ -807,7 +807,7 @@ class ExiumContext1 {
         }
         return null;
     }
-    getAttributeModifiersByName(name) {
+    getAttributeModifiers(name) {
         switch(this.type){
             case ContextTypes1.Node:
                 const modifier = this.children.filter((context)=>context.type === ContextTypes1.AttributeModifier && context.name === name
@@ -836,7 +836,7 @@ const supportedComponentTypes = [
     "router",
     "store",
     "controller",
-    "gl", 
+    "gl",
 ];
 const checkOnlyOptions = {
     checkOnly: true
@@ -916,7 +916,7 @@ function readExportComponentStatementsCtx(exium) {
         const allSubs = [
             readMultiSpacesCtx,
             readSpaceCtx,
-            readComponentCtx, 
+            readComponentCtx,
         ];
         const children = [];
         while(!isEOF(exium)){
@@ -965,7 +965,7 @@ function readComponentCtx(exium, opts) {
             readSpaceCtx,
             readTextnodeCtx,
             readNodeCtx,
-            readNodeCtx, 
+            readNodeCtx,
         ];
         const children = [];
         while(!isEOF(exium)){
@@ -1010,7 +1010,7 @@ function readAttributesModifiersCtx(exium, opts) {
         const attributes = [
             ContextTypes1.Attribute,
             ContextTypes1.AttributeBoolean,
-            ContextTypes1.AttributeProperty, 
+            ContextTypes1.AttributeProperty,
         ];
         const exitChars = [
             " ",
@@ -1026,13 +1026,13 @@ function readAttributesModifiersCtx(exium, opts) {
         const definitions = [
             readIdentifierCtx,
             readArgumentCtx,
-            readArrayCtx, 
+            readArrayCtx,
         ];
         const allSubContexts = [
             readMultiSpacesCtx,
             readSpaceCtx,
             readLineBreakCtx,
-            readAttributesCtx, 
+            readAttributesCtx,
         ];
         while(!isEOF(exium)){
             if (!isIdentified) {
@@ -1097,7 +1097,7 @@ function readAttributeUnquotedCtx(exium, opts) {
             isValidChar(exium, opts?.unexpected || [
                 readArrayCtx,
                 readBracesCtx,
-                readCurlyBracketsCtx, 
+                readCurlyBracketsCtx,
             ]);
             if (exitChars.includes(getChar(exium))) {
                 isClosed = true;
@@ -1139,7 +1139,7 @@ function readAttributesCtx(exium, opts) {
             readStringSingleQuoteCtx,
             readStringTemplateQuoteCtx,
             readCurlyBracketsCtx,
-            readAttributeUnquotedCtx, 
+            readAttributeUnquotedCtx,
         ];
         if (!isNamed) {
             isNamed = Boolean(readIdentifierCtx(exium) && related.push(getLastContext(exium)));
@@ -1198,7 +1198,7 @@ function readFlagSpreadCtx(exium, opts) {
             readMultiSpacesCtx,
             readSpaceCtx,
             readArrayCtx,
-            readCurlyBracketsCtx, 
+            readCurlyBracketsCtx,
         ];
         while(!isEOF(exium)){
             isValidChar(exium, opts?.unexpected);
@@ -1242,7 +1242,7 @@ function readFlagCtx(exium, opts) {
         const allSubContexts = [
             readCurlyBracketsCtx,
             readArgumentCtx,
-            readBracesCtx, 
+            readBracesCtx,
         ];
         const exitChars = [
             " ",
@@ -1321,7 +1321,7 @@ function readHTMLCommentCtx(exium, opts) {
         while(!isEOF(exium)){
             shift(exium, 1);
             isValidChar(exium, opts?.unexpected || [
-                readHTMLCommentCtx, 
+                readHTMLCommentCtx,
             ]);
             if (getChar(exium) === ">" && getPrev(exium) === "-" && source2[exium.cursor.x - 2] === "-") {
                 shift(exium, 1);
@@ -1367,12 +1367,12 @@ function readNodeCtx(exium, opts) {
         let isStyle = false;
         const isNodeClosing = nextPart.startsWith("</");
         const subcontextEvaluatedOnce = [
-            readIdentifierCtx, 
+            readIdentifierCtx,
         ];
         const allSubContexts = isNodeClosing ? [
             readLineBreakCtx,
             readSpaceCtx,
-            readMultiSpacesCtx, 
+            readMultiSpacesCtx,
         ] : [
             readLineBreakCtx,
             readSpaceCtx,
@@ -1380,7 +1380,7 @@ function readNodeCtx(exium, opts) {
             readFlagSpreadCtx,
             readAttributesCtx,
             readAttributesModifiersCtx,
-            readFlagCtx, 
+            readFlagCtx,
         ];
         const children = [];
         const related = [];
@@ -1388,7 +1388,7 @@ function readNodeCtx(exium, opts) {
             debuggPosition(exium, "NODE CTX");
             isValidChar(exium, opts?.unexpected || [
                 readNodeCtx,
-                readHTMLCommentCtx, 
+                readHTMLCommentCtx,
             ]);
             if (!isNamed) {
                 subcontextEvaluatedOnce.forEach((reader)=>{
@@ -1475,7 +1475,7 @@ function readTextnodeCtx(exium, opts) {
         const lastIsANode = Boolean(lastContext && [
             ContextTypes1.Node,
             ContextTypes1.NodeClosing,
-            ContextTypes1.HTMLComment, 
+            ContextTypes1.HTMLComment,
         ].includes(lastContext.type));
         const isValid = prev && [
             ">"
@@ -1491,7 +1491,7 @@ function readTextnodeCtx(exium, opts) {
             readLineBreakCtx,
             readMultiSpacesCtx,
             readSpaceCtx,
-            readStringTemplateQuoteEvalCtx, 
+            readStringTemplateQuoteEvalCtx,
         ];
         while(!isEOF(exium)){
             isValidChar(exium, opts?.unexpected);
@@ -1515,7 +1515,7 @@ function readTextnodeCtx(exium, opts) {
 }
 function isStartingNode(exium) {
     return [
-        "<", 
+        "<",
     ].includes(getChar(exium)) && (readNodeCtx(exium, checkOnlyOptions) || readHTMLCommentCtx(exium, checkOnlyOptions));
 }
 function isEndOfStylesheet(exium) {
@@ -1648,7 +1648,7 @@ class Exium1 {
             readLineBreakCtx,
             readMultiSpacesCtx,
             readSpaceCtx,
-            readStringTemplateQuoteCtx, 
+            readStringTemplateQuoteCtx,
         ],
         ogone: [
             readCommentCtx,
@@ -1664,7 +1664,7 @@ class Exium1 {
             readNodeCtx,
             readStyleSheetCtx,
             readProtocolCtx,
-            readTextnodeCtx, 
+            readTextnodeCtx,
         ],
         bio: [
             readCommentCtx,
@@ -1678,7 +1678,7 @@ class Exium1 {
             readImportStatementsCtx,
             readHTMLCommentCtx,
             readExportComponentStatementsCtx,
-            readComponentCtx, 
+            readComponentCtx,
         ],
         script: [
             readCommentCtx,
@@ -1687,7 +1687,7 @@ class Exium1 {
             readMultiSpacesCtx,
             readSpaceCtx,
             readImportAmbientCtx,
-            readImportStatementsCtx, 
+            readImportStatementsCtx,
         ],
         stylesheet: [
             readCommentCtx,
@@ -1695,13 +1695,13 @@ class Exium1 {
             readLineBreakCtx,
             readMultiSpacesCtx,
             readSpaceCtx,
-            readStyleSheetCtx, 
+            readStyleSheetCtx,
         ],
         protocol: [
             readLineBreakCtx,
             readMultiSpacesCtx,
             readSpaceCtx,
-            readProtocolCtx, 
+            readProtocolCtx,
         ],
         custom: []
     };
@@ -2094,7 +2094,7 @@ function readCommentBlockCtx(exium, opts1) {
         const result = true;
         let isClosed = false;
         const allSubContexts = [
-            readLineBreakCtx, 
+            readLineBreakCtx,
         ];
         const children = [];
         while(!isEOF(exium)){
@@ -2157,7 +2157,7 @@ function readStringSingleQuoteCtx(exium, opts1) {
         while(!isEOF(exium)){
             shift(exium, 1);
             isValidChar(exium, opts1?.unexpected || [
-                readLineBreakCtx, 
+                readLineBreakCtx,
             ]);
             if (getChar(exium) === "'" && getPrev(exium) !== "\\") {
                 shift(exium, 1);
@@ -2189,7 +2189,7 @@ function readStringDoubleQuoteCtx(exium, opts1) {
         while(!isEOF(exium)){
             shift(exium, 1);
             isValidChar(exium, opts1?.unexpected || [
-                readLineBreakCtx, 
+                readLineBreakCtx,
             ]);
             if (getChar(exium) === '"' && getPrev(exium) !== "\\") {
                 shift(exium, 1);
@@ -2220,7 +2220,7 @@ function readStringTemplateQuoteCtx(exium, opts1) {
         let isClosed = false;
         const allSubContexts = [
             readLineBreakCtx,
-            readStringTemplateQuoteEvalCtx, 
+            readStringTemplateQuoteEvalCtx,
         ];
         const children = [];
         while(!isEOF(exium)){
@@ -2262,7 +2262,7 @@ function readStringTemplateQuoteEvalCtx(exium, opts1) {
             readLineBreakCtx,
             readMultiSpacesCtx,
             readSpaceCtx,
-            readStringTemplateQuoteCtx, 
+            readStringTemplateQuoteCtx,
         ];
         const children = [];
         while(!isEOF(exium)){
@@ -2324,7 +2324,7 @@ function readIdentifierAsterixCtx(exium, opts1) {
     saveStrictContextsTo(exium, [
         readMultiSpacesCtx,
         readSpaceCtx,
-        readIdentifierAliasCtx, 
+        readIdentifierAliasCtx,
     ], related);
     const isGlobalAlias = related.find((context)=>context.type === ContextTypes1.IdentifierAsStatement
     );
@@ -2343,7 +2343,7 @@ function readIdentifierCtx(exium, opts1) {
     if (opts1?.checkOnly) return true;
     const allowAliases = opts1?.data?.identifier_allow_alias;
     const allowedIdentifierChars = [
-        ...opts1?.data?.allowedIdentifierChars || [], 
+        ...opts1?.data?.allowedIdentifierChars || [],
     ];
     shift(exium, 1);
     let isAliased = false;
@@ -2354,7 +2354,7 @@ function readIdentifierCtx(exium, opts1) {
             saveContextsTo(exium, [
                 readMultiSpacesCtx,
                 readSpaceCtx,
-                readIdentifierAliasCtx, 
+                readIdentifierAliasCtx,
             ], related);
             const recognized = related.find((context)=>context.type === ContextTypes1.IdentifierAsStatement
             );
@@ -2386,7 +2386,7 @@ function readIdentifierListCtx(exium, opts1) {
     const readers = [
         readLineBreakCtx,
         readSpaceCtx,
-        readMultiSpacesCtx, 
+        readMultiSpacesCtx,
     ];
     const children = [];
     let isComaNeeded = false;
@@ -2445,7 +2445,7 @@ function readIdentifierAliasCtx(exium, opts1) {
     const allsubs = [
         readMultiSpacesCtx,
         readSpaceCtx,
-        readIdentifierCtx, 
+        readIdentifierCtx,
     ];
     while(!isEOF(exium)){
         saveStrictContextsTo(exium, allsubs, children);
@@ -2534,7 +2534,7 @@ function readBracesCtx(exium, opts1) {
             readMultiSpacesCtx,
             readSpaceCtx,
             readBracesCtx,
-            ...opts1?.data?.braces_contexts || [], 
+            ...opts1?.data?.braces_contexts || [],
         ];
         const children = [];
         while(!isEOF(exium)){
@@ -2573,7 +2573,7 @@ function readCurlyBracketsCtx(exium, opts1) {
             readLineBreakCtx,
             readMultiSpacesCtx,
             readSpaceCtx,
-            readCurlyBracketsCtx, 
+            readCurlyBracketsCtx,
         ];
         const children = [];
         while(!isEOF(exium)){
@@ -2611,7 +2611,7 @@ function readArrayCtx(exium, opts1) {
             readLineBreakCtx,
             readMultiSpacesCtx,
             readSpaceCtx,
-            readArrayCtx, 
+            readArrayCtx,
         ];
         const children = [];
         shift(exium, 1);
@@ -2651,7 +2651,7 @@ function readParentheseCtx(exium, opts1) {
             readMultiSpacesCtx,
             readSpaceCtx,
             readArrayCtx,
-            readParentheseCtx, 
+            readParentheseCtx,
         ];
         const children = [];
         while(!isEOF(exium)){
@@ -2729,7 +2729,7 @@ function readImportStatementsCtx(exium, opts1) {
         if (isComponent) {
             saveStrictContextsTo(exium, [
                 readMultiSpacesCtx,
-                readSpaceCtx, 
+                readSpaceCtx,
             ], children);
             saveToken(exium, "component", ContextTypes1.ImportComponentStatement);
         }
@@ -2742,7 +2742,7 @@ function readImportStatementsCtx(exium, opts1) {
                 readIdentifierCtx,
                 readMultiSpacesCtx,
                 readComaCtx,
-                readSpaceCtx, 
+                readSpaceCtx,
             ], children, isComponent ? undefined : {
                 data: {
                     identifier_allow_alias: true
@@ -2759,7 +2759,7 @@ function readImportStatementsCtx(exium, opts1) {
             readSpaceCtx,
             readStringDoubleQuoteCtx,
             readStringSingleQuoteCtx,
-            readSemiColonCtx, 
+            readSemiColonCtx,
         ];
         nextContexts.forEach((reader, i, arr)=>{
             const recognized = reader(exium);
@@ -2770,11 +2770,11 @@ function readImportStatementsCtx(exium, opts1) {
         });
         const str = related.find((context)=>[
                 ContextTypes1.StringSingleQuote,
-                ContextTypes1.StringDoubleQuote, 
+                ContextTypes1.StringDoubleQuote,
             ].includes(context.type)
         );
         isClosed = Boolean(fromStatement && str && related.find((context)=>[
-                ContextTypes1.SemiColon, 
+                ContextTypes1.SemiColon,
             ].includes(context.type)
         ));
         const token = source2.slice(x, exium.cursor.x);
@@ -2811,7 +2811,7 @@ function readImportAmbientCtx(exium, opts1) {
             readSpaceCtx,
             readStringDoubleQuoteCtx,
             readStringSingleQuoteCtx,
-            readSemiColonCtx, 
+            readSemiColonCtx,
         ];
         while(!isEOF(exium)){
             shift(exium, 1);
@@ -2832,11 +2832,11 @@ function readImportAmbientCtx(exium, opts1) {
         });
         const str = related.find((context)=>[
                 ContextTypes1.StringDoubleQuote,
-                ContextTypes1.StringSingleQuote, 
+                ContextTypes1.StringSingleQuote,
             ].includes(context.type)
         );
         isClosed = Boolean(str && related.find((context)=>[
-                ContextTypes1.SemiColon, 
+                ContextTypes1.SemiColon,
             ].includes(context.type)
         ));
         const token = source2.slice(x, exium.cursor.x);
@@ -2870,7 +2870,7 @@ function readProtocolCtx(exium, opts1) {
         const allSubContexts = [
             readLineBreakCtx,
             readMultiSpacesCtx,
-            readSpaceCtx, 
+            readSpaceCtx,
         ];
         while(!isEOF(exium)){
             shift(exium, 1);
@@ -2922,7 +2922,7 @@ function readStyleSheetCtx(exium, opts1) {
             readStyleSheetDefaultAtRuleCtx,
             readStyleSheetPropertyListCtx,
             readStyleSheetSelectorListCtx,
-            readStyleSheetPropertyListCtx, 
+            readStyleSheetPropertyListCtx,
         ];
         saveContextsTo(exium, allSubContexts, children);
         while(!isEOF(exium)){
@@ -2959,7 +2959,7 @@ function readStyleSheetCharsetAtRuleCtx(exium, opts1) {
             readSpaceCtx,
             readStringDoubleQuoteCtx,
             readStringSingleQuoteCtx,
-            readSemiColonCtx, 
+            readSemiColonCtx,
         ];
         while(!isEOF(exium)){
             saveContextsTo(exium, allSubContexts, children);
@@ -2972,7 +2972,7 @@ function readStyleSheetCharsetAtRuleCtx(exium, opts1) {
         }
         isClosed = Boolean(children.length && children.find((context)=>[
                 ContextTypes1.StringSingleQuote,
-                ContextTypes1.StringDoubleQuote, 
+                ContextTypes1.StringDoubleQuote,
             ].includes(context.type)
         ));
         const token = source2.slice(x, exium.cursor.x);
@@ -2981,7 +2981,7 @@ function readStyleSheetCharsetAtRuleCtx(exium, opts1) {
         exium.currentContexts.push(context);
         const str = children.find((context1)=>[
                 ContextTypes1.StringSingleQuote,
-                ContextTypes1.StringDoubleQuote, 
+                ContextTypes1.StringDoubleQuote,
             ].includes(context1.type)
         );
         if (str) {
@@ -3019,7 +3019,7 @@ function readStyleSheetExportAtRuleCtx(exium, opts1) {
             readMultiSpacesCtx,
             readSpaceCtx,
             readStyleSheetConstAtRuleCtx,
-            readStylesheetEndCtx, 
+            readStylesheetEndCtx,
         ];
         while(!isEOF(exium)){
             saveStrictContextsTo(exium, allSubContexts, children, {
@@ -3060,7 +3060,7 @@ function readStyleSheetConstAtRuleCtx(exium, opts1) {
             readSpaceCtx,
             readSemiColonCtx,
             readLineBreakCtx,
-            readStylesheetEndCtx, 
+            readStylesheetEndCtx,
         ];
         const describers = [
             readStylesheetEndCtx,
@@ -3077,7 +3077,7 @@ function readStyleSheetConstAtRuleCtx(exium, opts1) {
             readSpaceCtx,
             readStyleSheetHexTypeCtx,
             readStyleSheetSelectorListCtx,
-            readStyleSheetPropertyListCtx, 
+            readStyleSheetPropertyListCtx,
         ];
         while(!isEOF(exium)){
             if (!isNamed) {
@@ -3167,13 +3167,13 @@ function readStyleSheetDefaultAtRuleCtx(exium, opts1) {
         const children = [];
         const describers = [
             readStyleSheetTypeAssignementCtx,
-            readIdentifierCtx, 
+            readIdentifierCtx,
         ];
         const allSubContexts = [
             readMultiSpacesCtx,
             readSpaceCtx,
             readLineBreakCtx,
-            readStyleSheetSelectorListCtx, 
+            readStyleSheetSelectorListCtx,
         ];
         const related = [];
         saveContextsTo(exium, describers, related);
@@ -3222,7 +3222,7 @@ function readStyleSheetTypeAssignementCtx(exium, opts1) {
             shift(exium, 1);
             isValidChar(exium, opts1?.unexpected || [
                 readStyleSheetTypeAssignementCtx,
-                readStyleSheetDefaultAtRuleCtx, 
+                readStyleSheetDefaultAtRuleCtx,
             ]);
         }
         const token = source2.slice(x, exium.cursor.x);
@@ -3267,7 +3267,7 @@ function readStyleSheetSelectorListCtx(exium, opts1) {
             readStyleSheetSelectorIdCtx,
             readStyleSheetSelectorClassCtx,
             readStyleSheetParentRefCtx,
-            readStyleSheetSelectorElementCtx, 
+            readStyleSheetSelectorElementCtx,
         ];
         const comaCTX = [
             readMultiSpacesCtx,
@@ -3276,13 +3276,13 @@ function readStyleSheetSelectorListCtx(exium, opts1) {
             readComaCtx,
             readMultiSpacesCtx,
             readSpaceCtx,
-            readLineBreakCtx, 
+            readLineBreakCtx,
         ];
         const allSubContexts = opts1?.contexts || [
             readMultiSpacesCtx,
             readSpaceCtx,
             ...supportedSelectors,
-            ...comaCTX, 
+            ...comaCTX,
         ];
         const children = [];
         while(!isEOF(exium)){
@@ -3428,7 +3428,7 @@ function readStyleSheetSelectorPseudoClassCtx(exium, opts1) {
             readMultiSpacesCtx,
             readSpaceCtx,
             readLineBreakCtx,
-            readParentheseCtx, 
+            readParentheseCtx,
         ];
         while(!isEOF(exium)){
             debuggPosition(exium, "\nSELECTOR PSEUDO CLASS");
@@ -3474,7 +3474,7 @@ function readStyleSheetSelectorPseudoElementCtx(exium, opts1) {
             readMultiSpacesCtx,
             readSpaceCtx,
             readLineBreakCtx,
-            readParentheseCtx, 
+            readParentheseCtx,
         ];
         while(!isEOF(exium)){
             debuggPosition(exium, "\nSELECTOR PSEUDO ELEMENT");
@@ -3557,7 +3557,7 @@ function readStyleSheetSelectorAttributeCtx(exium, opts1) {
         const allSubContexts = opts1?.contexts || [
             readLineBreakCtx,
             readMultiSpacesCtx,
-            readSpaceCtx, 
+            readSpaceCtx,
         ];
         const propertyOpts = {
             data: {
@@ -3570,7 +3570,7 @@ function readStyleSheetSelectorAttributeCtx(exium, opts1) {
         const describers = [
             readIdentifierCtx,
             readStyleSheetSelectorAttributeEqualCtx,
-            readStyleSheetSelectorAttributeValueCtx, 
+            readStyleSheetSelectorAttributeValueCtx,
         ];
         while(!isEOF(exium)){
             debuggPosition(exium, "\nSELECTOR ATTRIBUTE");
@@ -3719,7 +3719,7 @@ function readStyleSheetPropertyListCtx(exium, opts1) {
             readStyleSheetDefaultAtRuleCtx,
             readStyleSheetSelectorListCtx,
             readStyleSheetPropertyListCtx,
-            readStylesheetPropertyCtx, 
+            readStylesheetPropertyCtx,
         ];
         const children = [];
         while(!isEOF(exium)){
@@ -3756,7 +3756,7 @@ function readStyleSheetSpreadCtx(exium, opts1) {
         const isValid = [
             __char,
             next,
-            source2[x + 2], 
+            source2[x + 2],
         ].join("") === "...";
         if (!isValid) return isValid;
         if (opts1?.checkOnly) return true;
@@ -3765,12 +3765,12 @@ function readStyleSheetSpreadCtx(exium, opts1) {
         const related = [];
         const subs = [
             readIdentifierCtx,
-            readSemiColonCtx, 
+            readSemiColonCtx,
         ];
         const unexpected = opts1?.unexpected || [
             readMultiSpacesCtx,
             readSpaceCtx,
-            readLineBreakCtx, 
+            readLineBreakCtx,
         ];
         let isNamed = false;
         while(!isEOF(exium)){
@@ -3824,7 +3824,7 @@ function readStylesheetPropertyCtx(exium, opts1) {
             readIdentifierCtx,
             readDoublePointCtx,
             readStyleSheetPseudoPropertyCtx,
-            readStylesheetPropertyValueCtx, 
+            readStylesheetPropertyValueCtx,
         ];
         const propertyOpts = {
             data: {
@@ -3837,7 +3837,7 @@ function readStylesheetPropertyCtx(exium, opts1) {
             }
         };
         const subs = [
-            readSemiColonCtx, 
+            readSemiColonCtx,
         ];
         let isNamed = false;
         while(!isEOF(exium)){
@@ -3890,15 +3890,15 @@ function readStyleSheetPseudoPropertyCtx(exium, opts1) {
             ")"
         ];
         const subs = [
-            readBracesCtx, 
+            readBracesCtx,
         ];
         const describers = [
-            readIdentifierCtx, 
+            readIdentifierCtx,
         ];
         const unexpected = opts1?.unexpected || [
             readMultiSpacesCtx,
             readSpaceCtx,
-            readLineBreakCtx, 
+            readLineBreakCtx,
         ];
         shiftUntilEndOf(exium, ":");
         saveStrictContextsTo(exium, describers, related, {
@@ -3914,7 +3914,7 @@ function readStyleSheetPseudoPropertyCtx(exium, opts1) {
             saveStrictContextsTo(exium, subs, children, {
                 data: {
                     braces_contexts: [
-                        readStylesheetPropertyCtx, 
+                        readStylesheetPropertyCtx,
                     ]
                 }
             });
@@ -3961,7 +3961,7 @@ function readStylesheetPropertyValueCtx(exium, opts1) {
             readSpaceCtx,
             readStringDoubleQuoteCtx,
             readStringSingleQuoteCtx,
-            readBracesCtx, 
+            readBracesCtx,
         ];
         while(!isEOF(exium)){
             debuggPosition(exium, "\nSELECTOR PROPERTY VALUE");

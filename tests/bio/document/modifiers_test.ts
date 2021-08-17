@@ -13,7 +13,8 @@ export router <Router
   @void doDefaultThings={() => {...}}
   @void doThingsBeforeEnter={() => {...}}
   @void[some] doThings={() => {...}}
-  @config base=./ >
+  @config base=./
+  @config abstract>
 
   <template>
     <Counter
@@ -42,17 +43,36 @@ const document = new ExiumDocument({
   source: content,
   options: { type: "bio" },
 });
-Deno.test("exium - context can retrieve modifiers by using getAttributeModifiersByName", () => {
+Deno.test("exium - context can retrieve modifiers by using getAttributeModifiers", () => {
   try {
     const [component] = document.components;
     assert(component);
     const { template } = component;
     assert(template);
-    const voidModifiers = component.getAttributeModifiersByName('void');
+    const voidModifiers = component.getAttributeModifiers('void');
     assert(voidModifiers);
     assert(voidModifiers.length);
     assertEquals(voidModifiers.length, 3);
     voidModifiers.forEach((context) => assert(context.children.find((child) => child.type === ContextTypes.AttributeProperty)))
+  } catch (err) {
+    throw err;
+  }
+});
+
+Deno.test("exium - context can retrieve modifiers by using getAttributeModifiers with two arguments, the second is the name of the modified attribute", () => {
+  try {
+    const [component] = document.components;
+    assert(component);
+    const { template } = component;
+    assert(template);
+    const configModifiers = component.getAttributeModifiers('config', 'base');
+    assert(configModifiers);
+    assert(configModifiers.length);
+    assertEquals(configModifiers.length, 1);
+    configModifiers.forEach((context) => assert(context.children.find((child) => child.type === ContextTypes.Attribute)))
+    const [base] = configModifiers;
+    assert(base);
+    assertEquals(base.value, './');
   } catch (err) {
     throw err;
   }

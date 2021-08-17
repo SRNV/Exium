@@ -93,10 +93,20 @@ export class ExiumContext {
       case ContextTypes.AttributeValueUnquoted:
       case ContextTypes.TextNode:
         return this.source;
-
+      // modifiers
+      case ContextTypes.AttributeModifier:
+        const attribute = this.children.find((context) => [
+          ContextTypes.Attribute,
+          ContextTypes.AttributeBoolean,
+          ContextTypes.AttributeProperty
+        ].includes(context.type));
+        return attribute?.value || '';
       // attributes and flags
 
+      case ContextTypes.AttributeBoolean:
+        return 'true';
       case ContextTypes.Attribute:
+      case ContextTypes.AttributeProperty:
       case ContextTypes.Flag:
       case ContextTypes.FlagStruct:
         return attributeValue?.value || "";
@@ -644,17 +654,23 @@ export class ExiumContext {
     }
     return null;
   }
-  getAttributeModifiersByName(name: string): ExiumContext[] | null {
-    switch(this.type) {
+  getAttributeModifiers(name: string, attributeName?: string): ExiumContext[] | null {
+    switch (this.type) {
       case ContextTypes.Node:
-        const modifier = this.children.filter((context) => context.type === ContextTypes.AttributeModifier && context.name === name);
-        return modifier || null;
+        const modifier = this.children.filter((context) => context.type === ContextTypes.AttributeModifier
+          && context.name === name);
+        return attributeName ? modifier.filter((context) => context.children.find((child) => [
+          ContextTypes.AttributeBoolean,
+          ContextTypes.AttributeProperty,
+          ContextTypes.Attribute].includes(child.type)
+          && child.name === attributeName
+        )) : modifier;
       case ContextTypes.ComponentDeclaration:
         const node = this.children.find((context) => context.type === ContextTypes.Node
           && !context.data.isNodeClosing);
         if (node) {
-          const modifier = node.children.filter((context) => context.type === ContextTypes.AttributeModifier && context.name === name);
-          return modifier || null;
+          const modifier = node.getAttributeModifiers(name, attributeName);
+          return modifier;
         } else return null;
       default: return null;
     }
