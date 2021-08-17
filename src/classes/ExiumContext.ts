@@ -55,6 +55,17 @@ export class ExiumContext {
    * mostly things like name or type of the current context.
    */
   public related: ExiumContext[] = [];
+
+  /**
+   * any data to pass to the ExiumContext
+   */
+  public data: { [k: string]: unknown } = {};
+  constructor(
+    public type: ContextTypes,
+    public source: string,
+    public start: number,
+  ) { }
+
   get end() {
     return this.start + this.source.length;
   }
@@ -202,14 +213,24 @@ export class ExiumContext {
       ));
   }
   /**
-   * any data to pass to the ExiumContext
+   * provides all the properties of the CSS rule
    */
-  public data: { [k: string]: unknown } = {};
-  constructor(
-    public type: ContextTypes,
-    public source: string,
-    public start: number,
-  ) { }
+  get cssProperties(): ExiumContext[] | null {
+    switch (this.type) {
+      case ContextTypes.StyleSheetSelectorList:
+        const { cssList } = this;
+        return cssList?.cssProperties || null;
+      case ContextTypes.StyleSheetPropertyList:
+        return this.children.filter((context) => context.type === ContextTypes.StyleSheetProperty);
+      default: return null;
+    }
+  }
+  get cssList(): ExiumContext | undefined {
+    switch (this.type) {
+      case ContextTypes.StyleSheetSelectorList:
+        return this.related.find((context) => context.type === ContextTypes.StyleSheetPropertyList);
+    }
+  }
   /**
    * recursive function
    * @param search a function to use to retrieve a context, a basic find function
@@ -623,23 +644,19 @@ export class ExiumContext {
     }
     return null;
   }
-  /**
-   * provides all the properties of the CSS rule
-   */
-  get cssProperties(): ExiumContext[] | null {
-    switch (this.type) {
-      case ContextTypes.StyleSheetSelectorList:
-        const { cssList } = this;
-        return cssList?.cssProperties || null;
-      case ContextTypes.StyleSheetPropertyList:
-        return this.children.filter((context) => context.type === ContextTypes.StyleSheetProperty);
-      default: return null;
-    }
-  }
-  get cssList(): ExiumContext | undefined {
+  getAttributeModifiersByName(name: string): ExiumContext[] | null {
     switch(this.type) {
-      case ContextTypes.StyleSheetSelectorList:
-        return this.related.find((context) => context.type === ContextTypes.StyleSheetPropertyList);
+      case ContextTypes.Node:
+        const modifier = this.children.filter((context) => context.type === ContextTypes.AttributeModifier && context.name === name);
+        return modifier || null;
+      case ContextTypes.ComponentDeclaration:
+        const node = this.children.find((context) => context.type === ContextTypes.Node
+          && !context.data.isNodeClosing);
+        if (node) {
+          const modifier = node.children.filter((context) => context.type === ContextTypes.AttributeModifier && context.name === name);
+          return modifier || null;
+        } else return null;
+      default: return null;
     }
   }
 }

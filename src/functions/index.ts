@@ -318,7 +318,7 @@ export function readAttributesModifiersCtx(
     while (!isEOF(exium)) {
       if (!isIdentified) {
         saveStrictContextsTo(exium, definitions, related);
-        isIdentified = getLastContext(exium).type === ContextTypes.Identifier;
+        isIdentified = Boolean(related.find((context) => context.type === ContextTypes.Identifier));
         // get the type part of the modifier: pattern = @modifier[type] attribute
         const array = isIdentified &&
           related.find((context) => context.type === ContextTypes.Array);
@@ -1815,15 +1815,16 @@ export function readArrayCtx(
       readArrayCtx,
     ];
     const children: ExiumContext[] = [];
+    shift(exium, 1);
     while (!isEOF(exium)) {
-      shift(exium, 1);
-      isValidChar(exium, opts?.unexpected);
       saveContextsTo(exium, allSubContexts, children);
       if (getChar(exium) === "]") {
         shift(exium, 1);
         isClosed = true;
         break;
       }
+      shift(exium, 1);
+      isValidChar(exium, opts?.unexpected);
     }
     const token = source.slice(x, exium.cursor.x);
     const context = new ExiumContext(ContextTypes.Array, token, x);
