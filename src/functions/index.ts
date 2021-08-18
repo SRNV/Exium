@@ -258,6 +258,7 @@ export function readComponentCtx(
       x,
     );
     context.children.push(...children);
+    context.related.push(lastContext);
     // declare type
     Object.assign(context.data, {
       type: lastContext.source,

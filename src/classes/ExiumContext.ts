@@ -698,4 +698,13 @@ export class ExiumContext {
         return null;
     }
   }
+  getBioComponentType(): string | null {
+    switch(this.type) {
+      case ContextTypes.ComponentDeclaration: {
+        const { type } = this.data;
+        return type as string || null;
+      }
+      default: throw new TypeError("the method getBioComponentType is only usable if the type of the context is ComponentDeclaration")
+    }
+  }
 }

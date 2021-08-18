@@ -10,6 +10,37 @@ import {
  * assert that a list of properties are respected
  * by the end user
  */
+// TODO
+ Deno.test("exium stylesheet supports type rule creation", () => {
+  const content = `
+    @trait myTrait = div,
+      ul > li {
+        color: red | blue | green;
+    }
+    @<myTrait> div {
+      color: red;
+    }
+    `;
+  const lexer = new Exium((reason, _cursor, context) => {
+    const position = context.getPosition(content);
+    throw new Error(
+      `${reason} ${position.line}:${position.column}`,
+    );
+  });
+  const contexts = lexer.readSync(content, {
+    type: "stylesheet",
+  });
+  try {
+
+  } catch(err) {
+    throw err;
+  }
+});
+/**
+ * traits in css
+ * assert that a list of properties are respected
+ * by the end user
+ */
 Deno.test("exium stylesheet supports type rule assignment", () => {
   const content = /*css*/ `
     @<myTrait>  div {
@@ -62,7 +93,7 @@ Deno.test("exium stylesheet supports type rule assignment", () => {
 });
 
 Deno.test("exium stylesheet supports type rule assignment (stylesheet)", () => {
-  const content = /*css*/ `
+  const content = `
 <Test>
   <template>
     <style>
