@@ -1,4 +1,4 @@
-import { Exium } from "../../mod.ts";
+import { Exium, ExiumDocument } from "../../mod.ts";
 import { ContextTypes } from "../../src/enums/context-types.ts";
 import {
   assert,
@@ -17,7 +17,7 @@ import {
       ul > li {
         color: red | blue | green;
     }
-    @<myTrait> div {
+    @<myTrait,> div {
       color: red;
     }
     `;
@@ -26,15 +26,51 @@ import {
     throw new Error(
       `${reason} ${position.line}:${position.column}`,
     );
-  });
+  }) ;
   const contexts = lexer.readSync(content, {
     type: "stylesheet",
   });
   try {
-
+    const typeAssignment = contexts.find((context) => context.type === ContextTypes.StyleSheetTypeAssignment);
+    assert(typeAssignment);
+    assertEquals(typeAssignment.source, '<myTrait,>');
+    const [identifier, coma] = typeAssignment.children;
+    assert(identifier);
+    assert(coma);
+    assertEquals(identifier.source, 'myTrait');
   } catch(err) {
     throw err;
   }
+});
+
+Deno.test('exium - document supports getStyleSheetTraitDeclarationByName', () => {
+  const content = `
+  @trait myTrait = div,
+    ul > li {
+      color: red | blue | green;
+  }
+  @<myTrait,> div {
+    color: red;
+  }
+  `;
+  const document = new ExiumDocument({
+    url: new URL(import.meta.url),
+    source: content,
+    onError: (reason, _cursor, context) => {
+      const position = context.getPosition(content);
+      throw new Error(
+        `${reason} ${position.line}:${position.column}`,
+      );
+    },
+    options: { type: 'stylesheet' },
+  });
+  const trait = document.getStyleSheetTraitDeclarationByName('myTrait');
+  assert(trait);
+  assertEquals(trait.type, ContextTypes.StyleSheetTraitDeclaration);
+  assertEquals(trait.source, `@trait myTrait = div,
+  ul > li {
+    color: red | blue | green;
+}`);
 });
 /**
  * traits in css

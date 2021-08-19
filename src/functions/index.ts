@@ -2253,6 +2253,7 @@ export function readStyleSheetCtx(
       // last should be the default at rule
       readStyleSheetCharsetAtRuleCtx,
       readStyleSheetConstAtRuleCtx,
+      // readStyleSheetTraitAtRuleCtx,
       readStyleSheetExportAtRuleCtx,
       readStyleSheetDefaultAtRuleCtx,
       readStyleSheetPropertyListCtx,
@@ -2643,10 +2644,18 @@ export function readStyleSheetTypeAssignementCtx(
     const children: ExiumContext[] = [];
     const allSubContexts: ContextReader[] = (opts?.contexts || [
       // TODO implement the context stylesheet_type_list
-      // exium.stylesheet_type_list_CTX,
+      readIdentifierCtx,
+      readComaCtx,
+      readLineBreakCtx,
+      readMultiSpacesCtx,
+      readSpaceCtx,
     ]);
     while (!isEOF(exium)) {
-      saveContextsTo(exium, allSubContexts, children);
+      saveContextsTo(exium, allSubContexts, children, {
+        data: {
+          allowedIdentifierChars: ["-", "_"],
+        }
+      });
       if (getChar(exium) === ">") {
         shift(exium, 1);
         isClosed = true;
@@ -3194,8 +3203,9 @@ export function readStyleSheetPropertyListCtx(
       readLineBreakCtx,
       readStylesheetEndCtx,
       readStyleSheetSpreadCtx,
-      readStyleSheetDefaultAtRuleCtx,
       // nested rules
+      // TODO better description
+      readStyleSheetDefaultAtRuleCtx,
       readStyleSheetSelectorListCtx,
       readStyleSheetPropertyListCtx,
       readStylesheetPropertyCtx,
@@ -3218,6 +3228,12 @@ export function readStyleSheetPropertyListCtx(
       x,
     );
     context.children.push(...children);
+    if (lastContext.type === ContextTypes.StyleSheetSelectorList ||
+      lastContext.type === ContextTypes.StyleSheetAtRule) {
+      context.related.push(lastContext);
+      context.data.selector = lastContext;
+      lastContext.related.push(context);
+    }
     exium.currentContexts.push(context);
     if (!isClosed) {
       exium.onError(Reason.StyleSheetPropertyListOpen, exium.cursor, context);
