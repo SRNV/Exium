@@ -232,6 +232,7 @@ export class ExiumContext {
         if (selectorList) {
           return selectorList.cssProperties;
         }
+        return null;
       }
       case ContextTypes.StyleSheetSelectorList: {
         const { cssList } = this;

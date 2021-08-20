@@ -3,7 +3,6 @@ import {
   assert,
   assertEquals,
 } from "https://deno.land/std@0.104.0/testing/asserts.ts";
-import { ContextTypes } from "../../../src/enums/context-types.ts";
 
 Deno.test("exium - bio-document can expose the component's template", () => {
   const content = `

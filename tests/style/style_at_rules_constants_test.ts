@@ -75,9 +75,6 @@ Deno.test("exium stylesheet supports @const statement, and it can retrieve the n
     const err = new Error(
       `Exium - Failed to retrieve ${ContextTypes.StyleSheetAtRuleConst} context`,
     );
-    const errName = new Error(
-      `Exium - Failed to retrieve ${ContextTypes.Identifier} context`,
-    );
     const constant = contexts.find((context) =>
       context.type === ContextTypes.StyleSheetAtRuleConst
     );
