@@ -73,6 +73,39 @@ ${traitSource};
   assertEquals(color.name, 'color');
   assertEquals(color.value.trim(), 'red');
 });
+
+Deno.test('exium - document supports getStyleSheetInternalTraitDeclarationByName in a bio document', () => {
+  const content = `
+export component <Styler>
+  <style>
+    @trait myTrait = div,ul > li { color: red; };
+    @<myTrait,> div {
+      color: red;
+    }
+  </style>
+</Styler>
+  `;
+  const document = new ExiumDocument({
+    url: new URL(import.meta.url),
+    source: content,
+    onError: (reason, _cursor, context) => {
+      const position = context.getPosition(content);
+      throw new Error(
+        `${reason} ${position.line}:${position.column}`,
+      );
+    },
+    options: { type: 'bio' },
+  });
+  const trait = document.getStyleSheetInternalTraitDeclarationByName('myTrait');
+  assert(trait);
+  assertEquals(trait.type, ContextTypes.StyleSheetAtRuleTrait);
+  assertEquals(trait.name, 'myTrait');
+  assert(trait.cssProperties);
+  assertEquals(trait.cssProperties.length, 1);
+  const [color] = trait.cssProperties;
+  assertEquals(color.name, 'color');
+  assertEquals(color.value.trim(), 'red');
+});
 /**
  * traits in css
  * assert that a list of properties are respected

@@ -228,7 +228,7 @@ export class ExiumContext {
   get cssProperties(): ExiumContext[] | null {
     switch (this.type) {
       case ContextTypes.StyleSheetAtRuleTrait: {
-        const selectorList = this.related.find((context) => context.type === ContextTypes.StyleSheetSelectorList);
+        const selectorList = this.related.find((context) => context.type === ContextTypes.StyleSheetPropertyList);
         if (selectorList) {
           return selectorList.cssProperties;
         }
