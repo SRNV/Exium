@@ -2507,7 +2507,6 @@ export function readStyleSheetDeclarationAtRuleCtx(
         isClosed = true;
         break;
       }
-      shift(exium, 1);
       isValidChar(exium, opts?.unexpected);
     }
     if (!isClosed) {
