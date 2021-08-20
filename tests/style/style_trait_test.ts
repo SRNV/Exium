@@ -16,7 +16,7 @@ import {
     @trait myTrait = div,
       ul > li {
         color: red | blue | green;
-    }
+    };
     @<myTrait,> div {
       color: red;
     }
@@ -43,12 +43,10 @@ import {
   }
 });
 
-Deno.test('exium - document supports getStyleSheetTraitDeclarationByName', () => {
+Deno.test('exium - document supports getStyleSheetInternalTraitDeclarationByName', () => {
+  const traitSource = `@trait myTrait = div,ul > li { color: red; }`;
   const content = `
-  @trait myTrait = div,
-    ul > li {
-      color: red | blue | green;
-  }
+${traitSource};
   @<myTrait,> div {
     color: red;
   }
@@ -64,13 +62,16 @@ Deno.test('exium - document supports getStyleSheetTraitDeclarationByName', () =>
     },
     options: { type: 'stylesheet' },
   });
-  const trait = document.getStyleSheetTraitDeclarationByName('myTrait');
+  const trait = document.getStyleSheetInternalTraitDeclarationByName('myTrait');
   assert(trait);
-  assertEquals(trait.type, ContextTypes.StyleSheetTraitDeclaration);
-  assertEquals(trait.source, `@trait myTrait = div,
-  ul > li {
-    color: red | blue | green;
-}`);
+  assertEquals(trait.type, ContextTypes.StyleSheetAtRuleTrait);
+  assertEquals(trait.source, traitSource);
+  assertEquals(trait.name, 'myTrait');
+  assert(trait.cssProperties);
+  assertEquals(trait.cssProperties.length, 1);
+  const [color] = trait.cssProperties;
+  assertEquals(color.name, 'color');
+  assertEquals(color.value.trim(), 'red');
 });
 /**
  * traits in css

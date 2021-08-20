@@ -3546,7 +3546,7 @@ function readStyleSheetConstAtRuleCtx(exium, opts1) {
       readStyleSheetTypeAssignementCtx,
       readMultiSpacesCtx,
       readSpaceCtx,
-      readStyleSheetConstAtRuleEqualCtx,
+      readStyleSheetAtRuleEqualCtx,
       readMultiSpacesCtx,
       readSpaceCtx,
       readStyleSheetHexTypeCtx,
@@ -3617,7 +3617,7 @@ function readStyleSheetHexTypeCtx(exium, opts1) {
   exium.currentContexts.push(context);
   return true;
 }
-function readStyleSheetConstAtRuleEqualCtx(exium, opts1) {
+function readStyleSheetAtRuleEqualCtx(exium, opts1) {
   debuggPosition(exium, "STYLESHEET CONST AT RULE EQUAL START");
   try {
     const __char = getChar(exium);

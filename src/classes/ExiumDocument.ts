@@ -616,8 +616,8 @@ export class ExiumDocument {
   /**
    * @returns the matching trait declaration context, using the name argument
    */
-  getStyleSheetTraitDeclarationByName(name: string): ExiumContext | undefined {
-    return this.contexts.find((context) => context.name === name && context.type === ContextTypes.StyleSheetTraitDeclaration);
+  getStyleSheetInternalTraitDeclarationByName(name: string): ExiumContext | undefined {
+    return this.contexts.find((context) => context.name === name && context.type === ContextTypes.StyleSheetAtRuleTrait);
   }
   prepareTheIdProvider() {
     Object.assign(this.idProvider, {

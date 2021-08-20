@@ -1,6 +1,6 @@
 import { Exium } from "../../mod.ts";
 import { ContextTypes } from "../../src/enums/context-types.ts";
-import { assertEquals } from "https://deno.land/std@0.104.0/testing/asserts.ts";
+import { assertEquals, assert } from "https://deno.land/std@0.104.0/testing/asserts.ts";
 
 /**
  * being able to type a variable
@@ -87,9 +87,7 @@ Deno.test("exium stylesheet supports @const statement, and it can retrieve the n
     const constantName = constant.related.find((context) =>
       context.type === ContextTypes.Identifier
     );
-    if (!constantName) {
-      throw errName;
-    }
+    assert(constantName);
     assertEquals(constantName.source, constName);
   } else {
     throw new Error(

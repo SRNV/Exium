@@ -117,5 +117,5 @@ export enum ContextTypes {
   StyleSheetSelectorCombinatorAll = "StyleSheetSelectorCombinatorAll",
   StyleSheetHexType = "StyleSheetHexType",
   StyleSheetPixelType = "StyleSheetPixelType",
-  StyleSheetTraitDeclaration = "StyleSheetTraitDeclaration",
+  StyleSheetAtRuleTrait = "StyleSheetAtRuleTrait",
 }

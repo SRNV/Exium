@@ -44,13 +44,13 @@ export function getCharCode(exium: Exium): number {
 export function isCharPuntuation(exium: Exium): boolean {
   const code = getCharCode(exium);
   return code >= 123 &&
-      code <= 124 ||
+    code <= 124 ||
     code >= 91 &&
-      code <= 96 ||
+    code <= 96 ||
     code >= 58 &&
-      code <= 64 ||
+    code <= 64 ||
     code >= 32 &&
-      code <= 47;
+    code <= 47;
 }
 /**
  * the current character is a number
@@ -67,11 +67,11 @@ export function isCharIdentifier(exium: Exium): boolean {
   if (isCharSpacing(exium)) return false;
   const code = getCharCode(exium);
   return code >= 65 &&
-      code <= 90 ||
+    code <= 90 ||
     code === 36 ||
     code === 95 ||
     code >= 97 &&
-      code <= 122;
+    code <= 122;
 }
 /**
  * if the current character is \n \t \r \s
@@ -452,7 +452,7 @@ export function readAttributesCtx(
     if (!isNamed) {
       isNamed = Boolean(
         readIdentifierCtx(exium) &&
-          related.push(getLastContext(exium)),
+        related.push(getLastContext(exium)),
       );
     }
     const exitChars = [" ", ">", "\n"];
@@ -484,8 +484,8 @@ export function readAttributesCtx(
       isBoolean
         ? ContextTypes.AttributeBoolean
         : isProp
-        ? ContextTypes.AttributeProperty
-        : ContextTypes.Attribute,
+          ? ContextTypes.AttributeProperty
+          : ContextTypes.Attribute,
       token,
       x,
     );
@@ -582,7 +582,7 @@ export function readFlagCtx(
               allowedIdentifierChars: ["-"],
             },
           }) &&
-            related.push(getLastContext(exium)),
+          related.push(getLastContext(exium)),
         );
       }
       // the name of the flag is retrieved
@@ -868,17 +868,17 @@ export function readTextnodeCtx(
     const { source } = exium;
     const lastIsANode = Boolean(
       lastContext &&
-        [
-          ContextTypes.Node,
-          ContextTypes.NodeClosing,
-          ContextTypes.HTMLComment,
-        ].includes(lastContext.type),
+      [
+        ContextTypes.Node,
+        ContextTypes.NodeClosing,
+        ContextTypes.HTMLComment,
+      ].includes(lastContext.type),
     );
     const isValid = prev && [">"].includes(prev) && lastIsANode ||
       char !== "<" &&
-        !readImportStatementsCtx(exium, checkOnlyOptions) &&
-        !readNodeCtx(exium, checkOnlyOptions) &&
-        !readCommentCtx(exium, checkOnlyOptions);
+      !readImportStatementsCtx(exium, checkOnlyOptions) &&
+      !readNodeCtx(exium, checkOnlyOptions) &&
+      !readCommentCtx(exium, checkOnlyOptions);
     if (!isValid || !getNodeContextStarted(exium)) return false;
     if (opts?.checkOnly) return true;
     const styleNode = exium.openTags[exium.openTags.length - 1];
@@ -929,7 +929,7 @@ export function isStartingNode(exium: Exium): boolean {
 export function isEndOfStylesheet(exium: Exium): boolean {
   const nextPart = getNextPart(exium);
   return isStartingNode(exium) &&
-      nextPart.startsWith("</style") ||
+    nextPart.startsWith("</style") ||
     isEOF(exium) ||
     /\s*(\<\/style)/i.test(nextPart);
 }
@@ -1051,8 +1051,7 @@ export function shift(exium: Exium, movement = 1) {
   exium.cursor.x += +movement;
   debugg(
     exium,
-    `%c\t\t${movement} ${getPrev(exium)} ${
-      ">".repeat(movement > 0 ? movement : 0)
+    `%c\t\t${movement} ${getPrev(exium)} ${">".repeat(movement > 0 ? movement : 0)
     } ${getChar(exium)}`,
     "color:gray",
   );
@@ -1938,7 +1937,7 @@ export function readArgumentCtx(
             allowedIdentifierChars: ["-"],
           },
         }) &&
-          related.push(getLastContext(exium)),
+        related.push(getLastContext(exium)),
       );
       if (isCharPuntuation(exium)) break;
       shift(exium, 1);
@@ -2048,12 +2047,12 @@ export function readImportStatementsCtx(
     );
     isClosed = Boolean(
       fromStatement &&
-        str &&
-        related.find((context) =>
-          [
-            ContextTypes.SemiColon,
-          ].includes(context.type)
-        ),
+      str &&
+      related.find((context) =>
+        [
+          ContextTypes.SemiColon,
+        ].includes(context.type)
+      ),
     );
     const token = source.slice(x, exium.cursor.x);
     const context = new ExiumContext(ContextTypes.ImportStatement, token, x);
@@ -2146,11 +2145,11 @@ export function readImportAmbientCtx(
     );
     isClosed = Boolean(
       str &&
-        related.find((context) =>
-          [
-            ContextTypes.SemiColon,
-          ].includes(context.type)
-        ),
+      related.find((context) =>
+        [
+          ContextTypes.SemiColon,
+        ].includes(context.type)
+      ),
     );
     const token = source.slice(x, exium.cursor.x);
     const context = new ExiumContext(ContextTypes.ImportAmbient, token, x);
@@ -2216,9 +2215,9 @@ export function isEndOfStylesheetProperty(exium: Exium): boolean {
   const char = getChar(exium);
   const { isInPseudoProperty: p } = exium;
   return p &&
-      char === ")" ||
+    char === ")" ||
     !p &&
-      char === "}";
+    char === "}";
 }
 export function readStyleSheetCtx(
   exium: Exium,
@@ -2253,6 +2252,7 @@ export function readStyleSheetCtx(
       // last should be the default at rule
       readStyleSheetCharsetAtRuleCtx,
       readStyleSheetConstAtRuleCtx,
+      readStyleSheetTraitAtRuleCtx,
       // readStyleSheetTraitAtRuleCtx,
       readStyleSheetExportAtRuleCtx,
       readStyleSheetDefaultAtRuleCtx,
@@ -2396,6 +2396,7 @@ export function readStyleSheetExportAtRuleCtx(
       readMultiSpacesCtx,
       readSpaceCtx,
       readStyleSheetConstAtRuleCtx,
+      readStyleSheetTraitAtRuleCtx,
       readStylesheetEndCtx,
     ];
     // retrieve the atrule name
@@ -2405,11 +2406,11 @@ export function readStyleSheetExportAtRuleCtx(
           isExportStatement: true,
         },
       });
-      shift(exium, 1);
-      isValidChar(exium, opts?.unexpected);
       if (getChar(exium) === ";" || getPrev(exium) === ";") {
         break;
       }
+      shift(exium, 1);
+      isValidChar(exium, opts?.unexpected);
     }
     // create and finish the current context
     const token = source.slice(x, exium.cursor.x);
@@ -2426,28 +2427,33 @@ export function readStyleSheetExportAtRuleCtx(
   }
 }
 /**
- * reader for the at-rule @const
+ * reader for the at-rule @const & @trait
  * the rule should follow exium pattern
- * @const <name> : <type> = <value>;
+ * @const name<type> = value;
+ * @trait name<type> = value;
  *
  * where name type and value are required
  */
-export function readStyleSheetConstAtRuleCtx(
+export function readStyleSheetDeclarationAtRuleCtx(
   exium: Exium,
   opts?: ContextReaderOptions,
 ): boolean {
   debuggPosition(exium, "readStyleSheetConstAtRuleCtx");
   try {
+    if (!opts || !opts.data) return false;
     const { x } = exium.cursor;
     const { source } = exium;
+    const statement = opts.data.declarationStatement as string;
+    const atRuleStatement = `@${statement}`;
     const isValid = Boolean(
-      isFollowedBy(exium, "@const", true) || opts?.data?.isExportStatement,
+      isFollowedBy(exium, atRuleStatement, true) || opts?.data?.isExportStatement,
     );
     if (!isValid) return isValid;
     if (opts?.checkOnly) return true;
-    getNextPart(exium).startsWith("const ") && shiftUntilEndOf(exium, "const");
+    getNextPart(exium).startsWith(`${statement} `) && shiftUntilEndOf(exium, statement);
     const result = true;
     let isNamed = false;
+    let isClosed = false;
     const children: ExiumContext[] = [];
     const related: ExiumContext[] = [];
     const allSubContexts: ContextReader[] = [
@@ -2467,7 +2473,7 @@ export function readStyleSheetConstAtRuleCtx(
       readStyleSheetTypeAssignementCtx,
       readMultiSpacesCtx,
       readSpaceCtx,
-      readStyleSheetConstAtRuleEqualCtx,
+      readStyleSheetAtRuleEqualCtx,
       readMultiSpacesCtx,
       readSpaceCtx,
       readStyleSheetHexTypeCtx, // #000000
@@ -2488,25 +2494,29 @@ export function readStyleSheetConstAtRuleCtx(
         });
         isNamed = Boolean(
           related.find((context) => context.type === ContextTypes.Identifier) &&
-            related.find((context) =>
-              context.type === ContextTypes.StyleSheetAtRuleConstEqual
-            ) &&
-            related.find((context) =>
-              context.type === ContextTypes.StyleSheetTypeAssignment
-            ),
+          related.find((context) =>
+            context.type === ContextTypes.StyleSheetAtRuleConstEqual
+          ) &&
+          related.find((context) =>
+            context.type === ContextTypes.StyleSheetTypeAssignment)
         );
       } else {
         saveContextsTo(exium, allSubContexts, children);
       }
       if (getChar(exium) === ";") {
+        isClosed = true;
         break;
       }
+      shift(exium, 1);
       isValidChar(exium, opts?.unexpected);
+    }
+    if (!isClosed) {
+      exium.onError(Reason.UnexpectedToken, exium.cursor, getUnexpected(exium));
     }
     // create and finish the current context
     const token = source.slice(x, exium.cursor.x);
     const context = new ExiumContext(
-      ContextTypes.StyleSheetAtRuleConst,
+      opts.data.declarationType as ContextTypes,
       token,
       x,
     );
@@ -2517,6 +2527,34 @@ export function readStyleSheetConstAtRuleCtx(
   } catch (err) {
     throw err;
   }
+}
+export function readStyleSheetConstAtRuleCtx(
+  exium: Exium,
+  opts?: ContextReaderOptions,) {
+  const finalOpts = {
+    declarationStatement: 'const',
+    declarationType: ContextTypes.StyleSheetAtRuleConst,
+  };
+  return readStyleSheetDeclarationAtRuleCtx(exium, {
+    data: {
+      ...(opts && opts.data || {}),
+      ...finalOpts,
+    }
+  });
+}
+export function readStyleSheetTraitAtRuleCtx(
+  exium: Exium,
+  opts?: ContextReaderOptions,) {
+  const finalOpts = {
+    declarationStatement: 'trait',
+    declarationType: ContextTypes.StyleSheetAtRuleTrait,
+  };
+  return readStyleSheetDeclarationAtRuleCtx(exium, {
+    data: {
+      ...(opts && opts.data || {}),
+      ...finalOpts,
+    }
+  });
 }
 export function readStyleSheetHexTypeCtx(
   exium: Exium,
@@ -2540,7 +2578,7 @@ export function readStyleSheetHexTypeCtx(
   exium.currentContexts.push(context);
   return true;
 }
-export function readStyleSheetConstAtRuleEqualCtx(
+export function readStyleSheetAtRuleEqualCtx(
   exium: Exium,
   opts?: ContextReaderOptions,
 ): boolean {
@@ -2635,7 +2673,7 @@ export function readStyleSheetTypeAssignementCtx(
     const { source } = exium;
     const isValid = Boolean(
       (prev === "@" && char === "<") ||
-        (opts?.data?.force_type_assignment_context),
+      (opts?.data?.force_type_assignment_context && char === "<"),
     );
     if (!isValid) return isValid;
     if (opts?.checkOnly) return true;
@@ -3348,12 +3386,12 @@ export function readStylesheetPropertyCtx(
         saveStrictContextsTo(exium, describers, related, propertyOpts);
         isNamed = Boolean(
           related.find((context) => context.type === ContextTypes.Identifier) &&
-            related.find((context) =>
-              context.type === ContextTypes.DoublePoint
-            ) &&
-            related.find((context) =>
-              context.type === ContextTypes.StyleSheetPropertyValue
-            ),
+          related.find((context) =>
+            context.type === ContextTypes.DoublePoint
+          ) &&
+          related.find((context) =>
+            context.type === ContextTypes.StyleSheetPropertyValue
+          ),
         );
       }
       saveContextsTo(exium, subs, children);

@@ -110,6 +110,7 @@ Deno.test("exium - document can get stylesheet constants", () => {
     url: new URL(import.meta.url),
     onError: (reason, _cursor, context) => {
       const position = context.getPosition(content);
+      console.warn(context, _cursor);
       throw new Error(
         `${reason} ${position.line}:${position.column}`,
       );
