@@ -162,6 +162,7 @@ export class Exium {
       readHTMLCommentCtx,
       readExportComponentStatementsCtx,
       readComponentCtx,
+      readTextnodeCtx,
     ],
     script: [
       readCommentCtx,

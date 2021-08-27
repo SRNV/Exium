@@ -1,0 +1,3 @@
+[submodule "lib/exium-rs"]
+	path = lib/exium-rs
+	url = git@github.com:SRNV/exium-rs.git

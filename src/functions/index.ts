@@ -878,7 +878,7 @@ export function readTextnodeCtx(
       char !== "<" &&
       !readImportStatementsCtx(exium, checkOnlyOptions) &&
       !readNodeCtx(exium, checkOnlyOptions) &&
-      !readCommentCtx(exium, checkOnlyOptions);
+      !readHTMLCommentCtx(exium, checkOnlyOptions);
     if (!isValid || !getNodeContextStarted(exium)) return false;
     if (opts?.checkOnly) return true;
     const styleNode = exium.openTags[exium.openTags.length - 1];
@@ -2227,14 +2227,8 @@ export function readStyleSheetCtx(
   try {
     const { x } = exium.cursor;
     const { source } = exium;
-    const lastIsAStyleNode = exium.currentContexts.find((context) =>
-      context.type === ContextTypes.Node &&
-      context.related.find((node) =>
-        node.type === ContextTypes.Identifier &&
-        node.source === "style"
-      ) &&
-      !context.related.find((node) => node.type === ContextTypes.NodeClosing)
-    );
+    const styleNode = exium.openTags[exium.openTags.length - 1];
+    const lastIsAStyleNode = styleNode && styleNode.name === "style";
     const isValid = !!lastIsAStyleNode || isParsingStylesheet(exium);
     if (!isValid) return isValid;
     if (opts?.checkOnly) return !isEndOfStylesheet(exium);
@@ -2438,7 +2432,7 @@ export function readStyleSheetDeclarationAtRuleCtx(
   exium: Exium,
   opts?: ContextReaderOptions,
 ): boolean {
-  debuggPosition(exium, "readStyleSheetConstAtRuleCtx");
+  debuggPosition(exium, "readStyleSheetDeclarationAtRuleCtx");
   try {
     if (!opts || !opts.data) return false;
     const { x } = exium.cursor;
@@ -2471,9 +2465,11 @@ export function readStyleSheetDeclarationAtRuleCtx(
       readMultiSpacesCtx,
       readSpaceCtx,
       readStyleSheetTypeAssignementCtx,
+      readLineBreakCtx,
       readMultiSpacesCtx,
       readSpaceCtx,
       readStyleSheetAtRuleEqualCtx,
+      readLineBreakCtx,
       readMultiSpacesCtx,
       readSpaceCtx,
       readStyleSheetHexTypeCtx, // #000000
