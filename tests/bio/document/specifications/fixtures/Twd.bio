@@ -1,0 +1,6 @@
+export component <S>
+  <div
+    @twd[bg-gray-500; bg-gray-500; grid gap-4] style>
+
+    </div>
+</S>
